@@ -1,0 +1,16 @@
+.DS_Store
+*.log
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.bak
+.codex-global-state.json*
+auth.json
+sessions/
+archived_sessions/
+shell_snapshots/
+logs/
+traces/
+.codex/traces/
+.env
+.env.*

@@ -1,0 +1,39 @@
+# Public-safe Codex config example.
+# Adapt paths, plugins, MCP servers, and trust settings to your own machine.
+
+model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+plan_mode_reasoning_effort = "xhigh"
+web_search = "live"
+personality = "pragmatic"
+
+[features]
+goals = true
+hooks = true
+multi_agent = true
+default_mode_request_user_input = true
+remote_connections = true
+memories = false
+chronicle = false
+
+[shell_environment_policy]
+inherit = "core"
+
+[shell_environment_policy.set]
+BASH_DEFAULT_TIMEOUT_MS = "300000"
+DISABLE_ERROR_REPORTING = "1"
+DISABLE_TELEMETRY = "1"
+
+[memories]
+generate_memories = false
+use_memories = false
+disable_on_external_context = false
+
+# Example only. Replace with your own trusted workspace paths.
+# [projects."/path/to/workspace"]
+# trust_level = "trusted"
+
+# Example only. Replace with your own CodeGraph command if used.
+# [mcp_servers.codegraph]
+# command = "/path/to/node"
+# args = ["/path/to/codegraph", "serve", "--mcp"]

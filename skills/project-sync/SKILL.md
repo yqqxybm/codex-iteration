@@ -1,0 +1,105 @@
+---
+name: project-sync
+description: >
+  Public-safe infrastructure and Codex configuration sync template. Use for
+  syncing Codex skills/configs between explicitly named machines or fleets,
+  checking remote status, or running bounded batch commands. Fill in local host
+  inventory privately; do not publish credentials, internal IPs, tokens, or
+  organization-specific infrastructure.
+---
+
+# Project Sync
+
+## Lifecycle Position
+
+This is the `sync` / infrastructure coordination skill in the software-project
+lifecycle. It handles machine status, SSH reachability, Codex skills/config
+distribution, and bounded batch commands.
+
+Do not use it for:
+
+- new project creation,
+- code iteration,
+- release/deploy orchestration,
+- broad documentation cleanup.
+
+Sync actions must be exact: source, target, included paths, excluded paths, and
+verification requirements must be explicit before touching remote machines.
+
+## Public Safety Boundary
+
+Never publish or sync from public templates:
+
+- passwords, tokens, SSH private keys, credential helper files,
+- internal IPs, hostnames, jump hosts, VPN/proxy credentials,
+- auth files, sessions, logs, sqlite state, traces, shell snapshots,
+- user-specific absolute paths unless they are intentionally examples.
+
+For private deployments, keep host inventory and credentials in private local
+docs or environment-specific configuration outside public repositories.
+
+## Codex Skills Sync Contract
+
+Default sync target for skills is `~/.codex/skills/`.
+
+Valid skill directories must contain `SKILL.md`. Empty directories or directories
+without `SKILL.md` are not valid skills. Before and after syncing:
+
+1. list local valid skills,
+2. list target valid skills,
+3. sync only requested skill directories,
+4. verify remote `SKILL.md` hashes,
+5. report skipped targets and open risks.
+
+Use `rsync -az --delete` only when the target directory is exactly the intended
+skill directory. Do not run broad deletes against `~/.codex/` or a home
+directory.
+
+## Mac Or Workstation Sync Template
+
+Set these values in the shell or replace placeholders privately:
+
+```bash
+SOURCE_SKILL_ROOT="${SOURCE_SKILL_ROOT:-$HOME/.codex/skills}"
+TARGET_HOST="${TARGET_HOST:?set target host, for example user@example-host}"
+TARGET_SKILL_ROOT="${TARGET_SKILL_ROOT:-~/.codex/skills}"
+SKILL_NAME="${SKILL_NAME:?set skill name}"
+
+test -f "$SOURCE_SKILL_ROOT/$SKILL_NAME/SKILL.md"
+ssh "$TARGET_HOST" "mkdir -p $TARGET_SKILL_ROOT/$SKILL_NAME"
+rsync -az --delete "$SOURCE_SKILL_ROOT/$SKILL_NAME/" \
+  "$TARGET_HOST:$TARGET_SKILL_ROOT/$SKILL_NAME/"
+
+LOCAL_HASH=$(shasum -a 256 "$SOURCE_SKILL_ROOT/$SKILL_NAME/SKILL.md")
+REMOTE_HASH=$(ssh "$TARGET_HOST" \
+  "shasum -a 256 $TARGET_SKILL_ROOT/$SKILL_NAME/SKILL.md")
+printf 'local:  %s\nremote: %s\n' "$LOCAL_HASH" "$REMOTE_HASH"
+```
+
+## Batch Command Template
+
+Use only for safe, bounded commands:
+
+```bash
+TARGETS="${TARGETS:?space-separated host list}"
+COMMAND="${COMMAND:?safe command to run}"
+
+for host in $TARGETS; do
+  printf '\n[%s]\n' "$host"
+  ssh -o ConnectTimeout=10 "$host" "$COMMAND"
+done
+```
+
+Do not infer production mutations, destructive commands, or secret-requiring
+commands from generic sync requests.
+
+## Final Response
+
+Report:
+
+- source and target,
+- hosts touched,
+- files or commands synced,
+- verification output,
+- overwritten or deleted target items, if any,
+- skipped targets or open risks.
