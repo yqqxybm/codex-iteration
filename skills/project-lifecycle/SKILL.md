@@ -136,7 +136,9 @@ Classify the request before acting:
   selected antichain first. Preserve exact fields:
   `runtime_capability_probe`, `parallel_roi`, `merge_strategy`,
   `subagent_spawn_mechanism`, `join_barrier`, `same_worktree_disjoint`,
-  `isolated_worktree_if_supported`, and `main_applies_patch`.
+  `isolated_worktree_if_supported`, `main_applies_patch`,
+  `dynamic_mission_profile`, `mission_profile_delta`, and
+  `loop_control_matrix`.
 - **User asks to finish, close out, deliver, complete a version/phase, keep going
   until done, or optimize project/goal/subagent/Codex controls**: use
   goal-backed concierge unless explicitly single-point.
@@ -148,14 +150,17 @@ Classify the request before acting:
   verification, commit/push/deploy applicability, review depth/scope,
   clean-pass count, escalation boundary, perspective model, plan state sink,
   automatic parallel dispatch policy, runtime capability probe, parallel
-  execution mode, task graph, parallel ROI, merge strategy, join barrier, and
-  agenda. Read
+  execution mode, task graph, dynamic mission profiles, parallel ROI, merge
+  strategy, join barrier, loop control matrix, and agenda. Preserve exact
+  fields: `task_graph`, `dynamic_mission_profile`, `mission_profile_delta`,
+  `cyclic_goal_loop`, `loop_control_matrix`, `review_clean_pass_loop`, and
+  `optimize_framework_cycle_loop`. Read
   `references/goal-subagent-orchestration.md` before creating or maintaining a
   Codex goal. Create or maintain a Codex goal only after the goal prompt passes
   the elegance gate. Then show `goal_runtime`, synthesized `goal_synthesis`/
   `goal_preflight`/`perspective_model`/`plan_state_sink`/
   `subagent_dispatch_policy`/`parallel_execution_mode`/`cyclic_goal_loop`,
-  `protocol_evidence`, and the initial agenda.
+  `loop_control_matrix`, `protocol_evidence`, and the initial agenda.
 - **Project request that asks for "三步分析"**: route to `project-analysis` as
   the adapter around the three-step-analysis core, then return control here for
   any requested execution.
@@ -313,5 +318,6 @@ The controller itself remains responsible for:
 Use `references/goal-subagent-orchestration.md` in addition to
 `references/controller-protocol.md` whenever goal-backed concierge,
 `cyclic_goal_loop`, subagents, automatic parallel dispatch,
-`parallel_execution_mode`, task graphs, or a multi-item agenda with independent
-work surfaces is active.
+`parallel_execution_mode`, task graphs, dynamic mission profiles, loop control
+matrices, review clean-pass loops, optimize framework-cycle loops, or a
+multi-item agenda with independent work surfaces is active.

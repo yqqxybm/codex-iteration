@@ -43,9 +43,11 @@ When invoked by `project-lifecycle`, consume its Context Packet before editing.
 Preserve `intent`, `constraints`, `decisions_so_far`, `owned_scope`,
 `project_goal`, `goal_runtime`, `goal_synthesis` / `control_system_goal`,
 `goal_preflight` / `optimality_law`, `perspective_model`,
-`plan_state_sink`, `cyclic_goal_loop`, `subagent_dispatch_policy`, `agent_owner`,
-`write_policy`, `verification_required`, `verification_scope`,
-`standard_compliance_ledger`, `protocol_evidence`, and `do_not_do`.
+`plan_state_sink`, `cyclic_goal_loop`, `loop_control_matrix`,
+`review_clean_pass_loop`, `optimize_framework_cycle_loop`,
+`subagent_dispatch_policy`, `agent_owner`, `write_policy`,
+`verification_required`, `verification_scope`, `standard_compliance_ledger`,
+`protocol_evidence`, and `do_not_do`.
 
 Return a Handoff Record with changed files, behavioral decisions, docs updates,
 verification output, review result, `standard_compliance_delta`,

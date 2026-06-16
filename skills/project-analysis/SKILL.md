@@ -65,8 +65,10 @@ Preserve `intent`, `constraints`, `owned_scope`, `verification_required`,
 `standard_compliance_ledger`, and `do_not_do`. When provided, also preserve
 `project_goal`, `goal_runtime`, `goal_synthesis` / `control_system_goal`,
 `goal_preflight` / `optimality_law`, `perspective_model`,
-`plan_state_sink`, `cyclic_goal_loop`, `subagent_dispatch_policy`,
-`agent_owner`, `write_policy`, and `protocol_evidence`.
+`plan_state_sink`, `cyclic_goal_loop`, `loop_control_matrix`,
+`review_clean_pass_loop`, `optimize_framework_cycle_loop`,
+`subagent_dispatch_policy`, `agent_owner`, `write_policy`, and
+`protocol_evidence`.
 
 Return a Handoff Record with decision, alternatives rejected, assumptions,
 verification plan, implementation entry point, `standard_compliance_delta`, open

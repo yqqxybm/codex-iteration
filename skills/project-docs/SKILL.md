@@ -49,8 +49,9 @@ durable project knowledge. Preserve `doc_profile`, `docs_ia`, and
 `verification_scope` when provided. When provided, also preserve `project_goal`,
 `goal_runtime`, `goal_synthesis` / `control_system_goal`, `goal_preflight` /
 `optimality_law`, `perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
-`subagent_dispatch_policy`, `agent_owner`, `write_policy`, and
-`protocol_evidence`.
+`loop_control_matrix`, `review_clean_pass_loop`,
+`optimize_framework_cycle_loop`, `subagent_dispatch_policy`, `agent_owner`,
+`write_policy`, and `protocol_evidence`.
 
 Return a Handoff Record with docs reviewed, docs changed, durable decisions
 captured, stale content removed, standard compliance delta, verification output,

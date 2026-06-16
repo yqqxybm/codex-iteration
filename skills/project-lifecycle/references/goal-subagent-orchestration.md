@@ -9,6 +9,7 @@ mode or needs bounded subagent delegation.
 - Control-System Goal Synthesis
 - Goal State Machine
 - Cyclic Project Goal Loop
+- Loop Control Matrix
 - Incomplete Closeout Targets
 - Agenda Extensions
 - Parallel Execution Mode
@@ -195,6 +196,11 @@ goal_synthesis:
       before_start: <scope, owner, done_when, verification, conflict key>
       before_complete: <receipt, evidence, join gate, verification/review>
       reset_on: <material issue, failed verification, conflict, or stale assumption>
+  loop_control_matrix:
+    active_loops: <tool_goal | agenda | subagent_wave | review_clean_pass | optimize_framework_cycle>
+    reset_edges: <which event resets which counters or states>
+    stop_precedence: <which stop condition must be satisfied before completion>
+    non_equivalence: <loops/counters that must not be counted as each other>
 ```
 
 Default synthesis rules:
@@ -265,6 +271,10 @@ Default synthesis rules:
   `control_reclassification`, regenerate the agenda, reset affected clean-pass
   counters, and continue from the new control law instead of patching the old
   loop silently.
+- Build a `loop_control_matrix` whenever more than one loop is active: tool goal,
+  agenda advancement, subagent waves, review clean passes, optimize framework
+  cycles, release/deploy health, or sync verification. Do not let one loop's
+  clean result stand in for another loop's stop condition.
 - Automatic parallelization is the default in goal-backed project work. The
   user's standing preference is: when work can be safely parallelized, parallelize
   automatically. Set `subagent_dispatch_policy.runtime_permission` to
@@ -554,6 +564,58 @@ review pass, reset `clean_pass_count` to 0. If remote push or deploy evidence is
 unavailable, record the blocker and keep the goal active unless the user changes
 the boundary.
 
+## Loop Control Matrix
+
+Use this matrix whenever goal-backed work combines agenda advancement, subagent
+waves, review clean passes, optimize framework cycles, release/deploy checks, or
+sync verification. These loops are related but not interchangeable.
+
+```yaml
+loop_control_matrix:
+  active_loops:
+    tool_goal: <active | agenda_only | none>
+    agenda_loop: <active | none>
+    subagent_wave_loop: <active | none>
+    review_clean_pass_loop: <focused | deep | exhaustive | none>
+    optimize_framework_cycle_loop: <active | none>
+    release_or_sync_loop: <active | none>
+  reset_edges:
+    material_in_scope_issue:
+      resets: <agenda item, goal clean pass, review clean pass, optimize cycle, or release/sync evidence>
+    verification_failure:
+      resets: <agenda item, affected clean passes, release/sync evidence>
+    artifact_change_after_clean_pass:
+      resets: <review clean pass and parent goal clean pass>
+    review_finding:
+      resets: <goal clean pass and optimize framework cycle when optimization is active>
+    optimization_delta:
+      resets: <review clean pass, goal clean pass, affected subagent evidence>
+    subagent_scope_or_merge_conflict:
+      resets: <wave join and affected agenda item>
+  stop_precedence:
+    - all required agenda items done or user-approved skipped
+    - all subagent receipts joined, rejected, or converted into visible agenda state
+    - required verification/release/sync evidence satisfied or explicitly blocked/not_applicable
+    - required review clean passes satisfied after the last material artifact change
+    - required optimize framework clean cycles satisfied after the last material optimization point
+    - tool goal marked complete only after the above parent stop condition is true
+  non_equivalence:
+    - a subagent receipt is not agenda completion
+    - one review clean pass is not two review clean passes
+    - review clean passes are not optimize framework clean cycles
+    - a passing command is not review coverage
+    - a commit/push/deploy is not goal completion
+    - a goal completion claim is invalid while unjoined receipts or pending agenda items remain
+```
+
+If any loop changes the target artifact after another loop was clean, reset the
+affected downstream and parent counters. Do not reset unrelated counters for
+explicitly out-of-scope ideas, duplicate findings already represented in the
+agenda, or rejected non-material drift.
+
+The controller must record which loop caused a reset. A reset without a source
+is a false clean-pass audit trail.
+
 ## Incomplete Closeout Targets
 
 When the user gives an incomplete long-horizon target such as "完成 v0.1",
@@ -594,6 +656,15 @@ agenda:
     write_policy: <read_only | same_worktree_disjoint | single_writer | isolated_worktree_if_supported | main_applies_patch>
     parallel_group: <none or group id>
     conflict_key: <file, schema, route, shared component, lockfile, config, deploy target, generated artifact, or none>
+    dynamic_mission_profile:
+      base_agent: <project-explorer | project-worker | project-reviewer | project-verifier>
+      specialization: <bounded role for this item, or none>
+      derivation_sources: <task_graph_node, perspective_model, owned_scope, verification_required, risk model>
+      execution_lens: <what this agent must pay special attention to>
+      evidence_surface: <files, workflows, commands, docs, runtime proof>
+      materiality_standard: <what counts as a material issue, completion, or opportunity>
+      likely_failure_modes: <things this assignment is likely to miss>
+      expires_after: this_assignment
     merge_owner: <main lifecycle thread | specific owning skill>
     done_when: <observable completion criterion>
     verification: <command, artifact, or evidence matched to the change type>
@@ -617,6 +688,11 @@ Parallelism is allowed only inside an antichain with no dependency or conflict
 edge between the selected nodes. The critical path determines the lower bound on
 elapsed work; spawning agents outside antichains cannot improve that bound and
 only adds merge risk.
+
+The task graph is scheduling structure, not execution semantics. Before a
+subagent receives a node, derive a `dynamic_mission_profile` for that node. The
+mission profile explains how the selected static agent shell should think for
+this assignment; it does not create a new permanent agent type.
 
 Run four gates in order:
 
@@ -764,6 +840,15 @@ subagent_assignment:
   subagent_dispatch_policy: <auto_parallel_safe decision basis and safety gate evidence>
   runtime_capability_summary: <available subagent/custom-agent/worktree/background capabilities and limits>
   merge_strategy: <read_only | same_worktree_disjoint | isolated_worktree_if_supported | main_applies_patch, plus join barrier>
+  dynamic_mission_profile:
+    base_agent: <project-explorer | project-worker | project-reviewer | project-verifier>
+    specialization: <bounded role for this assignment, e.g. frontend-state-pressure-reviewer>
+    derived_from: <task_graph_node + perspective_model + owned_scope + verification_required + risk model>
+    execution_lens: <what the agent must emphasize>
+    evidence_surface: <specific files, workflows, commands, docs, runtime proof>
+    materiality_standard: <what counts as material for this assignment>
+    likely_failure_modes: <what this assignment is prone to miss>
+    expires_after: this_assignment
   optimality_law_summary:
     <value ordering, elegance constraint, and falsification test relevant to this item>
   control_system_goal_summary:
@@ -783,6 +868,19 @@ subagent_assignment:
   required_output: subagent_receipt
 ```
 
+Use static custom agents as stable shells and dynamic mission profiles as
+assignment-specific semantics. A dynamic mission profile may be promoted into a
+new static custom agent only when all are true:
+
+- the same profile recurs across projects,
+- it needs a distinct sandbox, hard boundary, or trigger,
+- its output contract materially differs from the existing receipt contract,
+- the runtime can reliably select the new agent after reload,
+- and the added static type reduces controller complexity rather than increasing
+  agent sprawl.
+
+Otherwise keep it as a dynamic mission profile attached to the assignment.
+
 ## Receipt And Convergence
 
 Every subagent must return a receipt:
@@ -794,6 +892,10 @@ subagent_receipt:
   assigned_scope: <scope received>
   changed_files: <paths or none>
   evidence: <commands, findings, file refs, or none>
+  mission_profile_delta:
+    profile_sufficient: <yes | no>
+    missing_lens_or_surface: <none | what was missing>
+    recommended_profile_change: <none | adjustment for main thread>
   task_graph_delta:
     new_dependency_edges: <edges or none>
     new_conflict_edges: <edges or none>
@@ -817,8 +919,10 @@ After a subagent wave, the main thread must join results before selecting the
 next item:
 
 1. Validate each receipt has `agent`, `agenda_item`, `assigned_scope`,
-   `changed_files`, `evidence`, `task_graph_delta`, `status`, `new_work`, and
-   `stop_reason`. `task_graph_delta` must include `new_dependency_edges`,
+   `changed_files`, `evidence`, `mission_profile_delta`, `task_graph_delta`,
+   `status`, `new_work`, and `stop_reason`. `mission_profile_delta` must state
+   whether the profile was sufficient and what lens/surface was missing, with
+   `none` allowed. `task_graph_delta` must include `new_dependency_edges`,
    `new_conflict_edges`, `blocked_items`, `unblocked_items`, and
    `suggested_reclassification`, with `none` allowed for every key.
 2. Reject or re-run receipts that omit required evidence, exceed scope, or

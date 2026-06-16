@@ -37,8 +37,9 @@ requirement, `standard_compliance_ledger`, and explicit deployment boundaries.
 When provided, also preserve `project_goal`, `goal_runtime`, `goal_synthesis` /
 `control_system_goal`, `goal_preflight` / `optimality_law`,
 `perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
-`subagent_dispatch_policy`, `agent_owner`, `write_policy`, and
-`protocol_evidence`.
+`loop_control_matrix`, `review_clean_pass_loop`,
+`optimize_framework_cycle_loop`, `subagent_dispatch_policy`, `agent_owner`,
+`write_policy`, and `protocol_evidence`.
 
 Return a Handoff Record with version/tag, build artifact, deployment command,
 rollout or health evidence, rollback path, docs/runbook updates,

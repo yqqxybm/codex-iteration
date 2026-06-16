@@ -67,6 +67,10 @@ runtime_capability_probe: <subagent/custom-agent/worktree/background/concurrency
 parallel_execution_mode: <sequential | subagent_wave | controller_team | workflow_batch,
   with task_graph, conflict edges, selected antichains, runtime capability,
   parallel ROI, merge strategy, join barrier, and optimality argument>
+dynamic_mission_profile: <required for each subagent assignment; derived from task node, lenses, scope, verification, and risk>
+loop_control_matrix: <required when goal, agenda, subagent, review, optimize, release, or sync loops interact>
+review_clean_pass_loop: <review clean-pass counter and reset source when review depth requires clean passes>
+optimize_framework_cycle_loop: <framework exhaustion cycle counter and reset source when deep optimization is active>
 plan_state_sink: <trace_only | formal_plan_file | trace_and_formal_plan, with paths>
 cyclic_goal_loop: <required for goal-backed advancement, version closeout, or release readiness>
 stop_condition: <when not to continue the chain>
@@ -191,6 +195,7 @@ agenda:
     owned_scope: <files, modules, artifact, or project area>
     related_surfaces: <sibling pages/components with the same UI pattern, if relevant>
     conflict_key: <file, schema, route, shared component, lockfile, config, deploy target, generated artifact, or none>
+    dynamic_mission_profile: <base agent, specialization, execution lens, evidence surface, materiality standard, likely failure modes>
     standard_requirement: <guide requirement covered by this item, if any>
     done_when: <observable completion criterion>
     verification: <command, artifact, or evidence matched to the change type>
@@ -231,7 +236,8 @@ Before invoking downstream skills, run the Executable Plan Quality gate over the
 agenda and the task graph. Do not start a vague item and hope the downstream
 skill discovers the missing scope. Do not parallelize until dependency edges,
 conflict edges, selected antichain, owner, `done_when`, verification evidence,
-runtime capability, ROI, isolation/merge strategy, and join barrier are known.
+runtime capability, ROI, isolation/merge strategy, dynamic mission profiles, and
+join barrier are known.
 
 Loop until the agenda reaches a real stop condition:
 
@@ -325,6 +331,14 @@ parallel_execution_mode/task_graph:
 runtime_capability_probe/parallel_roi/merge_strategy:
   <capabilities, ROI decision, write isolation, integration owner, and join barrier
   when subagents or parallel execution are considered>
+dynamic_mission_profile:
+  <base agent, specialization, execution lens, evidence surface, materiality
+  standard, likely failure modes, and why this profile is derived from the task node>
+loop_control_matrix:
+  <active loops, reset edges, stop precedence, and non-equivalent counters when
+  multiple loops interact>
+review_clean_pass_loop/optimize_framework_cycle_loop:
+  <active counter, clean target, reset source, and why one loop cannot count as the other>
 plan_state_sink:
   <trace/formal plan state sink, active item, and update policy when agenda is active>
 goal_synthesis/control_system_goal:
@@ -366,6 +380,12 @@ parallel_execution_mode/task_graph_delta:
   items, suggested reclassification, or none>
 runtime_capability_probe/parallel_roi/merge_strategy_delta:
   <capability evidence, ROI changes, merge conflicts, serialized items, or none>
+dynamic_mission_profile_delta:
+  <profile sufficient, missing lens/surface, recommended profile change, or none>
+loop_control_matrix_delta:
+  <counter resets, clean-pass increments, stop-condition changes, or none>
+review_clean_pass_loop/optimize_framework_cycle_loop_delta:
+  <increment, reset, satisfied, blocked, or not_applicable with reason>
 cyclic_goal_delta: <material issues, clean-pass reset/increment, commit/push/deploy/health state, or none>
 frontend_evidence_packet: <when UI work occurred, verified and unverified conditions>
 standard_compliance_delta: <guide entries satisfied, missing, deferred, blocked, or not_applicable>
@@ -415,7 +435,9 @@ promote that fact to formal docs and keep the trace minimal.
   Use `sequential` when conflict edges, dependencies, missing runtime capability,
   weak ROI, or merge risk dominate. Do not imply peer-to-peer agent coordination,
   nested agents, background sessions, or isolated worktrees unless current
-  runtime evidence proves those capabilities.
+  runtime evidence proves those capabilities. For every delegated node, derive a
+  `dynamic_mission_profile`; do not assume the task graph alone tells the agent
+  how to execute the node.
 - "`目标! 推进小版本，把优化点落到项目计划文件`": use `plan_state_sink:
   trace_and_formal_plan`, create or update the smallest authoritative project
   plan file through `project-docs` if none exists, mark items active before
@@ -439,8 +461,9 @@ promote that fact to formal docs and keep the trace minimal.
   out the version, also load `references/goal-subagent-orchestration.md`.
 - "继续推进直到完成 / 两轮全局审查无新增问题 / 没有遗留问题": load both this
   reference and `references/goal-subagent-orchestration.md`, maintain
-  `cyclic_goal_loop`, reset clean passes on material in-scope issues, and stop
-  only at the combined agenda/verification/review/known-issue boundary.
+  `cyclic_goal_loop` and `loop_control_matrix`, reset clean passes on material
+  in-scope issues, and stop only at the combined
+  agenda/verification/review/optimization/known-issue boundary.
 - "改完再深度 review / 全面审查不要只看改动": implement through the selected
   executor, then use the `review` skill at the requested depth. A focused
   closeout gate cannot be reported as deep or exhaustive review.
@@ -467,8 +490,11 @@ The final response names:
 - parallel execution mode, runtime capability evidence, ROI decision, task graph
   summary, selected antichains/phases, merge strategy, join result, and why the
   chosen mode was the smallest correct coordination structure,
+- dynamic mission profiles used for subagents, and any rejected promotion into a
+  new static agent type,
 - cyclic goal loop state and stop-condition evidence, when goal-backed
   advancement was used,
+- loop control matrix state when multiple loops interacted,
 - change requests accepted, deferred, rejected, or still blocking during
   version-state work,
 - concrete artifact or decision produced,

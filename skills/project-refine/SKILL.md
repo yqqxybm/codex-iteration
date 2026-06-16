@@ -34,9 +34,11 @@ on `owned_scope`. Preserve accepted decisions, `do_not_do`, and
 `standard_compliance_ledger` when present. When provided, also preserve
 `project_goal`, `goal_runtime`, `goal_synthesis` / `control_system_goal`,
 `goal_preflight` / `optimality_law`, `perspective_model`,
-`plan_state_sink`, `cyclic_goal_loop`, `subagent_dispatch_policy`, and
-`agent_owner`, `write_policy`, and `protocol_evidence`. Do not reopen
-lifecycle questions unless the artifact contradicts them.
+`plan_state_sink`, `cyclic_goal_loop`, `loop_control_matrix`,
+`review_clean_pass_loop`, `optimize_framework_cycle_loop`,
+`subagent_dispatch_policy`, `agent_owner`, `write_policy`, and
+`protocol_evidence`. Do not reopen lifecycle questions unless the artifact
+contradicts them.
 
 Return a Handoff Record with artifact path or content, critique summary,
 refinements made, verification result when applicable,
