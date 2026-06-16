@@ -17,8 +17,12 @@ The system is built around cybernetic pragmatism:
 - `skills/optimize`: optimization and review-then-optimize orchestrator.
 - `skills/project-lifecycle`: software-project lifecycle controller.
 - `skills/project-*`: project adapters and execution skills.
+- `skills/software-contract`: resource-only software project standards,
+  frontend quality, documentation, motion, and coding contracts.
 - `skills/co-star`, `skills/self-refine`, `skills/retrospective`: lightweight
   thinking frameworks.
+- `agents/project-*.toml`: optional Codex custom agents for project exploration,
+  bounded implementation, verification, and review.
 - `config/config.example.toml`: public-safe Codex config example.
 
 ## What Is Not Included
@@ -44,7 +48,14 @@ mkdir -p ~/.codex/skills
 rsync -az skills/ ~/.codex/skills/
 ```
 
-Then start a fresh Codex session so updated skill metadata is loaded.
+Optional custom agents can be installed the same way:
+
+```bash
+mkdir -p ~/.codex/agents
+rsync -az agents/ ~/.codex/agents/
+```
+
+Then start a fresh Codex session so updated skill and agent metadata is loaded.
 
 For config, copy the example and adapt paths to your machine:
 

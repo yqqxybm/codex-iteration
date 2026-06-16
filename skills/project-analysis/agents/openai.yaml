@@ -1,0 +1,7 @@
+interface:
+  display_name: "Project Analysis"
+  short_description: "Downstream project analysis stage."
+  default_prompt: >
+    Use $project-analysis when project-lifecycle selects the analysis stage to
+    reason through project scope, root cause, implementation path, and systemic
+    risk.

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Three-Step Analysis"
+  short_description: "Deep non-project thinking framework."
+  default_prompt: >
+    Use $three-step-analysis to analyze this non-project problem through
+    problem-world modeling, misjudgment calibration, and a verifiable plan.

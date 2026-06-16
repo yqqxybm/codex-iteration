@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Retrospective"
+  short_description: "Downstream project learn stage."
+  default_prompt: >
+    Use $project-retrospective when project-lifecycle assigns the learn phase to
+    extract reusable lessons from completed software project work.

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Project Iteration"
+  short_description: "Downstream existing-project implementation stage."
+  default_prompt: >
+    Use $project-iteration when project-lifecycle assigns an existing-project
+    implementation item; modify or fix the scoped code, update directly affected
+    docs, verify, review, and close out.

@@ -1,12 +1,15 @@
 ---
 name: project-lifecycle
 description: >
-  Software project lifecycle controller. Use for new projects, project planning,
-  plan advancement such as "根据计划全部推进", architecture or phase transitions,
-  and multi-skill project work. Owns the unified philosophy, call-chain
-  protocol, agenda loop, and lightweight traces. Do not use for small explicit
-  code edits, non-project three-step-analysis requests, or non-project thinking
-  tasks.
+  Software project lifecycle controller and the single entry point for
+  software-project requests, including new projects, small code edits, bug
+  fixes, project planning, plan advancement such as "根据计划全部推进",
+  architecture, docs, release, sync, phase transitions, and multi-skill project
+  work, explicit `目标!` / `目标！` goal-backed project objectives, plus Codex
+  skill/config/custom-agent self-iteration that governs future project behavior.
+  Owns skill selection, philosophy, call chains, analysis gates, goal-backed
+  concierge mode, subagents, agendas, contracts, and traces. Do not use for
+  non-project three-step-analysis requests or non-project thinking tasks.
 ---
 
 # Project Lifecycle
@@ -51,11 +54,55 @@ In this controller:
 
 Do not add process unless it improves one of these control functions.
 
+## Project Standard Contract
+
+All software projects are governed by the Standard Development Contract derived
+from the user's `标准开发指南`. Full standard enforcement means every guide
+requirement must be accounted for; it does not mean every project receives long
+same-name documents or enterprise ceremony up front.
+
+In the control model, the standard ledger is the observable project-state for
+development maturity: a requirement without evidence is unknown, a missing owner
+is uncontrolled, and a claimed completion without verification is false
+completion.
+
+Use the `software-contract` resource skill when creating a new project,
+advancing a project phase, auditing project readiness, or when the user mentions
+the standard guide. Required reference:
+`~/.codex/skills/software-contract/references/standard-development-contract.md`.
+If it cannot be read, stop and report the missing resource; do not replace it
+with memory or a generic checklist.
+
+Maintain a compact `standard_compliance_ledger`:
+
+```yaml
+standard_compliance_ledger:
+  source: 标准开发指南
+  entries:
+    - requirement: <guide phase/item>
+      owner_skill: <project skill>
+      status: <satisfied | not_applicable | blocked | deferred | missing>
+      evidence: <file, command, setting, test, or reason>
+      next_action: <agenda item, none, or user decision needed>
+```
+
+Rules:
+- Record `domain_resource_evidence` when the standard contract affects a
+  completion claim.
+- Full mandatory means every item has a status and evidence boundary.
+- Equivalent project paths are allowed, but the mapping must be recorded.
+- Optional guide items must still be evaluated; if their condition applies, they
+  become required. If not, mark `not_applicable` with a reason.
+- Short skeleton docs are acceptable at bootstrap when they give a real entry,
+  owner, and verification path. Empty placeholder docs are not `satisfied`.
+- Missing standard work becomes agenda, `blocked`, or `deferred`; it is never
+  silently ignored.
+
 ## Phase Map
 
 Classify the request before acting:
 
-| Phase | User intent | Primary skill |
+| Phase | User intent | Downstream capability |
 | --- | --- | --- |
 | `idea` | vague app/product idea, "想做一个..." | `project-brief`, then this controller |
 | `charter` | define goals, users, constraints, success criteria | `project-brief` + `project-lifecycle` |
@@ -71,19 +118,52 @@ Classify the request before acting:
 
 ## Entry Policy
 
-- **New project, vague request, phase transition, or multi-skill orchestration**:
-  use this skill first.
-- **User asks to execute an existing plan end to end**: use this skill first,
-  create an agenda, and keep ownership until the agenda reaches a stop condition.
-- **Clear code edit in an existing project**: go directly to
-  `project-iteration`; it still follows this philosophy.
-- **Clear deploy/release request**: go directly to `project-release`.
-- **Clear docs handoff request**: go directly to `project-docs`.
-- **Project request that asks for "三步分析"**: use `project-analysis` as the adapter around the three-step-analysis core.
+- **All software-project requests enter here first**: new projects, existing
+  project code edits, bug fixes, tests, UI, docs, release, sync, architecture,
+  planning, review-after-implementation, and plan advancement.
+- This controller chooses the downstream capability. Do not let user wording
+  such as "修一下", "改个 bug", "写文档", or "发布" bypass the controller.
+- **User asks to execute an existing plan end to end**: create an agenda and
+  keep ownership until the agenda reaches a stop condition.
+- **Any project request creates a multi-item agenda or independent work
+  surfaces**: evaluate automatic parallel dispatch through
+  `references/goal-subagent-orchestration.md`. If the work is safe, disjoint,
+  executable, materially worth dispatching, and the runtime exposes subagent
+  tools, choose the smallest correct `parallel_execution_mode` and parallelize
+  automatically; do not wait for the user to say "并行". Do not merely count
+  available agents. Build the task graph, dependency edges, conflict edges,
+  runtime capability probe, parallel ROI, merge strategy, join barrier, and
+  selected antichain first. Preserve exact fields:
+  `runtime_capability_probe`, `parallel_roi`, `merge_strategy`,
+  `subagent_spawn_mechanism`, `join_barrier`, `same_worktree_disjoint`,
+  `isolated_worktree_if_supported`, and `main_applies_patch`.
+- **User asks to finish, close out, deliver, complete a version/phase, keep going
+  until done, or optimize project/goal/subagent/Codex controls**: use
+  goal-backed concierge unless explicitly single-point.
+- **User starts a project request with `目标!` or `目标！`**: treat the rest of
+  the message as an explicit goal-backed project objective. The user supplies
+  only the desired outcome; this controller must synthesize the control-system goal:
+  goal preflight, task-specific optimality law, target layer, state model,
+  feedback sensors, actuator skill chain, loop policy, stop condition,
+  verification, commit/push/deploy applicability, review depth/scope,
+  clean-pass count, escalation boundary, perspective model, plan state sink,
+  automatic parallel dispatch policy, runtime capability probe, parallel
+  execution mode, task graph, parallel ROI, merge strategy, join barrier, and
+  agenda. Read
+  `references/goal-subagent-orchestration.md` before creating or maintaining a
+  Codex goal. Create or maintain a Codex goal only after the goal prompt passes
+  the elegance gate. Then show `goal_runtime`, synthesized `goal_synthesis`/
+  `goal_preflight`/`perspective_model`/`plan_state_sink`/
+  `subagent_dispatch_policy`/`parallel_execution_mode`/`cyclic_goal_loop`,
+  `protocol_evidence`, and the initial agenda.
+- **Project request that asks for "三步分析"**: route to `project-analysis` as
+  the adapter around the three-step-analysis core, then return control here for
+  any requested execution.
 - **Non-project request that asks for "三步分析"**: use `three-step-analysis`.
-- **Software-project analysis without implementation**: use `project-analysis`.
-- **Fuzzy software-project request**: use `project-brief` before choosing the chain.
-
+- **Software-project analysis without implementation**: route to
+  `project-analysis` and stop after the analysis Handoff Record.
+- **Fuzzy software-project request**: route to `project-brief` before choosing
+  the chain.
 ## Lifecycle Gates
 
 Before building the chain, state:
@@ -96,207 +176,142 @@ Before building the chain, state:
 Do not ask for preferences that do not change the call chain. Ask only when a
 wrong chain would waste work or risk data loss.
 
+### Mandatory Project Analysis Gate
+
+Before handing project work to an executor, include `project-analysis` in the
+chain by default. The default assumption is that a local request may be a symptom
+of a broader project issue unless the user explicitly says full-project/systemic
+analysis is unnecessary.
+
+Only bypass full `project-analysis` when the user clearly says to keep the work
+local, diff-only, no broader analysis, no systemic analysis, or equivalent. In
+that case record `analysis_gate: explicitly_skipped_by_user` and preserve the
+user's narrow boundary. Do not infer this skip from the change looking small.
+
+`project-analysis` is especially mandatory when any of these are true:
+- root direction, PRD, requirements, architecture, tech stack, MVP, version
+  boundary, or acceptance criteria may change,
+- a bug, UI flaw, failed test, performance issue, or user-visible defect may be
+  a symptom of a broader pattern instead of a single local line,
+- the correct fix path depends on root cause, data model, API contract, module
+  boundary, deployment/runtime behavior, security, performance, or compatibility,
+- sibling surfaces, shared components, shared state, cross-page workflows, or
+  project standards may be affected,
+- verification strategy is unclear or may require more than a local smoke test,
+- the downstream owner skill is uncertain.
+
+## State Boundary Enforcement
+
+This controller owns project state transitions. Downstream executor skills act
+only on authorized state changes; they must not expand scope from templates,
+standard checklists, or local convenience.
+
+### Root-State Changes
+
+Treat these requests as root-state changes: new project creation, project
+initialization, scaffolding from a product idea, PRD, requirements document,
+MVP boundary, root architecture/design document, tech-stack decision, and
+version target such as `v0.x`.
+
+Before handing root-state work to `project-bootstrap`, `project-docs`, or
+`project-iteration`, produce or consume a frozen charter:
+
+```yaml
+frozen_charter:
+  intent: <user-visible product goal>
+  target_user: <primary user/operator>
+  core_workflow: <main scenario>
+  non_goals: <explicit exclusions>
+  success_criterion: <observable completion criterion>
+  constraints: <hard limits>
+  project_shape: <profile from docs-deliverables when docs/assets are involved>
+  docs_ia: <authorized root docs and docs/ subdirectories when standalone docs are involved>
+```
+
+Use `project-brief` for fuzzy scope and `project-analysis` for root decisions
+or architecture tradeoffs. Use question governance for missing charter fields:
+ask only when a user-private variable would alter project direction; otherwise
+resolve, verify, assume, or carry each key question as risk before proceeding
+through the authorized chain. Do not let an executor infer a root direction from
+one broad sentence and write durable project files.
+
+### Version-State Changes
+
+Treat these requests as version-state changes: "做一个版本", "实现一个版本",
+"MVP", "v0.x", "milestone", "sprint", "完成当前阶段", and equivalent
+phase-completion language.
+
+Version-state work must enter the agenda loop. If the user supplies no existing
+plan, create a version agenda from the frozen charter and current request; do
+not downgrade it to a single local iteration. Each item must record source,
+status, result, and verification evidence.
+
+While a version agenda is active, any new user requirement that changes scope is
+a `change_request`, not a side note:
+
+```yaml
+change_request:
+  source: <user message or evidence>
+  requested_change: <what changed>
+  impact: <agenda item, root direction, docs/assets, tests, release, or none>
+  decision: <add_now | replace_item | defer | reject | ask>
+  reason: <why this preserves the user goal and current version boundary>
+```
+
+Only `add_now` or `replace_item` changes the active agenda. `defer`, `reject`,
+or `ask` must be visible in the trace or final response.
+
+### Goal-Backed Project Concierge
+
+The recommended explicit trigger is `目标!` or `目标！` at the start of a
+project request. Natural-language completion wording may still imply concierge
+mode, but do not teach or rely on a long keyword list as the primary trigger.
+Use concierge mode for explicit `目标!` / `目标！` requests, version closeout,
+plan completion, release readiness, project skill system, goal system, subagent
+orchestration, or Codex self-iteration control optimization, including Codex skills, global
+instructions, config, and custom agents that govern future project behavior.
+Default to goal-backed unless the user explicitly narrows the work to a
+single-point/local/diff-only edit. For `目标!` / `目标！`, never require the
+user to write the loop, review depth, review scope, clean-pass count,
+commit/push/deploy requirements, stop condition, target layer, state variables,
+sensors, actuator chain, review/optimization perspectives, optimality law, or
+elegance gate, plan state sink, automatic parallel dispatch policy, or agenda
+split; infer them from the project objective and evidence.
+Read `references/goal-subagent-orchestration.md` first, then write the project
+goal control prompt yourself from the user's incomplete target. The prompt passed
+to the Codex goal tool must embed the selected loop contract when the goal uses
+`bounded_goal_loop` or `cyclic_until_clean`; do not rely on sidecar fields,
+conversation text, or the agenda to remember the loop. Do not create or maintain
+a Codex goal, maintain `cyclic_goal_loop`, spawn subagents, or join subagent
+receipts before that reference has been read and applied. Do not activate a goal
+prompt that has not first passed its `goal_preflight`, loop-contract, and
+elegance gates.
+
 ## Call Chain Protocol
 
-Use this protocol when the task crosses lifecycle phases, needs two or more
-skills, may run long, or may be interrupted.
+This controller keeps the decision rules here and moves mechanical protocol
+details to references. Read `references/controller-protocol.md` before any work
+that crosses lifecycle phases, advances a plan/version, needs Context Packets or
+Handoff Records, creates a trace, or prepares the final project-lifecycle
+response.
 
-### 1. Call Chain Plan
+Referenced protocols are binding, not advisory. When this file requires a
+reference, the controller must read it before the governed action, apply its
+required schemas, gates, and stop conditions, and record `protocol_evidence`.
+Do not claim progress or completion from a governed action when the required
+reference was not read or its evidence fields were not carried forward.
 
-Before downstream work starts, produce a compact plan:
+The controller itself remains responsible for:
 
-```yaml
-phase: <current lifecycle phase>
-goal: <user-visible objective>
-selected_chain:
-  - skill: <skill-name>
-    purpose: <why this skill is needed>
-success_criterion: <observable finish condition for the whole request>
-stop_condition: <when not to continue the chain>
-```
+- selecting the phase and downstream skill chain,
+- enforcing analysis, state-boundary, goal, and standard gates,
+- preserving the user's boundary and explicit exclusions,
+- owning the agenda and goal state,
+- accepting or rejecting downstream `new_work`,
+- deciding whether the stop condition is actually satisfied.
 
-Do not include decorative steps. Every selected skill must change the outcome.
-
-### 1.2 Executable Plan Quality
-
-When this controller creates, normalizes, or advances a plan, the plan must be
-executable rather than merely descriptive. Each required work item must name:
-
-- the user-visible outcome,
-- the owner skill,
-- the owned files, modules, artifact, or project area when knowable,
-- the exact verification command, artifact, or evidence expected,
-- the observable `done_when` condition.
-
-Reject placeholder planning. Items such as `TBD`, `TODO`, "handle edge cases",
-"write tests", "similar to previous", or vague "improve/refactor" work are not
-ready for execution unless they are expanded into concrete scope and evidence.
-If missing detail changes the work, ask or block. If it can be inferred safely
-from local context, state the assumption and encode it in the agenda.
-
-### 1.5 Plan Advancement Loop
-
-When the user asks to "按计划推进", "根据计划全部推进", "继续推进到完成",
-or otherwise execute an existing plan, enter plan advancement mode.
-
-#### Plan Source Discovery
-
-For "按计划推进", "根据计划全部推进", "继续推进到完成", "按已有重构方案",
-or equivalent requests, do not invent, shrink, or substitute the plan.
-
-Before normalizing the agenda, search for plan sources in order:
-
-1. explicit plan in the current user message,
-2. active project trace agenda under `.codex/traces/`,
-3. project docs, TODO/checklist files, issue files, roadmap files, refactor
-   plans, migration plans, architecture notes, and Handoff Records named by the
-   user,
-4. visible conversation context.
-
-When the user mentions a plan, refactor, migration, roadmap, checklist, or
-phase, use targeted search terms such as `重构`, `refactor`, `plan`, `roadmap`,
-`todo`, `checklist`, `migration`, `phase`, `handoff`, and `agenda`.
-
-Maintain an internal source ledger:
-
-```yaml
-plan_sources:
-  - source: <path, trace, document, issue, or conversation>
-    evidence: <matched title, checklist, section, or agenda>
-    selected: <yes | no>
-    reason: <why this is or is not the controlling plan>
-```
-
-If no credible plan source is found, stop and ask for the plan location. Do not
-proceed with a guessed or reduced agenda. If multiple plausible plans would
-produce different work, ask which one controls.
-
-If resuming from a trace, reconcile the agenda against current repo state before
-continuing.
-
-The controller owns the agenda. Downstream skills own only their assigned item.
-First normalize the plan into a living agenda:
-
-```yaml
-agenda:
-  - id: <stable short id>
-    objective: <user-visible outcome>
-    owner_skill: <project skill>
-    prerequisites: <ids or none>
-    source_plan_item: <source id, line, section, or none>
-    owned_scope: <files, modules, artifact, or project area>
-    done_when: <observable completion criterion>
-    verification: <command, artifact, or evidence>
-    status: <pending | active | done | blocked | skipped>
-    result: <artifact, commit, decision, or none>
-```
-
-Loop invariant: the plan is not complete while any required item is `pending`,
-`active`, or unverified.
-Before invoking downstream skills, run the Executable Plan Quality gate over the
-agenda. Do not start a vague item and hope the downstream skill discovers the
-missing scope.
-
-Loop until the agenda reaches a real stop condition:
-
-1. Select the highest-priority `pending` item whose prerequisites are met.
-2. Build a Context Packet for that item and invoke the owning skill.
-3. Record the Handoff Record and update the agenda.
-4. Mark the item `done` only when its `done_when` and verification evidence are
-   satisfied and the source plan requirement is preserved.
-5. If the handoff creates new required work, add it to the agenda instead of
-   leaving it implicit.
-6. If a handoff recommends another skill, convert that recommendation into an
-   agenda item or explicitly reject it as outside scope.
-7. Continue to the next eligible `pending` item without returning a final answer.
-
-Do not stop merely because one downstream skill, commit, or verification step
-finished. Stop only when:
-
-- all agenda items are `done` or explicitly `skipped` with a user-approved
-  reason,
-- a blocker requires user input, secret access, destructive approval, or an
-  unsafe operation,
-- verification fails after reasonable local fixes and further work would hide
-  the failure,
-- the environment forces interruption; in that case write or update the trace,
-  name the next agenda item, and do not claim the plan is complete.
-
-For plan advancement with more than two items, create or update a trace from the
-start before the first item begins, then update it after each item. The trace
-must include the source ledger, agenda table, last completed item, current
-blocker if any, and next item. It is a recoverability ledger and completion
-proof, not a backup.
-
-An agenda item can be `done` only when:
-
-- its source plan requirement is satisfied,
-- its `done_when` condition is met,
-- its verification evidence is recorded,
-- any newly discovered in-scope required work has been added or completed.
-
-If verification cannot run, mark the item `blocked` unless the user explicitly
-accepts an unverified completion status.
-
-### 2. Context Packet
-
-Before using a downstream skill, carry forward only the context it needs:
-
-```yaml
-intent: <user goal>
-constraints: <hard limits and preferences>
-decisions_so_far: <accepted decisions>
-owned_scope: <files, modules, project area, or phase responsibility>
-verification_required: <actual command or evidence expected>
-do_not_do: <explicit exclusions, quality-reduction bans, or boundaries>
-```
-
-### 3. Handoff Record
-
-After each downstream skill finishes, record a short handoff:
-
-```yaml
-skill: <skill-name>
-status: <done | blocked | skipped>
-changed_artifacts: <files, commands, docs, commits, or none>
-decisions: <new decisions made>
-verification: <command and key result>
-open_risks: <remaining blockers or risks>
-next_recommended_skill: <next skill or none>
-agenda_update: <done, blocked, added, or remaining items>
-```
-
-If the handoff changes the original plan, update the call chain before
-continuing.
-
-## Trace Placement
-
-Use the lightest trace that preserves recoverability:
-
-1. **Short chain**: keep the trace in the conversation and final response only.
-2. **Long, cross-phase, or resumable chain**: create a project-local trace at
-   `.codex/traces/<YYYY-MM-DD>-<task-slug>.md`.
-3. **Durable project knowledge**: promote only long-lived facts into
-   `README.md`, project `AGENTS.md`, or `docs/` through `project-docs`.
-
-Trace files are operational working records, not backups and not formal docs.
-Do not commit `.codex/traces/` by default. Commit them only if the user asks for
-trace history to be part of the repository. If `.codex/traces/` reveals a durable
-decision, command, environment variable, API, deployment detail, or lesson,
-promote that fact to formal docs and keep the trace minimal.
-
-## Final Response
-
-A project-lifecycle task is complete only when the selected downstream skills
-have finished their own verification gates and, in plan advancement mode, every
-required agenda item is `done` or explicitly user-approved as `skipped`.
-
-The final response names:
-
-- phase handled,
-- call chain used,
-- agenda completion status, if plan advancement mode was used,
-- concrete artifact or decision produced,
-- verification evidence,
-- trace location, if a trace file was created,
-- remaining lifecycle gap, if any.
+Use `references/goal-subagent-orchestration.md` in addition to
+`references/controller-protocol.md` whenever goal-backed concierge,
+`cyclic_goal_loop`, subagents, automatic parallel dispatch,
+`parallel_execution_mode`, task graphs, or a multi-item agenda with independent
+work surfaces is active.

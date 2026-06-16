@@ -1,0 +1,12 @@
+interface:
+  display_name: "Project Lifecycle"
+  short_description: "Software project, goal, and self-iteration controller."
+  default_prompt: >
+    Use $project-lifecycle as the single entry point to classify this software
+    project request or Codex skill/config/custom-agent self-iteration request.
+    For `目标!` / `目标！`, synthesize a control-system goal with target layer,
+    state model, sensors, actuator skill chain, loop policy, stop condition,
+    review hardness, verification, commit/push/deploy/sync applicability, and
+    agenda from the user's outcome, then route analysis, implementation, docs,
+    review, release, sync, or subagent work through the correct downstream
+    skills.

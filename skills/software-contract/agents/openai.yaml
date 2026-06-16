@@ -1,0 +1,6 @@
+interface:
+  display_name: "Software Contract"
+  short_description: "Resource layer for software project standards."
+  default_prompt: >
+    Use $software-contract as the software standards resource for coding,
+    frontend quality/taste, docs, or standard-compliance work.

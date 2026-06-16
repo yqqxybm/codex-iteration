@@ -1,11 +1,11 @@
 ---
 name: project-retrospective
 description: >
-  Project retrospective / 项目复盘 skill. Use when the user asks to review
-  software-project lessons, summarize project experience, or when
-  project-lifecycle explicitly enters the learn phase. Extracts reusable lessons
-  from completed project work. Does not implement, commit, deploy, or replace
-  project-docs. Project adapter for the retrospective cognitive core.
+  Downstream project retrospective / 项目复盘 stage selected by
+  project-lifecycle when the lifecycle controller enters the learn phase.
+  Extracts reusable lessons from completed project work. Does not implement,
+  commit, deploy, or replace project-docs. Project adapter for the retrospective
+  cognitive core.
 ---
 
 # Project Retrospective（经验提炼/复盘）
@@ -18,7 +18,7 @@ description: >
 
 ## Lifecycle Position
 
-这是软件项目生命周期里的 `learn` skill，也是 `retrospective` 认知内核的项目适配层。
+这是软件项目生命周期里的下游 `learn` skill，也是 `retrospective` 认知内核的项目适配层。
 它把已发生的项目经验转化为未来可复用的判断和操作规则。
 非软件项目复盘使用 `retrospective`。
 
@@ -33,26 +33,50 @@ description: >
 
 When invoked by `project-lifecycle`, consume its Context Packet and prior
 Handoff Records before reviewing the work. Use actual decisions, commands,
-failures, fixes, and verification evidence instead of vague impressions.
+failures, fixes, verification evidence, and `standard_compliance_ledger` instead
+of vague impressions. When provided, preserve `project_goal`, `goal_runtime`,
+`goal_synthesis` / `control_system_goal`, `goal_preflight` /
+`optimality_law`, `perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
+`subagent_dispatch_policy`, `agent_owner`, `write_policy`, and
+`protocol_evidence`.
 
 Return a Handoff Record with lessons extracted, decisions audited, durable
-experience entries written or skipped, open risks, and the next recommended
-skill. Use `.codex/traces/` as source material only; durable lessons go to
-project `AGENTS.md`, `docs/retrospective/`, or another project doc through
-`project-docs` when needed.
+experience entries written or skipped, `standard_compliance_delta`, open risks,
+`domain_resource_evidence` when `software-contract` was loaded, and the next
+recommended skill. Include any item status, result, and verification evidence
+needed by an active `plan_state_sink`. Use `.codex/traces/` as source material
+only; durable lessons must follow the active `doc_profile` / `docs_ia` and go
+through `project-docs` when a project doc needs to be created or moved.
 
-## 触发时机
+If invoked as a subagent, preserve the assigned `agent_owner` and `write_policy`;
+do not edit the parent goal, do not spawn subagents, commit, push, deploy, sync
+remote state, broaden scope, or claim project completion. Write durable lessons only
+when the assigned `write_policy` permits it; otherwise return findings or a
+proposed lesson entry to `project-lifecycle`.
 
-**手动触发：** 用户说"复盘"、"总结经验"、"这次学到什么"
+When the Standard Development Contract is active, update learn-phase entries:
+Postmortem template applicability, incident/postmortem records, Tech-Debt log,
+SLO/error-budget lessons, runbook updates, and ADR/retrospective follow-ups.
+If the retrospective discovers a standard gap, return it to `project-lifecycle`
+or `project-docs` instead of treating the lesson as complete.
+When standard learn-phase details affect status, load `software-contract` and
+read `~/.codex/skills/software-contract/references/standard-development-contract.md`.
+If the required reference is unavailable, stop and report the missing resource.
 
-**Codex 标记复盘价值：** 在以下场景完成后，在最终摘要中标记复盘价值，不中断当前任务：
+## Learn Phase Timing
+
+**总控分派：** `project-lifecycle` 在用户提出"复盘"、"总结经验"、"这次学到什么"
+等项目复盘意图，或进入 learn phase 时调用本 skill。
+
+**Codex 标记复盘价值：** 在以下场景完成后，向 `project-lifecycle` 标记复盘价值，
+不中断当前任务：
 - 修复了耗时 > 30 分钟的 bug
 - 完成了跨多文件的大功能
 - 部署过程中遇到了意外问题
 - 方案经历了重大方向调整
 - 第三次犯同类错误
 
-**不要在这些时候触发：**
+**不要在这些时候进入 learn phase：**
 - 常规小改动、配置调整
 - 一切顺利没有意外的任务
 - 用户明显赶时间
@@ -101,7 +125,9 @@ project `AGENTS.md`, `docs/retrospective/`, or another project doc through
 
 - 跨项目通用规则：只有用户明确要求全局沉淀时，更新 `~/.codex/AGENTS.md`
 - 当前项目可复用经验：优先更新项目根 `AGENTS.md`
-- 需要较长上下文或阶段记录：写入 `docs/retrospective/` 或项目已有的复盘文档
+- 需要较长上下文或阶段记录：先使用 `doc_profile.docs_ia` 授权的复盘/决策/运维文档；
+  如果没有授权落点，返回给 `project-docs` 建立或选择最小合适落点，不自行创建
+  `docs/retrospective/`
 
 **沉淀写法要求：**
 - 标题或首句必须包含**触发场景**的关键词，这样未来相似场景才能匹配到
@@ -123,7 +149,9 @@ SSH 隧道不通时先 `lsof -i :端口` 检查目标端口是否被占用，再
 
 ### 项目特定经验 → 写入项目文档
 
-适合项目内复用但不通用的经验。写入项目的 `docs/retrospective/` 或 `CHANGELOG.md`。
+适合项目内复用但不通用的经验。写入 active `doc_profile.docs_ia` 授权的项目文档落点；
+`docs/retrospective/` 或 `CHANGELOG.md` 只有在该项目文档结构已经授权时才使用。
+如果没有授权落点，返回给 `project-docs` 选择或建立最小合适落点，不自行创建。
 
 例如：特定 API 的坑、项目架构的历史决策原因、部署流程的注意事项。
 
@@ -132,8 +160,8 @@ SSH 隧道不通时先 `lsof -i :端口` 检查目标端口是否被占用，再
 ```
 这个经验换一个项目还适用吗？
   → 是 → 项目根 `AGENTS.md`（当前项目内可检索；全局仅在用户明确要求时写 `~/.codex/AGENTS.md`）
-  → 否 → 项目文档（跟代码一起版本控制）
-  → 都有 → 项目根 `AGENTS.md` 写通用版，项目文档写具体版
+  → 否 → active `doc_profile.docs_ia` 授权的项目文档（跟代码一起版本控制）
+  → 都有 → 项目根 `AGENTS.md` 写通用版，授权项目文档写具体版
 ```
 
 ## 认知偏差防御
@@ -185,4 +213,5 @@ Report:
 - lessons extracted,
 - concrete behavior changes,
 - docs or AGENTS entries written, if any,
+- `domain_resource_evidence`, when `software-contract` was loaded,
 - unresolved uncertainty or follow-up review point.

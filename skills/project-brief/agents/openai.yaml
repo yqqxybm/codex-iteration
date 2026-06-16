@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Brief"
+  short_description: "Downstream project brief stage."
+  default_prompt: >
+    Use $project-brief when project-lifecycle assigns brief clarification; turn
+    the fuzzy software request into scope, success criteria, and deliverables.

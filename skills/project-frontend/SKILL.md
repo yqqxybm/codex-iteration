@@ -1,10 +1,14 @@
 ---
 name: project-frontend
 description: >
-  Use for UI/UX design work: pages, components, app screens, dashboards, forms,
-  navigation, dialogs, charts, motion, accessibility, responsive behavior,
-  design direction, and visual QA. New projects go through project-bootstrap;
-  existing code edits go through project-iteration.
+  Downstream UI/UX design stage selected by project-lifecycle, either directly
+  or as a lifecycle-authorized companion to project-bootstrap or
+  project-iteration. Use for assigned pages, components,
+  app screens, dashboards, forms, navigation, dialogs, charts, motion,
+  accessibility, responsive behavior, design direction, theme contracts,
+  prototype references, source-site aesthetic comparison, and visual QA. New
+  project implementation remains with project-bootstrap; existing code edits
+  remain with project-iteration.
 ---
 
 # Project Frontend
@@ -14,45 +18,76 @@ description: >
 用户可能给你明确的设计方向，也可能只说"做个好看的页面"——两种情况你都要产出
 **有辨识度、生产级、细节到位**的界面结果。
 
+Default preference: the user generally expects the highest practical frontend
+quality on the first pass and strongly dislikes avoidable rework. For new
+screens, full pages, redesigns, landing pages, dashboards, prototypes, and any
+task where visual quality is the point, default to extreme-quality workflow
+without waiting for the user to ask for "极致". Keep Tier 0 surgical fixes
+minimal only when the request is clearly local and not a design-quality task.
+
 ## Lifecycle Position
 
-这是软件项目生命周期里的 UI/UX 专业 skill。它负责界面质量、交互、视觉系统、
+这是软件项目生命周期里的下游 UI/UX 专业 skill。它负责界面质量、交互、视觉系统、
 响应式和可访问性；不负责项目初始化、Git 提交、部署或项目级文档整理。
 
-在新项目中由 `project-bootstrap` 调用；在已有项目的 UI 修改中由
-`project-iteration` 调用。所有设计实现仍需服务于项目哲学：意图保真、
-可运行优先、证据闭环。
+在新项目或已有项目 UI 修改中，它只能作为 `project-lifecycle` 明确授权的
+companion 阶段进入；代码落地仍由 `project-bootstrap` 或 `project-iteration`
+承载。所有设计实现仍需服务于项目哲学：意图保真、可运行优先、证据闭环。
 
 ## Call Chain Contract
 
-When invoked by `project-lifecycle`, `project-bootstrap`, or `project-iteration`,
-consume the Context Packet before designing. Preserve user intent, existing
-project style, owned UI scope, verification requirements, and explicit exclusions.
+When invoked by `project-lifecycle` directly, or as a lifecycle-authorized
+companion inside `project-bootstrap` / `project-iteration`, consume the Context
+Packet before designing. Preserve user intent, existing project style, owned UI
+scope, verification requirements, and explicit exclusions. When provided, also
+preserve `project_goal`, `goal_runtime`, `goal_synthesis` /
+`control_system_goal`, `goal_preflight` / `optimality_law`,
+`perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
+`subagent_dispatch_policy`, `agent_owner`, `write_policy`, and
+`protocol_evidence`.
 
 Return a Handoff Record with design direction, changed UI artifacts, browser or
-visual verification, accessibility/responsive checks, open risks, and the next
-recommended skill. Use `.codex/traces/` only for long cross-phase chains; durable
-design decisions belong in project docs through `project-docs`.
+visual verification, accessibility/responsive checks, the UI Contract evidence
+packet, `domain_resource_evidence` when `software-contract` was loaded, open
+risks, the next recommended skill, and any item status, result, and verification
+evidence needed by an active `plan_state_sink`. Use `.codex/traces/` only for
+long cross-phase chains; durable design decisions belong in project docs through
+`project-docs`.
+
+If invoked as a subagent, preserve the assigned `agent_owner` and `write_policy`;
+do not edit the parent goal, do not spawn subagents, commit, push, deploy, sync
+remote state, broaden scope, or claim project completion. Change UI files only when the
+assigned `write_policy` permits it; otherwise return findings, screenshots, or a
+patch proposal to `project-lifecycle`.
 
 ---
 
 ## 0. 何时激活
 
 **必须激活：** 任何改变界面"看起来什么样、用起来什么感觉、怎么交互"的任务。
-包括但不限于：创建/重构页面或组件、选择配色/字体/间距/布局、审查 UI 代码、
+包括但不限于：创建/重构页面或组件、选择配色/字体/间距/布局、
 实现导航/动画/响应式、落地页、仪表盘、表单、数据可视化。
 
-**不激活：** 纯后端逻辑、API/数据库设计、非界面的性能优化、基础设施/DevOps。
+**不激活：** 纯 review/audit 请求，例如"审查 UI 代码"、"看 UI 有没有问题"；
+这类请求使用 `review`。纯后端逻辑、API/数据库设计、非界面的性能优化、
+基础设施/DevOps 也不激活。
 
 ---
 
 ## 1. 设计决策引擎
 
-### 1.1 当用户给了方向
+### 1.1 当 Context Packet 带有设计方向
 
-直接采纳，用后续章节的规则执行。不要质疑用户的审美选择，全力实现。
+保留 Context Packet 或用户原始需求里的方向，但要把它转成可执行的设计契约，
+而不是只复述风格词。
 
-### 1.2 当用户没给方向
+- 当输入指定具体主题、源站或"主题设计模式"时，按 1.4.1 读取
+  `frontend-theme-contract.md`，建立 `theme_contract` 后再实现。
+- 当输入只包含"高级 / 好看 / 顶级 / 源站级"这类质量词时，不把它当作完整
+  art direction；先按任务类型选择固定主题或定义自定义 `theme_contract`。
+- 不质疑用户审美选择；只有缺少会改变结果的业务边界时才提问。
+
+### 1.2 当 Context Packet 没有设计方向
 
 你**必须**自主做出设计决策，不要反复追问。按以下流程：
 
@@ -62,20 +97,28 @@ design decisions belong in project docs through `project-docs`.
 - 内容调性（严肃/活泼/极客/奢华/温暖/冷峻）
 - 已有设计元素（如果项目中已有 CSS 变量或设计 tokens，延续它们）
 
-**第二步：从方向矩阵中选择**
+**第二步：自动选择主题控制面**
 
-| 项目类型 | 推荐方向 | 关键词 |
-|---------|---------|--------|
-| 开发者工具/技术产品 | 精密极简 | 暗色、等宽字体、高对比度、网格感、无多余装饰 |
-| 内容/博客/文档 | 编辑式排版 | 衬线标题、大留白、阅读节奏、杂志感 |
-| SaaS/仪表盘 | 克制专业 | 中性色为主、信息密度适中、微妙阴影、功能优先 |
-| 电商/产品展示 | 视觉冲击 | 大图、高饱和强调色、戏剧性留白、产品为王 |
-| 社交/社区 | 活力亲和 | 圆角、渐变、明快色彩、温暖感、卡片式布局 |
-| 个人网站/作品集 | 独特表达 | 打破常规、实验性排版、强烈个人风格、辨识点 |
-| 企业/B2B | 稳重信任 | 蓝/深色系、对称布局、专业字体、留白适度 |
-| 游戏/娱乐 | 沉浸大胆 | 深色背景、霓虹/渐变、动态效果、视觉张力 |
-| 活动/落地页 | 戏剧叙事 | 全屏分段、滚动驱动、英雄区抢眼、强CTA |
-| 工具/测试/小应用 | 轻盈工具面板 | 浅色背景、清晰控件、自然色系、单页流 |
+Tier 2/3 或任何第一眼审美重要的任务，优先读取
+`frontend-theme-contract.md`，自动比较 2-3 个候选主题，再选择最贴合业务对象的一项：
+
+| 项目类型 | 优先主题 |
+|---------|----------|
+| 开发者工具 / AI agent / 日志 / 部署 | `precision-developer-console` 或 `ai-control-room` |
+| SaaS 落地页 / 平台叙事 / 转化页 | `commercial-saas-narrative` |
+| 监控 / CRM / 审计 / 财务 / 管理后台 | `operational-density` |
+| 文档 / 知识库 / 协作编辑 | `quiet-productivity-workspace` |
+| 企业 / 权限 / 配置 / Office-like 工具 | `fluent-enterprise-workbench` |
+| 原生感个人工具 / 设置 / 轻生产力 | `platform-native-clarity` |
+| 移动端消费应用 | `material-mobile-expressive` |
+| 品牌故事 / 作品集 / 内容专题 | `editorial-brand-story` |
+| 高端产品 / 精品服务 / 预约展示 | `luxury-product-focus` |
+
+候选比较只在内部完成，默认不向用户输出长文档；交付时只说明最终选择。
+
+如果固定主题都不能忠实服务业务对象，就定义一个短的自定义
+`theme_contract`，但必须包含 source grammar、visual protagonist、
+composition archetype 和 failure tests。不要退回泛泛的"现代简洁"。
 
 **第三步：确定后沉默执行**
 用一句话注明你选择的方向，然后进入 `project-bootstrap` 或 `project-iteration`
@@ -91,319 +134,177 @@ design decisions belong in project docs through `project-docs`.
 - **Tier 3：品牌关键 / 强视觉体验**。品牌页、商业展示、编辑式页面、3D/canvas、游戏、可视化大屏、电商首屏。必须有强视觉主角，并基于截图迭代。
 
 Tier 2/3 不允许只满足组件 checklist 就交付；必须实际渲染、检查并修一轮明显视觉问题。
+Tier 2/3 默认按极限质量模式执行，除非用户明确要求快速草稿、低保真、只做局部修复，
+或现有设计系统/范围边界明确不允许重构视觉方向。
 
-### 1.4 Tier 2/3 设计闭环
+### 1.4 UI Contract
+
+前端质量不是理想数据下的一张截图，而是界面在真实运行条件下仍能完成核心工作流的契约。
+
+For UI Contract schema, operating conditions, and `frontend_evidence_packet`
+requirements, load `software-contract` and read
+`~/.codex/skills/software-contract/references/frontend-quality-contract.md`.
+
+For stable visual design, component, accessibility, responsive, and rendered QA
+standards, load `software-contract` and read
+`~/.codex/skills/software-contract/references/frontend-design-contract.md`.
+Use that resource as the authoritative static design contract; keep this skill
+focused on design selection, implementation, verification, and evidence.
+For Tier 2/3 work, maintain a compact `design_contract_evidence` in the handoff
+or final response rather than restating the full design checklist.
+If the reference cannot be read for a UI task, stop and report the missing
+resource; do not replace it with a generic UI checklist.
+
+Baseline retained here: every UI task must preserve visual quality and
+product-state robustness. Tier 1+ tasks need an explicit internal `ui_contract`,
+and final handoff must summarize the evidence boundary.
+
+For high-aesthetic control, load `software-contract` and read
+`~/.codex/skills/software-contract/references/frontend-taste-contract.md` when
+the task is Tier 2/3 and involves a landing page, portfolio, brand page,
+redesign, product page, prototype, source-inspired UI, "高级/好看/顶级/作品级",
+or prior output that looks generic. Use it to build `taste_control`: design
+read, variance/motion/density dials, anti-default risks, preservation mode, and
+taste preflight. It does not override UI Contract, theme, prototype, or motion
+contracts; it chooses and audits the visual direction they must serve.
+
+### 1.4.1 Theme Contract
+
+When the user names a concrete aesthetic direction such as "苹果风", "Linear 风",
+"Stripe 风", "Notion 风", "Material", "Fluent", "奢华", "高级杂志", "AI 风",
+"主题设计模式", "源站级审美", or when a Tier 2/3 task needs stronger art
+direction and no existing project style already decides it, load
+`software-contract` and read
+`~/.codex/skills/software-contract/references/frontend-theme-contract.md`.
+
+Use the reference to expand vague style words into a `theme_contract`: art
+direction, visual protagonist, typography, color, layout, component behavior,
+state pressure, and failure modes. Do not paste the whole theme library into the
+final answer. The theme contract guides design choices; the UI Contract still
+owns robustness and verification.
+
+When a fixed/source-inspired theme is used, final handoff must include a compact
+`theme_contract` summary and source-comparison evidence boundary: source checked,
+pages/viewports inspected, and any source-quality gap or skipped comparison.
+
+### 1.4.2 Prototype Reference Contract
+
+When the Context Packet or original request asks for "原型参考", "优秀设计参考",
+"不要只靠 prompt", "源站级审美", or when Tier 2/3 / 极限质量 work would otherwise
+rely only on theme words, load `software-contract` and read
+`~/.codex/skills/software-contract/references/frontend-prototype-reference-contract.md`.
+
+Use it to build an internal `prototype_reference_packet`: page role, selected
+source/prototype, extracted skeleton, visual protagonist, density model,
+component grammar, business translation, and do-not-copy boundary. Implement
+from this packet, not from aesthetic adjectives. The prototype may be a real
+source screenshot, a local high-quality prototype, or a quick scratch prototype
+created only to test composition.
+
+When this contract is used, final handoff must summarize the reference boundary:
+what reference/prototype was inspected, what skeleton was extracted, which pages
+were compared, and what was not compared.
+
+For Tier 2/3 design work, do not wait for the user to provide references. Unless
+the user explicitly forbids browsing or external references, automatically find
+or use high-quality prototype/source websites for the selected candidate themes:
+official product pages, design-system pages, well-known product UI references,
+or local captured source screenshots. Inspect the reference before extracting
+the skeleton. If network/source access is blocked, report the blocker and use
+local captured references or a scratch prototype only as an explicit fallback.
+
+Product Design plugin rule to internalize: for Tier 2/3 and extreme-quality
+work, do not build from a written brief alone. Establish a visual target first:
+a selected source/prototype reference, generated mock, screenshot, Figma frame,
+or internally chosen best direction from 2-3 candidates. The user does not need
+to choose unless the options represent materially different product directions,
+brand commitments, or business tradeoffs.
+
+### 1.4.3 Motion Contract
+
+When a UI implementation includes any motion effect, or when the user asks for
+"GSAP", "gasp", 动效, 高级动效, 特效, 滚动叙事, scroll animation, pin, scrub,
+parallax, SVG/text animation, or Flip/layout transition, load `software-contract`
+and read
+`~/.codex/skills/software-contract/references/frontend-motion-contract.md`.
+
+Use it to build a concise `motion_contract` before implementation. Current
+default is GSAP-required for motion: ordinary hover, focus, active, menu,
+accordion, reveal, and small state-transition animations should still be
+implemented through GSAP when they animate. CSS remains valid for static styling,
+focus visibility, and reduced-motion static states. If GSAP cannot be used,
+report the blocker instead of silently downgrading to CSS/WAAPI/Framer Motion.
+
+### 1.4.4 Taste Contract
+
+For Tier 2/3 high-aesthetic work, establish `taste_control` before implementing:
+
+- one-line design read: surface type, audience, goal, design language, and quiet constraints;
+- explicit `design_variance`, `motion_intensity`, and `visual_density` values;
+- anti-default risks likely for this brief and how the design avoids them;
+- redesign preservation mode when modifying an existing UI;
+- taste preflight result before completion.
+
+Final handoff should include compact `taste_contract_evidence` rather than a
+long taste checklist.
+
+### 1.5 Tier 2/3 设计闭环
 
 Tier 2/3 任务按以下顺序执行：
 
-1. **Art direction**：用一句话确定美学方向，包含受众、气质、视觉关键词。
-2. **参考提炼**：从用户输入、项目领域、真实产品形态或高质量常识中提炼 2-3 个参考特征；借鉴原则，不复制具体作品。用户指定真实品牌/网站/产品时，先查看真实来源。
-3. **视觉主角**：首屏必须有一个明确主角，例如真实/生成图片、产品截图、数据图、3D/canvas、地图、编辑式大标题、强排版构图或领域物件。不要只用卡片堆出首屏。
-4. **内容真实度**：使用可信的领域文案、状态、数据、对象名和操作，不用 lorem ipsum、泛泛营销词或假功能占位。
-5. **实现与验证**：写完后启动页面或打开 HTML，检查桌面和移动端，再修一轮层级、间距、颜色、字体、视觉主角和响应式问题。
+1. **Taste control**：高审美、重设计、落地页、作品集、品牌页、产品页或
+   原型任务先按 `frontend-taste-contract.md` 建立 `taste_control`。
+2. **Art direction**：用一句话确定美学方向；使用主题模式时先建立
+   `theme_contract`，再写这句话。
+3. **参考提炼**：从用户输入、项目领域、真实产品形态或高质量常识中提炼 2-3
+   个参考特征；借鉴原则，不复制具体作品。用户指定真实品牌/网站/产品，或使用
+   source-inspired fixed theme / prompt optimization 时，先查看真实来源或已有源站截图。
+4. **原型骨架**：Tier 2/3、源站级审美、极限质量或已有输出难看时，按
+   `frontend-prototype-reference-contract.md` 自动寻找并选择页面角色匹配的优秀
+   原型网站、源站截图或本地高质量参考，提取结构、比例、密度、视觉主角和组件语法。
+5. **视觉主角**：首屏必须有一个明确主角，例如真实/生成图片、产品截图、数据图、3D/canvas、地图、编辑式大标题、强排版构图或领域物件。不要只用卡片堆出首屏。
+6. **内容真实度**：使用可信的领域文案、状态、数据、对象名和操作，不用 lorem ipsum、泛泛营销词或假功能占位。
+7. **契约验证**：按 `ui_contract` 选择代表性 operating conditions，尤其检查长列表、长文本、loading/empty/error、权限/禁用态、移动端、主题/语言压力和同类页面风险。
+8. **实现与验证**：写完后启动页面或打开 HTML，检查桌面和移动端，再修一轮层级、间距、颜色、字体、视觉主角、响应式和状态覆盖问题；高审美任务还要跑 taste preflight。
 
-### 1.5 极限质量模式
+### 1.6 极限质量模式
 
-出现以下任一情况时进入极限质量模式：用户要求"特别美"、"高级"、"顶级"、"作品级"、"极限质量"，或任务属于 Tier 3。
+出现以下任一情况时进入极限质量模式：Context Packet 或用户原始需求要求"特别美"、"高级"、"顶级"、"作品级"、"极限质量"，任务属于 Tier 3，或任务属于 Tier 2 且是新页面、完整页面、重设计、落地页、仪表盘、产品页、原型、主题设计模式、源站级审美、或 Context Packet 没有明确限定为快速草稿。
 
 极限质量模式额外要求：
 
-1. **内部比较 2-3 个方向**：先快速比较不同 art direction 的主视觉、布局张力、字体气质和内容密度，选择最强方案再实现。
-2. **更强资产策略**：至少使用一种强视觉资产或技术：真实/生成位图、产品截图、数据可视化、3D/canvas、视频/动效场景、编辑式摄影构图、强品牌图形系统。没有视觉资产时，用排版、网格、形状、数据和动效构成明确视觉主角。
-3. **两轮视觉 QA**：第一轮修结构性问题，第二轮修精细问题。环境无法渲染时，说明阻塞，不用静态推测替代。
-4. **截图评估门槛**：基于实际渲染结果评估：构图、层级、字体、色彩、内容真实度、响应式六项均不低于 4/5；Tier 3 平均分不低于 4.5/5。
+1. **内部比较 2-3 个方向**：先快速比较不同 art direction 的主视觉、布局张力、字体气质和内容密度，选择最强方案再实现。默认由 Codex 选择最优方向；只有方向之间代表不同产品策略、品牌承诺或用户必须拥有的取舍时才停下来问。
+2. **原型参考策略**：每个关键页面角色至少自动选择一个优秀参考原型网站、
+   官方源站页面或源站截图，先提取可执行骨架，再写代码。不要把参考停留在品牌名或形容词。
+3. **视觉目标门槛**：实现前必须有明确 visual target：源站/原型参考、生成 mock、
+   截图/Figma、或内部候选比较后的最佳方向。不要从文字 brief 直接进入代码。
+4. **更强资产策略**：至少使用一种强视觉资产或技术：真实/生成位图、产品截图、数据可视化、3D/canvas、视频/动效场景、编辑式摄影构图、强品牌图形系统。没有视觉资产时，用排版、网格、形状、数据和动效构成明确视觉主角。
+5. **两轮视觉 QA**：第一轮修结构性问题，第二轮修精细问题。环境无法渲染时，说明阻塞，不用静态推测替代。
+6. **同屏对比 QA**：当存在源视觉、原型、截图、Figma 或生成 mock 时，把源视觉和实现截图放到同一比较上下文里判断，不用分别看两张图来替代比较。
+7. **截图评估门槛**：基于实际渲染结果评估：构图、层级、字体、色彩、内容真实度、响应式六项均不低于 4/5；Tier 3 平均分不低于 4.5/5。
 
 ---
 
-## 2. 反模板化通用审美（核心规则）
-
-> 这是本 skill 最重要的章节。模型生成的 UI 容易出现可识别的模板味——
-> 来自 LLM 趋向分布中心的倾向。以下规则强制打破这种趋向。
-
-### 2.1 字体 — 禁止平庸
-
-**禁用：** Arial, Helvetica, Inter, Roboto, Open Sans, system-ui 默认栈
-（除非用户明确要求或项目已有字体规范）
-
-**要求：**
-- 标题用有性格的字体：衬线体（Playfair Display, Fraunces, Lora）、
-  几何无衬线（Space Grotesk, Plus Jakarta Sans, Outfit, Sora）、
-  或特殊风格体（Bricolage Grotesque, Instrument Serif, Cabinet Grotesk）
-- 正文用高可读性字体：Source Sans 3, DM Sans, Nunito, Work Sans
-- 中文场景：思源宋体（标题）+ 思源黑体/HarmonyOS Sans（正文），
-  或霞鹜文楷（标题）+ 思源黑体（正文），避免仅用系统默认
-- 标题和正文优先通过字体、字重、字号或行高形成对比；已有设计系统按现有规范
-- 根据项目气质选择字体组合，避免跨项目机械复用同一组合
-
-### 2.2 配色 — 禁止安全
-
-**禁用：** 紫色渐变配白色背景、蓝紫渐变按钮、灰蓝中性色板（除非项目明确要求）
-
-**要求：**
-- 有一个**主导色**占据视觉权重，不要把 5 种颜色平均分配
-- 强调色必须和主色形成**鲜明对比**（互补或分裂互补）
-- 使用 CSS 变量管理色板，变量命名语义化（`--color-surface`, `--color-accent`）
-- 暗色模式不是简单反转——需要独立调整层级、对比度、饱和度
-- 根据项目气质主动选择亮色或暗色，不机械复用同一种模式
-
-### 2.3 布局 — 禁止预测
-
-**禁用：** 千篇一律的英雄区+三栏特性卡片+CTA 模板
-
-**要求：**
-- Tier 2/3 或需要辨识度的界面，优先考虑不对称布局、交错网格、重叠元素或破格构图；后台和高频工具优先保持扫描效率
-- 留白要有意图：要么大量留白制造呼吸感，要么高密度服务信息扫描
-- 视觉动线按内容选择：阅读型可用 F 字，叙事型可用 Z 字，强视觉页面可用对角动线
-- 关键内容的尺寸对比要大胆，但不能牺牲可读性、数据密度或操作效率
-
-### 2.4 统一性
-
-以上三条必须服务于同一个美学方向。不要字体是极简风但配色是赛博朋克。
-**每个设计决策都必须能用一句话关联到选定的美学方向。**
-
-### 2.5 视觉失败标准
-
-Tier 2/3 任务出现以下任一情况，视为未完成，必须继续修改：
-
-- 首屏没有清晰视觉主角或辨识点。
-- 页面像通用模板：hero + 三栏卡片 + CTA，且没有领域特征。
-- 大面积依赖灰蓝、蓝紫、紫色渐变或安全中性色，却没有明确领域理由。
-- 页面 section 被做成一张张漂浮卡片，或卡片套卡片。
-- 卡片圆角超过 8px，除非项目既有设计系统明确如此。
-- 文案像占位符，缺少真实用户、真实数据、真实场景或真实操作。
-- 字体、颜色、图标、图片、动效不服务于同一个 art direction。
-- 移动端出现横向滚动、文字截断、元素重叠、触摸目标过小或视觉拥挤。
-- 缺少真实内容密度：后台没有可扫描数据，产品页没有产品细节，工具页没有实际工作流。
-
----
-
-## 3. 设计系统规范
-
-新建页面、独立体验或项目没有既有设计系统时，必须生成以下设计 tokens（用 CSS 变量或等效方式）。已有设计系统时，延续现有 tokens，只补本次改动缺失的最小变量。
-
-### 3.1 色板系统
-
-```
-必须定义：
---color-bg:         主背景
---color-surface:    卡片/面板背景
---color-text:       主文字
---color-text-secondary: 次要文字
---color-accent:     强调色（CTA、链接、活跃状态）
---color-accent-hover: 强调色悬停态
---color-border:     边框/分割线
---color-success/warning/error: 语义色（需要时）
-```
-
-### 3.2 字体系统
-
-```
-必须定义：
---font-display:     标题/展示字体（按项目选择 Google Fonts、本地字体或已有字体源）
---font-body:        正文字体
---font-mono:        代码字体（如需要）
-
-字号阶梯（基于 modular scale，推荐 1.25 或 1.333 比率）：
---text-xs / --text-sm / --text-base / --text-lg / --text-xl / --text-2xl / --text-3xl / --text-4xl
-```
-
-### 3.3 间距系统
-
-```
-基于 4px 或 8px 基线网格：
---space-1: 4px    --space-2: 8px    --space-3: 12px   --space-4: 16px
---space-5: 20px   --space-6: 24px   --space-8: 32px   --space-10: 40px
---space-12: 48px  --space-16: 64px  --space-20: 80px  --space-24: 96px
-```
-
-### 3.4 形状与深度
-
-```
---radius-sm / --radius-md / --radius-lg / --radius-full
---shadow-sm / --shadow-md / --shadow-lg
-（圆角和阴影的大小必须匹配美学方向；卡片默认不超过 8px 圆角，除非项目既有设计系统明确如此）
-```
-
----
-
-## 4. 组件质量标准
-
-### 4.1 按钮
-
-- 最小点击区域 44x44px（移动端 48x48dp）
-- 必须有 hover / active / focus / disabled 四种状态
-- 主操作按钮和次要按钮在视觉上有明显层级差
-- 加载状态用 spinner 或骨架，不要让按钮消失
-
-### 4.2 输入框
-
-- 必须有可见的 label（不能只用 placeholder 代替 label）
-- 必须有 focus 态视觉变化（不能只靠浏览器默认 outline）
-- 错误状态：红色边框 + 错误文字在输入框下方
-- helper text 在错误出现时被错误信息替换，不要同时显示
-
-### 4.3 卡片
-
-- 卡片之间间距一致（使用 gap，不用 margin hack）
-- 如果可点击，必须有 hover 态视觉反馈
-- 内容过长时有截断策略（line-clamp / ellipsis），不要让卡片高度失控
-
-### 4.4 导航
-
-- 当前页面/active 状态有清晰的视觉标识
-- 移动端导航按信息架构选择 bottom nav、hamburger、tabs 或收起侧栏；不要机械套一种模式
-- 导航层级不超过 2 层（除非是复杂后台系统）
-
-### 4.5 弹窗/模态
-
-- 有遮罩层（40-60% 黑色半透明）
-- 有明确的关闭方式（X 按钮、Esc 键；非破坏性弹窗可支持点击遮罩关闭）
-- 内容超出时内部滚动，弹窗本身不滚动
-
----
-
-## 5. 动效规范
-
-### 5.1 时长
-
-| 类型 | 时长 | 缓动 |
-|------|------|------|
-| 微交互（hover/按压反馈） | 80-150ms | ease-out |
-| 状态切换（展开/收起/切换） | 150-300ms | ease-in-out |
-| 入场动画（页面/区块） | 300-500ms | ease-out / cubic-bezier |
-| 退场动画 | 退场 < 入场时长 | ease-in |
-
-### 5.2 原则
-
-- **优先 CSS：** 能用 CSS transition/animation 的不用 JS 动画库
-- **编排 > 散装：** 一组元素的交错入场（stagger）比每个元素独立动画更有高级感
-- **有意义：** 动画必须传递信息（方向、层级、因果关系），不要为了动而动
-- **尊重偏好：** 必须包含 `@media (prefers-reduced-motion: reduce)` 等效动效策略
-
-### 5.3 高影响动效模式
-
-- 页面加载：英雄区先现，内容区域按顺序 stagger 入场（animation-delay 递增 50-100ms）
-- 滚动触发：元素进入视口时 fadeInUp（IntersectionObserver，不用 scroll 事件）
-- 悬停：scale(1.02) + 微妙的阴影/亮度变化，而非粗暴的颜色切换
-
----
-
-## 6. 无障碍硬规则（不可跳过）
-
-| 规则 | 标准 | 检查方式 |
-|------|------|---------|
-| 颜色对比度 | 正文 ≥ 4.5:1，大字 ≥ 3:1 (WCAG AA) | 工具检查或目测确保 |
-| 键盘导航 | 所有交互元素可 Tab 到达，Enter/Space 激活 | focus 样式可见 |
-| ARIA 标签 | 图标按钮必须有 aria-label | 无文字的交互元素 |
-| 图片替代文本 | 所有有意义的 `<img>` 有 alt | 装饰性图片用 alt="" |
-| 语义 HTML | 使用 header/main/nav/section/article | 不要全用 div |
-| 表单标签 | 每个 input 关联一个 `<label>` | 不能只用 placeholder |
-| 标题层级 | h1 → h2 → h3 不跳级 | 页面结构逻辑 |
-| Focus 样式 | 不要 `outline: none` 除非有替代的 focus 样式 | 键盘测试 |
-| 颜色不是唯一 | 不能只靠颜色传递信息（如错误状态） | 加图标或文字 |
-| 减少动效 | `prefers-reduced-motion` 媒体查询 | 关闭非必要动画 |
-
----
-
-## 7. 响应式硬规则（不可跳过）
-
-### 7.1 断点
-
-```css
-/* 移动优先 */
-/* 默认样式 = 手机 (<640px) */
-@media (min-width: 640px)  { /* 平板竖屏 */ }
-@media (min-width: 768px)  { /* 平板横屏 */ }
-@media (min-width: 1024px) { /* 桌面 */ }
-@media (min-width: 1280px) { /* 大桌面 */ }
-```
-
-### 7.2 规则
-
-- **移动优先：** 默认样式为手机，用 min-width 向上扩展
-- **禁止水平滚动：** 任何断点都不应出现水平滚动条
-- **正文字号 ≥ 16px：** 防止 iOS 自动缩放
-- **行宽控制：** 正文每行 45-80 字符（中文 25-40 字），用 max-width 控制
-- **内容优先级：** 手机上隐藏次要内容，不要只是把桌面版缩小
-- **触摸目标间距：** 可点击元素之间至少 8px 间距
-
----
-
-## 8. 截图 QA 闭环
-
-Tier 2/3 任务必须执行视觉 QA：
-
-1. 启动本地 dev server，或打开可直接运行的 HTML 文件。
-2. 使用 Codex in-app Browser、Playwright 或可用浏览器工具检查页面。
-3. 至少检查两个视口：桌面宽度和 375px 左右移动端宽度。
-4. 捕获截图或基于实际渲染画面做视觉检查。
-5. 对发现的问题至少修一轮，重点看：
-   - 首屏视觉主角是否足够明确
-   - 信息层级是否清楚
-   - 字体大小、字重、行高是否匹配容器
-   - 色彩是否单调或过度安全
-   - 间距是否松散、拥挤或不成体系
-   - 图片/图标/图表是否加载并对齐
-   - 移动端是否有横向滚动、遮挡、截断或错位
-6. 未实际渲染检查前，不要声称“完成”。如果渲染被环境阻塞，明确说明阻塞点和已经完成的静态检查。
-
-Tier 0/1 可按风险轻量检查；只要影响完整页面观感或响应式，就升级执行本闭环。
-
-### 8.1 视觉评分表
-
-截图后按以下维度判断，不达标就继续改：
-
-| 维度 | 通过标准 |
-|------|----------|
-| 构图 | 首屏有明确视觉重心，布局不是平均分布或模板堆叠 |
-| 层级 | 用户 3 秒内能识别主操作、主要内容和次要信息 |
-| 字体 | 字体组合有气质且可读，字号/字重/行高匹配内容层级 |
-| 色彩 | 主色、强调色、背景和状态色形成清晰关系，不是安全色糊在一起 |
-| 内容真实度 | 文案、数据、状态和对象符合产品领域，不像占位内容 |
-| 响应式 | 375px 移动端无横向滚动、遮挡、截断、错位或触摸目标过小 |
-
-Tier 2：每项至少 4/5。Tier 3 或极限质量模式：平均至少 4.5/5，且没有单项低于 4/5。
-
----
-
-## 9. 交付前自检清单
-
-实现完成后，对照以下清单检查。不通过则修复后再交付。
-
-### 视觉
-- [ ] Tier 2/3 已有明确 art direction 和首屏视觉主角
-- [ ] Tier 2/3 已通过实际渲染检查桌面和移动端
-- [ ] Tier 3 / 极限质量模式已完成两轮视觉 QA，或明确说明环境阻塞
-- [ ] Tier 2/3 视觉评分达到对应门槛
-- [ ] 没有使用 emoji 作为图标（用 SVG 或图标库）
-- [ ] 图标风格统一（不要 outline 和 filled 混用）
-- [ ] 色板通过 CSS 变量管理，切换主题只需改变量
-- [ ] 字体已通过 Google Fonts、本地文件或项目已有字体源引入，并设置替代字体栈
-- [ ] 间距基于统一的基线网格（4px 或 8px 倍数）
-
-### 交互
-- [ ] 启用状态的可点击元素有 cursor: pointer
-- [ ] 按钮/链接有 hover 和 active 状态
-- [ ] 表单输入有 focus 态视觉变化
-- [ ] 加载状态有视觉反馈（spinner/skeleton/禁用按钮）
-- [ ] 动画时长在 80-500ms 范围内
-
-### 无障碍
-- [ ] 正文和背景对比度 ≥ 4.5:1
-- [ ] 所有 img 有 alt 属性
-- [ ] 表单 input 有关联的 label
-- [ ] 可用 Tab 键遍历所有交互元素
-- [ ] 有 prefers-reduced-motion 媒体查询
-
-### 响应式
-- [ ] 手机上（375px 宽）布局正常，无水平滚动
-- [ ] 平板上（768px 宽）布局合理
-- [ ] 正文字号 ≥ 16px
-- [ ] 触摸目标 ≥ 44x44px
-
----
-
-## 10. 执行原则
+## 2. Design Contract Resource
+
+Static frontend design standards live in
+`~/.codex/skills/software-contract/references/frontend-design-contract.md`.
+Use that reference for anti-template aesthetics, design tokens, component
+baselines, accessibility, responsive behavior, and rendered visual QA.
+High-aesthetic taste controls live in
+`~/.codex/skills/software-contract/references/frontend-taste-contract.md`.
+Use that reference for design read, dials, anti-default audit, redesign
+preservation, and taste preflight.
+
+This skill owns:
+- choosing the applicable design mode and references,
+- implementing the UI through `project-bootstrap` or `project-iteration`,
+- verifying the rendered result,
+- reporting compact `design_contract_evidence`, `frontend_evidence_packet`,
+  `taste_contract_evidence`, `theme_evidence`, `prototype_reference_packet`,
+  and `motion_contract` evidence instead of restating static checklists.
+
+## 3. 执行原则
 
 1. **界面即交付物：** 产出的是可运行的界面改动，不是设计文档。
 2. **复杂度匹配：** 极简设计需要克制和精确；极繁设计需要细节和层次。不要用极简的代码做极繁的设计。
@@ -416,7 +317,13 @@ Tier 2：每项至少 4/5。Tier 3 或极限质量模式：平均至少 4.5/5，
 
 Report:
 - design direction,
+- `design_contract_evidence`, when Tier 2/3 or visual QA standards were active,
+- `taste_contract_evidence`, when high-aesthetic taste control was active,
+- `theme_contract` summary and source-comparison evidence when theme mode was used,
+- `prototype_reference_packet` summary and prototype-comparison evidence when used,
 - changed UI artifacts,
+- `frontend_evidence_packet` summary,
+- `domain_resource_evidence`, when `software-contract` was loaded,
 - browser/visual verification and viewports checked,
 - accessibility/responsive result,
 - remaining visual risk, if any.

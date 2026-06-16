@@ -1,0 +1,6 @@
+interface:
+  display_name: "CO-STAR"
+  short_description: "Quickly structure fuzzy writing tasks."
+  default_prompt: >
+    Use $co-star to clarify a fuzzy writing or prompt-shaping request into a
+    concise task brief.

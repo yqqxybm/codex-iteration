@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Refine"
+  short_description: "Downstream project artifact refinement stage."
+  default_prompt: >
+    Use $project-refine when project-lifecycle assigns refinement of project
+    docs, prompts, UI copy, architecture notes, or runbooks.

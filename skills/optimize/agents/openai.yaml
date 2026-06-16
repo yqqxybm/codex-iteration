@@ -1,0 +1,6 @@
+interface:
+  display_name: "Optimize"
+  short_description: "Improve artifacts with bounded optimization."
+  default_prompt: >
+    Use $optimize to improve this artifact under clear objectives, constraints,
+    and stop conditions.

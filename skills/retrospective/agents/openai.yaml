@@ -1,0 +1,6 @@
+interface:
+  display_name: "Retrospective"
+  short_description: "Review lessons from non-project work."
+  default_prompt: >
+    Use $retrospective to extract lessons and future behavior changes from this
+    non-software workflow or decision.

@@ -1,13 +1,15 @@
 ---
 name: project-iteration
 description: >
-  Existing-project code iteration skill. Use when the user asks to modify code,
-  tests, APIs, UI behavior, build config, automation, implementation checklist
-  items, or "代码修改点". Owns implementation, directly affected docs, focused
-  closeout review, verification, and focused commit when the task diff is
-  cleanly isolated. Explicit deep/exhaustive review requests after edits must
-  use the review skill contract. Do not use for new projects, pure analysis, or
-  review-only tasks.
+  Downstream existing-project implementation stage selected by
+  project-lifecycle after the lifecycle controller has classified the request
+  and run or explicitly skipped project-analysis. Use for assigned code changes,
+  bug fixes, regressions, tests, APIs, UI behavior, build config, automation,
+  implementation checklist items, or "代码修改点" inside an existing project.
+  Owns implementation, directly affected docs, focused closeout review,
+  verification, and focused commit. Explicit deep/exhaustive review requests
+  after edits must use the review skill contract. Do not use as the project
+  entry point, for new projects, pure analysis, or review-only tasks.
 ---
 
 # Project Iteration
@@ -19,6 +21,10 @@ verification, and version management.
 ## Lifecycle Position
 
 This skill serves the `iteration` phase of the software project lifecycle.
+It is not the project entry point. `project-lifecycle` is the single entry point
+for software-project requests and invokes this skill only after selecting an
+existing-project implementation boundary.
+
 It follows the project philosophy from `project-lifecycle`:
 
 - preserve the user's requested behavior,
@@ -35,14 +41,44 @@ or production deployment.
 
 When invoked by `project-lifecycle`, consume its Context Packet before editing.
 Preserve `intent`, `constraints`, `decisions_so_far`, `owned_scope`,
-`verification_required`, and `do_not_do`.
+`project_goal`, `goal_runtime`, `goal_synthesis` / `control_system_goal`,
+`goal_preflight` / `optimality_law`, `perspective_model`,
+`plan_state_sink`, `cyclic_goal_loop`, `subagent_dispatch_policy`, `agent_owner`,
+`write_policy`, `verification_required`, `verification_scope`,
+`standard_compliance_ledger`, `protocol_evidence`, and `do_not_do`.
 
 Return a Handoff Record with changed files, behavioral decisions, docs updates,
-verification output, review result, commit result, open risks, and the next
-recommended skill. For plan-driven work, include completed item ids, blocked
-item ids, added in-scope items, and out-of-scope items returned to
-`project-lifecycle`. Write a `.codex/traces/` file only for long or resumable
-chains; promote durable facts to formal docs through `project-docs`.
+verification output, review result, `standard_compliance_delta`,
+`domain_resource_evidence` when `software-contract` was loaded, commit result,
+open risks, and the next recommended skill. For plan-driven work, include
+completed item ids, blocked item ids, added in-scope items, and out-of-scope items returned to
+`project-lifecycle`, plus `plan_state_sink_delta` when the lifecycle agenda is
+active. Write a `.codex/traces/` file only for long or resumable chains; promote
+durable facts to formal docs through `project-docs`.
+
+When invoked from a lifecycle agenda, this skill owns only the assigned agenda
+item. If the user adds or changes a requirement that alters the version goal,
+root direction, deliverable set, docs profile, release boundary, or acceptance
+criteria, return a `change_request` to `project-lifecycle`; do not silently
+absorb it into the local iteration and do not drop it.
+
+When invoked inside a `cyclic_goal_loop`, return a machine-usable delta:
+
+```yaml
+cyclic_goal_delta:
+  material_in_scope_new_work: <agenda items or none>
+  clean_pass_reset_required: <true | false, with reason>
+  verification_state: <passed | failed | blocked>
+  commit_state: <committed | not_applicable | blocked>
+  push_state: <not_requested | pushed | blocked | not_applicable>
+  deploy_health: <not_applicable | pass | fail | blocked>
+  known_residual_issues: <none | list | unknown>
+```
+
+Any new required work inside the parent goal boundary must be returned as
+`material_in_scope_new_work`; do not hide it as residual risk. If this
+iteration changes code, docs, config, release evidence, or acceptance evidence
+after a parent clean review pass, set `clean_pass_reset_required: true`.
 
 If the user asks for "deep review", "深度 review", "深度审查", "全面 review",
 "全面审查", "exhaustive review", "review the whole product", or equivalent
@@ -53,11 +89,15 @@ closeout gates as deep review.
 
 ## Trigger Boundary
 
-Use this skill for requests that require editing code, tests, build config, API behavior, UI behavior, infrastructure-as-code, or project automation in an existing project.
+Use this skill only when `project-lifecycle` assigns an existing-project
+implementation item that requires editing code, fixing bugs, resolving
+regressions, updating tests, changing build config, API behavior, UI behavior,
+infrastructure-as-code, or project automation.
 
 Do not use it when the user only asks to analyze, explain, compare, brainstorm,
 or review without changes. Do not use it for blank-slate project creation. If
-an analysis task later becomes "改 / 实现 / 修复 / 提交", activate this skill then.
+an analysis task later becomes "改 / 实现 / 修复 / 提交", return to
+`project-lifecycle` so it can select this skill with a Context Packet.
 
 ## Operating Rules
 
@@ -77,8 +117,43 @@ an analysis task later becomes "改 / 实现 / 修复 / 提交", activate this s
   default. Explicit deep/exhaustive review language must be honored through the
   `review` skill; explicit diff-only language must stay focused and must not be
   called deep review.
+- When invoked inside project concierge mode, preserve the assigned
+  `agent_owner` and `write_policy`. If this worker is a subagent, do not edit the parent goal,
+  do not spawn subagents, and do not commit, push, deploy, sync remote state, or
+  broaden scope or claim project completion. Return a subagent receipt to
+  `project-lifecycle`.
 
 ## Required Workflow
+
+### 0. Project Analysis Gate
+
+Before editing, run or consume full `project-analysis` by default. Treat every
+requested change as a possible local expression of a broader project issue until
+the analysis proves the implementation boundary.
+
+Only skip full `project-analysis` when the user explicitly says to keep the work
+local, diff-only, no broader analysis, no systemic analysis, or equivalent. Do
+not infer this skip from the change looking small. If skipped, record the user's
+explicit boundary:
+
+```yaml
+analysis_gate:
+  user_visible_symptom: <requested behavior, bug, or change>
+  mode: <project-analysis | explicitly_skipped_by_user>
+  user_boundary: <exact user wording when skipped, or none>
+  systemic_hypothesis: <shared component, workflow, data, API, state, config, or standard risk>
+  analysis_decision: <implementation boundary from project-analysis, or local-only by explicit user boundary>
+  reason: <why this preserves intent and avoids over/under-fixing>
+```
+
+Consume the upstream `project-analysis` decision if present. If missing and the
+user did not explicitly skip overall analysis, return a required
+`project-analysis` agenda item to `project-lifecycle` before implementation
+instead of silently proceeding locally.
+
+Proceed locally only after `project-analysis` defines the implementation
+boundary, or after the user explicitly narrows the task. Still carry the gate
+decision into the final review surfaces.
 
 ### 1. Preflight
 
@@ -117,9 +192,11 @@ Loop through items until this iteration scope is complete:
    exact reason.
 4. If the item exposes new required work inside the user's requested scope, add
    it to `iteration_items`.
-5. Preserve the upstream `source_plan_item` when splitting work, and report the
+5. If the item exposes version-level or root-state work, return it to
+   `project-lifecycle` as a `change_request` instead of adding it locally.
+6. Preserve the upstream `source_plan_item` when splitting work, and report the
    source item status back to `project-lifecycle`.
-6. Continue to the next `pending` item without finalizing the task.
+7. Continue to the next `pending` item without finalizing the task.
 
 Do not stop after the first passing test, commit, or subtask when other
 in-scope items remain. Stop only for a real blocker, unsafe operation, failed
@@ -141,7 +218,22 @@ no owned items remain.
    test or reproduction before the fix, passing targeted verification after the
    fix. If red/green is not practical, state the concrete blocker and use the
    strongest direct verification available.
-5. For frontend work, also use the project-frontend skill when applicable and verify in browser when the app can run.
+5. For frontend work, also use the `project-frontend` skill when applicable.
+   Preserve or derive its `ui_contract`, implement both visual quality and
+   product-state robustness, and verify in browser when the app can run.
+
+### 2.5 Standard Coding Gate
+
+When `standard_compliance_ledger` is present, or when the change touches a
+standard-sensitive area, load `software-contract` and read
+`~/.codex/skills/software-contract/references/coding-quality-contract.md`.
+Evaluate the applicable coding requirements from that reference. If the
+reference cannot be read, stop and report the missing resource; do not replace it
+with a generic checklist.
+
+Only report applicable items. A small diff does not need a long checklist, but
+any applicable standard item must be satisfied, marked not applicable, or
+returned as missing/blocking work with evidence.
 
 ### 3. Documentation Sync
 
@@ -150,25 +242,73 @@ Update docs in the same task when the code change affects anything a future user
 - Public API, CLI, environment variable, config, setup, deployment, data model, permissions, routing, or user-visible workflow changed.
 - README, project `AGENTS.md`, `docs/`, runbooks, examples, or integration guides mention the old behavior.
 - Tests or commands changed in a way future agents need to run.
+- A Standard Development Contract ledger entry changes status or evidence.
 
 Do not churn docs for purely internal code movement with no observable behavior or workflow change. If a milestone handoff or full project-doc cleanup is requested, also use `project-docs`.
+
+When a code change appears to require creating new documentation, apply the
+`software-contract` document profile through `project-docs` or return the need
+to `project-lifecycle`. Local iteration may update directly affected existing
+docs, but it must not create a new documentation set from a standard checklist
+or template.
 
 ### 4. Verification
 
 Run the real verification command for the changed surface:
 
+- Classify `verification_scope` before running commands:
+  - `docs-only` / text-only: inspect the final doc diff, run `git diff --check`,
+    validate touched references/links/paths/commands when practical, run
+    configured markdown/docs lint or docs build only when relevant, and grep
+    durable docs for relative time. Do not run `make verify`, full app tests,
+    full builds, or browser checks merely because the project has them.
+  - code/API/shared behavior: run the smallest targeted test/lint/typecheck or
+    reproduction that proves the behavior, plus `git diff --check`.
+  - UI: run targeted app/browser/visual verification for the affected workflow
+    and relevant product states, plus `git diff --check`.
+  - config/build/release/security: run the specific config/build/release or
+    security proof required by the changed surface.
+- If an upstream Context Packet assigns broad verification such as `make verify`
+  to a docs-only item and the user did not explicitly request full project
+  verification, treat it as a scope mismatch. Record a
+  `verification_scope_adjustment` in the Handoff Record or return it to
+  `project-lifecycle`; do not silently run an overbroad command to make the
+  closeout look stronger.
 - Prefer the project's targeted test, lint, typecheck, build, or smoke command.
 - Do not skip requested verification for speed. If full verification is impossible locally, run the smallest command that directly proves the requested behavior and say exactly what was not run.
 - Run `git diff --check` in Git repos before version management.
 - Never claim fixed or complete from reasoning alone, stale output, or an
   unverified subtask report. Completion claims require fresh evidence from this
   turn or an explicitly named retained command output.
+- For UI changes, carry a `frontend_evidence_packet` before finalizing:
+
+```yaml
+frontend_evidence_packet:
+  core_workflow: <workflow verified>
+  verified_conditions: <operating conditions actually checked>
+  motion_contract: <none | summary and evidence when UI motion/GSAP is used>
+  not_verified:
+    - condition: <relevant but unchecked condition>
+      reason: <not applicable | impossible locally | out of scope>
+  browser_or_visual_evidence: <screenshots, viewports, commands, or none>
+  neighboring_surface_risk: <same-pattern pages/components at risk, or none>
+  residual_risk: <remaining risk or none>
+```
+
+Happy-path-only UI verification is insufficient for data-heavy or async surfaces.
+If a relevant operating condition from `project-frontend` is not verified, the
+final state is either blocked or carries an explicit residual risk; do not call it
+complete without the evidence boundary. If the user asks for strict or complete
+frontend verification, no relevant dimension may be skipped without evidence and
+reason.
 
 ### 5. Review Gates
 
 Before finalizing, classify the requested review type and run the matching
-gates. Keep local gates local by default; use subagents only when the user
-explicitly requested or authorized agent delegation for this work.
+gates. Keep local gates local by default; use subagents automatically only when
+`project-lifecycle` provides `subagent_dispatch_policy.runtime_permission` =
+`auto_parallel_safe` in a Context Packet. If the policy is blocked or unsafe, run
+the review gate in the main thread and return the concrete fallback reason.
 
 #### Review Type Classification
 
@@ -203,6 +343,7 @@ minimum_surfaces:
   - direct call chain and integration points
   - core user workflow affected by the change
   - related config, tests, docs, and runbooks
+  - frontend_evidence_packet, UI Contract, motion_contract, and sibling-surface risk when UI is involved
   - verification commands and gaps
 explicit_exclusions: <user-stated exclusions or none>
 ```
@@ -246,9 +387,14 @@ and residual risks.
 When inside a Git repo:
 
 1. Re-run `git status --short` and inspect `git diff --stat`.
-2. Stage only files changed for this task. Never use `git add .` or `git add -A`.
-3. If verification passed and the user did not explicitly forbid commits, create one focused commit automatically for the completed task.
-4. Use the `project-commit` skill when available; follow Angular commit format.
+2. If this iteration is running as a subagent, do not stage, commit, push, tag,
+   or mutate Git history. Return `commit_needed: true` with candidate files,
+   verification evidence, and message scope to `project-lifecycle`.
+3. If running in the main thread, stage only files changed for this task. Never
+   use `git add .` or `git add -A`.
+4. If verification passed and the user did not explicitly forbid commits, create
+   one focused commit automatically for the completed task.
+5. Use the `project-commit` skill when available; follow Angular commit format.
 5. If files touched by this task had pre-existing changes, inspect the final diff carefully. Commit only when every staged hunk is attributable to the current task; otherwise leave the worktree uncommitted and state the blocker.
 6. Do not commit if unrelated pre-existing changes overlap with this task, verification failed, secrets are present, generated artifacts are ambiguous, or hooks fail and cannot be fixed cleanly. In that case, leave files uncommitted and state the blocker.
 7. Never push unless the user explicitly asks.
@@ -262,11 +408,15 @@ Keep the final answer short and include:
 - What changed, including docs changes.
 - Completed plan item ids and any items returned to `project-lifecycle`, when
   invoked from a plan.
-- Verification commands and key results.
+- Verification scope, commands or evidence, and key results.
+- UI `frontend_evidence_packet` summary, when UI was changed.
+- Standard compliance delta, when a ledger was active.
+- `domain_resource_evidence`, when `software-contract` was loaded.
 - Review type: `focused`, `deep`, or `exhaustive`.
 - Inspected surfaces.
 - Not inspected surfaces.
 - Review result: focused local gates, or the `review` skill's deep/exhaustive
   result when explicitly requested.
+- `cyclic_goal_delta`, when invoked inside a lifecycle cyclic goal.
 - Residual risks.
 - Commit hash and message, or the precise reason no commit was created.

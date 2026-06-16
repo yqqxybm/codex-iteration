@@ -1,15 +1,21 @@
 ---
 name: review
 description: >
-  Independent evidence-first review/audit gate. Use when the user asks to review, audit, inspect, check quality, find risks,
-  run deep/exhaustive review, "深度审查", "全面审查", "穷尽审查", "逐词逐句", "审查一下", "挑问题", "有没有风险",
-  or "看有没有问题" for code, repos, diffs, documents, skills, configs, plans, prompts, workflows, release readiness, or handoff state. Review-only: do not edit, commit, deploy, sync, or rewrite.
+  Independent evidence-first review/audit gate. Use when the user asks to review,
+  audit, inspect, check quality, find risks, run deep/exhaustive review, standard
+  compliance review, "深度审查", "全面审查", "穷尽审查", "逐词逐句", "审查一下",
+  "挑问题", "有没有风险", or "看有没有问题" for code, repos, diffs, documents,
+  skills, configs, plans, prompts, workflows, release readiness, or handoff state.
+  Review-only: do not edit, commit, deploy, sync, or rewrite.
 ---
 
 # Review
 
-Review is an evidence-first judgment gate. It answers what is materially wrong, risky, missing, or unverified.
-It is independent and review-only: the target may be a project, document, skill, config, diff, release, or workflow, but the action remains judgment rather than implementation.
+Review is an evidence-first judgment gate. It answers what is materially wrong,
+risky, missing, or unverified.
+It is independent and review-only: the target may be a project, document, skill,
+config, diff, release, or workflow, but the action remains judgment rather than
+implementation.
 
 ## Philosophy
 
@@ -54,6 +60,9 @@ Resolve internally:
 - **Target**: exact artifact, diff, repo area, document, plan, or workflow.
 - **Standard**: correctness, safety, maintainability, readiness, compliance,
   handoff quality, or the user's stated standard.
+- **Optimality law**: when supplied by lifecycle, use its value ordering,
+  elegance constraint, non-goal boundary, and falsification test as the review
+  standard for "is this good enough".
 - **Evidence**: files, diffs, commands, logs, screenshots, docs, or user text.
 - **Depth**: focused, quick, standard, deep, or exhaustive.
 - **Stop line**: what is intentionally outside scope.
@@ -103,6 +112,25 @@ checks, rereading, or intuition as a pass unless the pass log above is present.
 Do not claim `2/2 clean passes` without two consecutive pass-log entries after
 the last finding/report change.
 
+When invoked by `project-lifecycle` for a `cyclic_goal_loop`, return this
+review delta in addition to the normal findings:
+
+```yaml
+goal_review_delta:
+  depth: <focused | deep | exhaustive>
+  material_new_work: <agenda items or none>
+  clean_pass_delta: <reset_to_0 | increment_by_1 | satisfied | blocked>
+  reset_reason: <material finding, missing required surface, changed evidence, or none>
+  inspected_stop_surfaces: <agenda, diff, tests, docs, release, deploy health, known issues>
+  known_residual_issues: <none | list | unknown>
+```
+
+A review can increment the parent clean-pass counter only when its inspected
+surfaces cover the parent stop condition for the requested depth. If a material
+in-scope finding appears, or if a required stop-condition surface was not
+inspected without a valid exclusion, set `clean_pass_delta: reset_to_0` or
+`blocked`; do not let the lifecycle controller count it as clean.
+
 ## Review-Optimize Ledger
 
 When review is used inside an explicit "深度审查优化" loop, preserve the
@@ -138,6 +166,65 @@ deep or exhaustive review to the current diff. "Do not broaden scope" prevents
 unrequested product areas from being pulled in; it does not override words such
 as "deep", "全面", "整个产品", "不要只看改动", or "exhaustive".
 
+### Scope Expansion Preflight
+
+Before reviewing skills, configs, standard contracts, call chains, ledgers,
+handoffs, or review-optimize behavior, build a compact scope model:
+
+```yaml
+scope_model:
+  direct_targets: <user-named files, diffs, skills, or artifacts>
+  primary_owners: <skills or files directly responsible for the target>
+  adjacent_modifiers: <non-owners that can change the same evidence, state, or claim>
+  downstream_consumers: <skills, users, commands, or workflows relying on that evidence>
+  completion_claim_scope: <focused | scoped-system | exhaustive>
+```
+
+For standard compliance, lifecycle, ledger, handoff, or delivery-contract
+reviews, do not inspect only the named owner. Include any adjacent modifier that
+can mutate the same evidence state, such as a refinement, docs, commit, release,
+or iteration skill that can make the completion claim true or false. If an
+adjacent modifier is intentionally not inspected, list it under `not inspected`
+with the reason. A clean result is valid only inside the declared
+`completion_claim_scope`.
+
+### Perspective Lens Synthesis
+
+For deep, exhaustive, whole-product, product-quality, skill/config,
+project-system, or post-implementation reviews, build a compact
+`perspective_model` unless the lifecycle Context Packet already supplied one.
+This model is not a checklist of personas. It is a generated set of material
+review lenses derived from the user's goal, target artifact, product category,
+failure symptoms, and evidence.
+
+Use role seeds only when they can change findings or residual risk:
+
+- the requesting user and the frustration behind the request,
+- the product's core user/customer/operator,
+- a professional engineer maintaining the code or workflow,
+- a product manager judging value, scope, adoption, and positioning,
+- an architect judging boundaries, coupling, scalability, and failure spread,
+- security/data/release/operator roles when those risks are in scope,
+- a same-category product user who would switch only if this product is better,
+- a future Codex/session/user when reviewing skills, prompts, configs, or agent
+  workflows.
+
+Each selected lens must record:
+
+```yaml
+perspective_lens:
+  role: <material viewpoint>
+  core_question: <what this role would ask>
+  evidence_surface: <what must be inspected>
+  finding_standard: <what counts as a material defect>
+```
+
+Reject lenses that only add taste, duplicate another lens, or cannot be checked
+from evidence. Findings still require evidence. Do not report "as a user I
+would prefer..." unless the preference exposes intent-state deviation, an
+evidence gap, a boundary violation, a stop failure, or a realistic adoption
+barrier under the stated product goal.
+
 When review happens after implementation, default the target to at least:
 
 - the user's original goal and acceptance criteria,
@@ -145,6 +232,7 @@ When review happens after implementation, default the target to at least:
 - direct call chain and integration points,
 - the core user workflow affected by the change,
 - related config, tests, docs, examples, and runbooks,
+- UI Contract / `frontend_evidence_packet` coverage when UI is involved,
 - verification commands already run and verification gaps.
 
 If the user explicitly asks to review the whole product/project, include entry
@@ -164,14 +252,74 @@ Review only surfaces that can change the answer:
 - **Repo/project**: instructions, entry points, build/test scripts, docs, dependency and config boundaries.
 - **Document/prompt/plan**: purpose, audience, assumptions, consistency, constraints, actionability.
 - **Skill/config**: metadata, triggers, body, cross-skill refs, naming, boundaries, call chains, stale wording, verification, context cost, user conflicts, pressure scenarios.
+- **Standard compliance**: `standard_compliance_ledger`, guide requirement
+  status, equivalent path mapping, evidence quality, missing/not-applicable
+  justification, and owner handoff.
 - **Security/data**: credentials, injection boundaries, permissions, destructive operations, privacy, logging.
 - **Release/readiness**: build path, deployment instructions, health checks, rollback, runbook, operational evidence.
-- **UI/UX**: workflow, accessibility, responsive behavior, visual regressions, loading/error states, screenshots.
+- **UI/UX**: workflow, accessibility, responsive behavior, visual regressions,
+  loading/empty/error states, long content/list pressure, permission/disabled
+  states, screenshots, motion behavior, and UI Contract /
+  `frontend_evidence_packet` coverage.
+
+### UI Contract Audit
+
+For UI/UX review, keep review pure: do not invent a new design standard or
+rewrite the frontend contract. Audit whether the owning frontend work provided a
+`ui_contract` or `frontend_evidence_packet`, whether it covers the relevant
+operating conditions for the core workflow, whether unverified conditions have
+valid reasons, and whether sibling pages/components using the same UI pattern are
+called out. A missing or happy-path-only evidence packet is a review finding when
+the surface is data-heavy, async, permissioned, responsive, or otherwise state
+sensitive.
+
+For software-project UI work, load `software-contract` and read
+`~/.codex/skills/software-contract/references/frontend-quality-contract.md` when
+the UI Contract details affect the finding. If the reference is required but
+unavailable, report that as missing evidence instead of reviewing from memory.
+When visual quality, component behavior, accessibility, responsive behavior, or
+rendered QA determines the finding, also read
+`~/.codex/skills/software-contract/references/frontend-design-contract.md` and
+audit whether a compact `design_contract_evidence` or equivalent rendered QA
+evidence exists.
+
+When the reviewed UI is a landing page, portfolio, brand page, redesign,
+product page, prototype, source-inspired UI, high-aesthetic screen, or a UI the
+user says looks generic, also read
+`~/.codex/skills/software-contract/references/frontend-taste-contract.md`.
+Audit whether the work has a defensible design read, calibrated
+variance/motion/density, anti-default audit, redesign preservation boundary when
+applicable, and taste preflight evidence. Report taste issues only when they
+contradict the stated design standard, user goal, rendered evidence, or this
+contract; do not report personal preference as a finding.
+
+When the reviewed UI includes any motion effect, also read
+`~/.codex/skills/software-contract/references/frontend-motion-contract.md`.
+Audit whether GSAP was used as the motion engine, whether a `motion_contract`
+exists, and whether reduced motion, mobile/resize, cleanup, and debug-marker
+risks were verified. If motion was implemented with CSS/WAAPI/Framer Motion
+without explicit user approval or project mandate, report it as a policy
+violation rather than silently accepting the downgrade.
 
 Default risk dimensions: correctness, regression risk, security/data, evidence,
 maintainability, docs/handoff, and UX/accessibility when user-facing. Do not
 report personal taste unless it affects correctness, maintainability,
 accessibility, safety, or the stated standard.
+
+### Standard Compliance Audit
+
+When reviewing against the Standard Development Contract, do not implement or
+fill docs. Audit whether every guide requirement is represented in the ledger,
+whether statuses are justified by evidence, whether optional items were
+evaluated instead of omitted, whether equivalent files truly cover the required
+content, and whether missing/blocking/deferred items have owners and next
+actions. A project may pass only if no required item is unaccounted and no
+`satisfied` item relies on an empty placeholder.
+
+For software-project standard reviews, load `software-contract` and read
+`~/.codex/skills/software-contract/references/standard-development-contract.md`.
+Read `references/docs-deliverables.md` from that skill when equivalent document
+paths or handoff assets determine the finding.
 
 ## Workflow
 
@@ -288,6 +436,10 @@ Findings
 Review Standard
 - Depth: <focused | quick | standard | deep | exhaustive>
 - Standard: <correctness | safety | maintainability | readiness | handoff | other>
+- Clean claim type: <focused | scoped-system | exhaustive>
+- Optimality law: <value ordering and falsification test used, or N/A>
+- Scope model: <direct targets, primary owners, adjacent modifiers, downstream consumers>
+- Perspective model: <material lenses used, or why not applicable>
 
 Review Convergence
 - Passes: <N, for deep/exhaustive>
@@ -302,6 +454,9 @@ Review Convergence
 Verification
 - <command> -> <key result>
 - Not run: <reason>
+
+`domain_resource_evidence`
+- <software-contract references loaded or missing, when used>
 
 Coverage
 - Inspected: <surfaces actually reviewed>

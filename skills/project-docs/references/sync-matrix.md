@@ -2,15 +2,18 @@
 
 遇到不确定"这次改动要同步哪些文件"时查这张表。
 
+这张表只发现候选影响面，不决定新增文件。新增、删除或保留文档必须先符合
+`software-contract/references/docs-deliverables.md` 的 `doc_profile`。
+
 ## 代码层变更 → 文档层变更
 
 | 本次对话发生的事 | 要改的文件（按受众） |
 |---|---|
-| 新增 API / 路由 | `AGENTS.md` 路由清单 · `docs/integration-guide.md` API 速查表 · `docs/architecture.md` Routes 小节 |
-| 新增 / 改名 环境变量 | `AGENTS.md` 环境变量表 · `docs/operator-runbook.md` 环境变量章节 · `docs/integration-guide.md`（如果下游要配） |
-| 新增数据库表 / 列 | `AGENTS.md` 数据库表 · `docs/architecture.md` Data Model |
-| 新增 / 改动 用户流程 | `AGENTS.md` 用户流程 · README 相关命令行示例 · `docs/handoff.md` What Exists Today |
-| 新增大特性（能跨多文件） | 以上全部 + `docs/architecture.md` 新增章节 + `docs/handoff.md` 已完成清单 |
+| 新增 API / 路由 | 真实 API/usage/integration 入口；只有 profile 要求时才同时更新 architecture |
+| 新增 / 改名 环境变量 | 真实配置入口；README/AGENTS/runbook 中已经承担配置职责的位置 |
+| 新增数据库表 / 列 | schema/data model/architecture 中 profile 要求的入口 |
+| 新增 / 改动 用户流程 | README/AGENTS/product scope/architecture 中已经承担流程职责的位置 |
+| 新增大特性（跨多文件） | 先按 profile 判断外部视角、架构视角、运维视角、交接视角哪些适用，再更新对应入口 |
 | 新增术语 / 改命名 | `docs/integration-guide.md` 术语表（如果有）+ 全局搜索旧术语并只替换本项目相关命中 |
 | 部署参数 / 基础设施变化 | `docs/operator-runbook.md` · 项目根 markdown 部署章节 |
 | 下游项目接入方式变化 | 下游项目的 `docs/<integration>.md` · 上游项目的 `integration-guide.md` |
@@ -39,11 +42,11 @@
 
 ## 文档结构通用约定
 
-新增一个能力（API、flow、特性）的标准动作是**四处都补**：
+新增一个能力（API、flow、特性）的标准动作不是四处都补，而是四类视角逐项判定：
 
-1. **integration-guide / 外部视角文档**：怎么用（curl / SDK 示例 / 错误码）
-2. **architecture**：怎么工作（数据流、状态机、设计取舍）
-3. **runbook**：怎么运维（冒烟命令、故障排查、环境变量）
-4. **handoff / CHANGELOG**：已完成
+1. **外部视角**：存在外部集成者、API/SDK/CLI 使用者时，维护 usage/integration/API 入口
+2. **架构视角**：改变边界、数据流、状态机或重要取舍时，维护 architecture/decision 入口
+3. **运维视角**：改变部署、监控、环境变量、故障处理或定时任务时，维护 runbook/operator 入口
+4. **交接视角**：阶段完成、版本交付或明确 handoff 时，维护 handoff/CHANGELOG/release 入口
 
 API 速查表、环境变量表、术语表是高频查询的结构化信息，**必须保持"所见即最新"**。

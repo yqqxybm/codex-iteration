@@ -1,10 +1,13 @@
 ---
 name: optimize
 description: >
-  General optimization orchestrator. Use when the user asks to optimize, deeply optimize, improve, polish, refine,
-  strengthen, or "优化/深度优化/改进/提升" an artifact, prompt, plan, workflow, decision, configuration, skill, or
-  thinking process, including explicit "深度审查优化" review-then-optimize loops. Deep mode requires auditable framework pass logs and stops only after two consecutive full
-  framework-exhaustion cycles find no material optimization point; use project adapters for software-project artifacts.
+  General optimization orchestrator. Use when the user asks to optimize, deeply
+  optimize, improve, polish, refine, strengthen, or "优化/深度优化/改进/提升" an
+  artifact, prompt, plan, workflow, decision, configuration, skill, or thinking
+  process, including explicit "深度审查优化" review-then-optimize loops. Deep mode
+  requires auditable framework pass logs and stops only after two consecutive
+  full framework-exhaustion cycles find no material optimization point; use
+  project adapters for software-project artifacts.
 ---
 
 # Optimize
@@ -76,12 +79,60 @@ Resolve internally before optimizing:
 - **Objective**: what "better" means here.
 - **Constraints**: scope, style, length, safety, tools, preferences, no-go areas.
 - **Evidence**: artifact, examples, symptoms, feedback, or verification output.
+- **Optimality law**: task-specific definition of best, value ordering,
+  elegance constraint, non-goal boundary, and falsification test when supplied
+  by project lifecycle or needed for deep optimization.
+- **Perspective model**: material roles/lenses that can change what "better"
+  means for this target.
 - **Framework chain**: skills to use and their order.
 - **Stop line**: what must not change.
 
 Ask only when objective or stop line ambiguity would materially change the
 result. If `request_user_input` is available and the fork is blocking, use it
 with concise options. Otherwise state the assumption and proceed.
+
+## Perspective Model For Optimization
+
+For deep optimization, review-then-optimize, product/system optimization, skill
+optimization, or any request where the user asks Codex to write the goal itself,
+synthesize a compact `perspective_model` before proposing changes. The model
+turns "make it better" into testable success standards.
+
+Do not copy the user's examples as a fixed list. Use them as seed patterns and
+generate the smallest material lens set from the target:
+
+- explicit requester intent and repeated frustration,
+- core user/customer/operator success and pain,
+- product manager value, scope, positioning, and adoption,
+- professional engineer maintainability and verification,
+- architect boundaries, coupling, scalability, and control flow,
+- security/data/release/operator concerns when applicable,
+- competitor-switching user when differentiation or product maturity matters,
+- future Codex/session/user when optimizing skills, prompts, configs, or agent
+  workflows.
+
+For each selected lens, define:
+
+```yaml
+optimization_lens:
+  role: <material viewpoint>
+  success_question: <what this role needs to be true>
+  evidence_surface: <what proves or disproves it>
+  optimization_standard: <what change would materially improve it>
+  stop_guard: <what would be over-optimization or drift>
+```
+
+A lens may create an optimization item only when it reveals a material gap under
+the Optimality Standard. Reject role ideas that are merely plausible, decorative,
+taste-only, duplicate, unverifiable, or likely to add process without changing
+behavior. If lifecycle supplied a `perspective_model`, preserve it and add only
+missing material lenses with a reason.
+
+If lifecycle supplied `goal_preflight` or `optimality_law`, preserve that value
+ordering. Do not let optimization invent a new philosophy unless the supplied
+law fails its own falsification test, conflicts with active user instructions,
+or causes a material failure under evidence. Optimization should improve the
+control law, not reset the user's goal each time.
 
 ## Routing
 
@@ -93,6 +144,16 @@ loop.
 
 Route to the specific owner when it fully covers the request:
 
+- `project-lifecycle`: software-project lifecycle work, Codex skill/config/custom-agent
+  self-iteration, project skill-system optimization, goal/subagent orchestration,
+  or any change that governs future project behavior.
+- `novel-lifecycle`: multi-step or whole-book Chinese webnovel optimization.
+- `novel-refine`: Chinese webnovel prose, chapter, style, rhythm, de-AI, or
+  rewrite optimization.
+- `novel-planning`: Chinese webnovel premise, canon, outline, volume, chapter
+  packet, or completion-plan optimization.
+- `novel-review`: review-only Chinese webnovel audit; do not optimize in place
+  unless the user also asks for changes.
 - `review`: review-only, audit-only, risk finding, "有没有问题".
 - `self-refine`: non-project artifact polishing.
 - `three-step-analysis`: deep non-project decisions.
@@ -103,10 +164,36 @@ Route to the specific owner when it fully covers the request:
 - `project-iteration`: code, tests, build config, UI behavior, implementation.
 - `project-bootstrap`: new software project creation.
 
+If a request matches a project or novel owner, this skill may provide the
+optimization logic only after that owner is selected. Do not let generic
+`优化/改进/提升` wording bypass `project-lifecycle` or the `novel-*` controller
+family.
+
 For deep, repeated, best-possible, or multi-framework optimization, this skill may orchestrate those owners.
 When invoking another skill, read its `SKILL.md` before claiming use and preserve its boundary.
 
 For implementation tasks, define strategy, then hand off to the owner. Edit files only when the user explicitly asked to change the artifact.
+
+## Software Contract Evidence
+
+When optimizing software-project skills, project configs, standard compliance
+workflows, frontend contracts, docs deliverable mappings, or coding quality
+gates, load `software-contract` and the required reference before claiming the
+standard was applied. If the reference is required but unavailable, stop and
+report the missing resource instead of optimizing from memory.
+
+For high-aesthetic frontend optimization, load
+`software-contract/references/frontend-taste-contract.md` together with the
+relevant frontend design, quality, prototype, theme, or motion contract. Use the
+taste contract to optimize the smallest control that failed: design read, dials,
+anti-default risks, redesign preservation, visual protagonist, or taste
+preflight. Reject restyling ideas that do not improve intent fit, evidence, or
+robustness.
+
+Include `domain_resource_evidence` in the final report when `software-contract`
+was loaded directly by this skill. If the evidence came from a delegated
+`review` or project adapter, preserve that owner skill's evidence in the
+review-optimize ledger or verification summary.
 
 ## Framework Chains
 
@@ -150,6 +237,28 @@ After a target has passed a deep review-optimize loop, later calls start from
 preservation, not reinvention. Change it only if new failure evidence appears,
 a pressure scenario fails, active instructions conflict, or the change
 simplifies the artifact while preserving behavior.
+
+### Previous Clean Claim Audit
+
+When the user asks to continue, repeat, or deepen optimization after a prior
+clean result, first audit the prior clean claim before proposing new changes:
+
+```yaml
+previous_clean_claim_audit:
+  prior_claim_type: <focused | scoped-system | exhaustive | unknown>
+  prior_scope_model_present: <yes | no>
+  direct_targets_checked: <yes | no>
+  primary_owners_checked: <yes | no>
+  adjacent_modifiers_checked: <yes | no>
+  downstream_consumers_checked: <yes | no>
+  scope_gap: <none | gap description>
+```
+
+If the prior claim lacked a scope model or skipped adjacent modifiers that can
+change the same evidence, state that the prior result was clean only within its
+inspected scope, expand the next review target, and reset optimization/review
+clean counters. Do not treat a newly found adjacent-scope issue as proof that
+the old inspected surfaces were dirty; treat it as a scope-definition failure.
 
 `review` remains review-only. `optimize` owns edits only when the user allowed
 changes. Convert each review ledger item into one queue item:
@@ -334,6 +443,8 @@ Default report:
 Optimization Result
 - Target: <what was optimized>
 - Objective: <what better means>
+- Optimality law: <task-specific value ordering and elegance constraint, or N/A>
+- Perspective model: <material lenses used, or not applicable>
 - Framework chain: <skills used or selected>
 - Review-optimize loop: <used | not used>
 
@@ -344,6 +455,7 @@ Review-Optimize Loop
 - Finding Ledger: <initial review items and statuses, or N/A>
 - Optimization Target Queue: <fix now | defer | reject | blocked items, or N/A>
 - Review Closeout: <clean | reopened | blocked | N/A>
+- Previous clean claim audit: <claim type, scope gap, counter reset, or N/A>
 
 Convergence
 - Optimization passes: <N ordinary passes, or N framework passes inspected in deep mode>
@@ -358,6 +470,9 @@ Convergence
 
 Verification
 - <check performed or Not run: reason>
+
+`domain_resource_evidence`
+- <software-contract references loaded or missing, when used>
 
 Residual Risk
 - <remaining risk or none>

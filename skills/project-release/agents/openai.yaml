@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Release"
+  short_description: "Downstream release and operate stage."
+  default_prompt: >
+    Use $project-release when project-lifecycle assigns build, release, deploy,
+    publish, health verification, rollback, or operate work.

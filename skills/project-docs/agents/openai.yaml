@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Docs"
+  short_description: "Downstream docs and handoff stage."
+  default_prompt: >
+    Use $project-docs when project-lifecycle assigns documentation or handoff
+    work for README, docs, AGENTS.md, or runbooks.

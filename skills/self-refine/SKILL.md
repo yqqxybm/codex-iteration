@@ -20,6 +20,25 @@ description: >
 `project-refine` 作为适配层。适配层只能加入项目事实、验证和文档边界，不另造一套精炼哲学。
 需要深度决策时使用 `three-step-analysis`；软件项目决策使用 `project-analysis`。
 
+## Three-Step-Governed Refinement
+
+When the user explicitly asks each self-refine round to use `三步分析`, or when
+`optimize`/`review` delegates a deep framework loop to this skill, each
+critique round must consume a compact three-step model before refining:
+
+```yaml
+three_step_refine_frame:
+  material_model: <relevant context, core contradiction, evaluation standard>
+  calibration: <assumptions, reversal conditions, non-blocking question ledger>
+  commitment: <what this round will preserve, change, reject, and verify>
+```
+
+This is not a second visible essay unless the user asks to see process. Use it
+to make critique deeper: every material critique must trace to the evaluation
+standard, a reversal condition, a missing evidence surface, or a failed
+commitment. Do not add philosophical text that does not change the refinement.
+For ordinary low-risk writing polish, keep the default lighter self-refine loop.
+
 ## 为什么需要这个框架
 
 一次性生成的内容，即使质量不错，往往存在视角单一、表达不够精炼、遗漏边界情况等问题。人类作者也是通过反复修改来提升作品质量的。这个框架把"修改"这个过程结构化了，避免无方向的反复调整。

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Project Commit"
+  short_description: "Downstream focused commit stage."
+  default_prompt: >
+    Use $project-commit when project-lifecycle assigns verified project changes
+    for a focused Angular-style commit, either directly or as an authorized
+    commit step after an executor.

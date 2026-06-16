@@ -1,6 +1,10 @@
 ---
 name: project-commit
-description: 使用 Angular 规范创建 focused git commit。当用户要求提交、保存变更、commit 时触发；也由 project-iteration 和 project-bootstrap 在验证通过后的版本管理阶段调用。只负责提交格式、分文件 stage、提交安全检查，不负责实现、部署或文档整理。
+description: >
+  Downstream version-snapshot stage selected by project-lifecycle, either
+  directly or as a lifecycle-authorized commit step after project-iteration or
+  project-bootstrap verification. 使用 Angular 规范创建 focused git commit；只负责
+  提交格式、分文件 stage、提交安全检查，不负责项目入口、实现、部署或文档整理。
 ---
 
 # Project Commit
@@ -9,8 +13,8 @@ description: 使用 Angular 规范创建 focused git commit。当用户要求提
 
 ## Lifecycle Position
 
-这是软件项目生命周期里的版本快照 skill。它只负责把已经验证过、
-边界清楚的变更提交成干净历史。
+这是软件项目生命周期里的下游版本快照 skill。它只负责把总控或执行阶段交给它的、
+已经验证过且边界清楚的变更提交成干净历史。
 
 不要用它替代：
 - `project-iteration` 的实现、验证、审查
@@ -20,13 +24,43 @@ description: 使用 Angular 规范创建 focused git commit。当用户要求提
 
 ## Call Chain Contract
 
-When invoked by `project-lifecycle`, `project-bootstrap`, or `project-iteration`,
-consume the Context Packet and stage only files inside `owned_scope`.
+When invoked by `project-lifecycle` directly, or as a lifecycle-authorized
+commit step after `project-bootstrap` / `project-iteration`, consume the Context
+Packet, preserve `owned_scope`, `do_not_do`, and `standard_compliance_ledger`
+when present. When provided, also preserve `project_goal`, `goal_runtime`,
+`goal_synthesis` / `control_system_goal`, `goal_preflight` /
+`optimality_law`, `perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
+`subagent_dispatch_policy`, `agent_owner`, `write_policy`, and
+`protocol_evidence`. Stage only files inside `owned_scope`.
 
 Return a Handoff Record with staged files, commit hash/message, skipped files,
-security checks, hook result, open risks, and the next recommended skill. Never
-treat `.codex/traces/` as Git history; traces are operational context only and
-are not committed by default.
+security checks, hook result, `standard_compliance_delta` when a ledger is
+active, `domain_resource_evidence` when `software-contract` was loaded, open
+risks, the next recommended skill, and any item status, result, and verification
+evidence needed by an active `plan_state_sink`. Never treat `.codex/traces/` as
+Git history; traces are operational context only and are not committed by
+default.
+
+Commit, push, tag, and release-history mutation are main-thread operations. If invoked as a subagent,
+do not edit the parent goal, do not spawn subagents, and
+do not stage, commit, push, tag, deploy, sync remote state, broaden scope, or
+claim project completion. Return `new_work` plus a commit readiness receipt with
+candidate staged files, message proposal, risks, and blocked files to
+`project-lifecycle`.
+
+When invoked inside a lifecycle `cyclic_goal_loop`, also return:
+
+```yaml
+cyclic_goal_delta:
+  commit_state: <committed | blocked | not_applicable>
+  commit_hash: <hash or none>
+  pushed_state: <not_requested | pushed | blocked | not_applicable>
+  clean_pass_reset_required: <true | false, with reason>
+  material_in_scope_new_work: <agenda items or none>
+```
+
+Commit or push failures inside the parent stop condition are material new work;
+successful commit alone never completes the parent goal.
 
 ## Commit Message 格式
 
@@ -86,6 +120,29 @@ EOF
 )"
 ```
 
+## Standard Workflow Evidence
+
+When `standard_compliance_ledger` is present, update only version-workflow
+entries this skill can prove from the local commit. Load `software-contract` and
+read `~/.codex/skills/software-contract/references/standard-development-contract.md`
+when standard version-workflow details affect status. If the required reference
+is unavailable, stop and report the missing resource:
+
+- commit convention and actual commit message,
+- staged-file discipline and skipped unrelated files,
+- `git diff --cached --check` result,
+- secret / token / credential URL scan result over the staged diff,
+- hook result,
+- commit hash traceability.
+
+Do not mark branch policy, PR/review policy, branch protection, issue templates,
+release notes policy, or project documentation `satisfied` from a local commit
+alone. Return those as `missing`, `deferred`, `blocked`, or next work for
+`project-docs`, `project-release`, or `project-lifecycle` as appropriate.
+
+If no commit is created, record the exact blocker or user boundary in
+`standard_compliance_delta`; do not claim the version workflow is complete.
+
 ## 注意事项
 
 - 不要 `git add .` 或 `git add -A`，逐个添加文件
@@ -101,4 +158,6 @@ Report:
 - staged files,
 - commit hash and message,
 - hook/security check result,
+- standard compliance delta, when a ledger was active,
+- `domain_resource_evidence`, when `software-contract` was loaded,
 - skipped files or blocker, if any.

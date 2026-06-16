@@ -1,0 +1,6 @@
+interface:
+  display_name: "Self Refine"
+  short_description: "Iteratively polish standalone artifacts."
+  default_prompt: >
+    Use $self-refine to improve this standalone artifact through critique and
+    refinement loops.

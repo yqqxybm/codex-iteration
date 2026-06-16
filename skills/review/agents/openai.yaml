@@ -1,0 +1,6 @@
+interface:
+  display_name: "Review"
+  short_description: "Find risks with evidence-first review."
+  default_prompt: >
+    Use $review to audit this artifact for material defects, risks, missing
+    evidence, and residual gaps.

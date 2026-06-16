@@ -1,0 +1,7 @@
+interface:
+  display_name: "Project Frontend"
+  short_description: "Downstream UI/UX design stage."
+  default_prompt: >
+    Use $project-frontend when project-lifecycle assigns UI/UX design quality
+    and visual verification, either directly or as an authorized companion to a
+    bootstrap/iteration step.
