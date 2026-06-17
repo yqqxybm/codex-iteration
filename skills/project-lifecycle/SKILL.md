@@ -135,10 +135,11 @@ Classify the request before acting:
   runtime capability probe, parallel ROI, merge strategy, join barrier, and
   selected antichain first. Preserve exact fields:
   `runtime_capability_probe`, `parallel_roi`, `merge_strategy`,
-  `subagent_spawn_mechanism`, `join_barrier`, `same_worktree_disjoint`,
-  `isolated_worktree_if_supported`, `main_applies_patch`,
+  `subagent_spawn_mechanism`, `subagent_close_mechanism`, `join_barrier`,
+  `same_worktree_disjoint`, `isolated_worktree_if_supported`, `main_applies_patch`,
   `dynamic_mission_profile`, `mission_profile_delta`, and
-  `loop_control_matrix`.
+  `subagent_runtime_registry`, `runtime_resource_ledger`,
+  `close_state`, and `loop_control_matrix`.
 - **User asks to finish, close out, deliver, complete a version/phase, keep going
   until done, or optimize project/goal/subagent/Codex controls**: use
   goal-backed concierge unless explicitly single-point.
@@ -153,6 +154,7 @@ Classify the request before acting:
   execution mode, task graph, dynamic mission profiles, parallel ROI, merge
   strategy, join barrier, loop control matrix, and agenda. Preserve exact
   fields: `task_graph`, `dynamic_mission_profile`, `mission_profile_delta`,
+  `subagent_runtime_registry`, `runtime_resource_ledger`,
   `cyclic_goal_loop`, `loop_control_matrix`, `review_clean_pass_loop`, and
   `optimize_framework_cycle_loop`. Read
   `references/goal-subagent-orchestration.md` before creating or maintaining a
@@ -318,6 +320,7 @@ The controller itself remains responsible for:
 Use `references/goal-subagent-orchestration.md` in addition to
 `references/controller-protocol.md` whenever goal-backed concierge,
 `cyclic_goal_loop`, subagents, automatic parallel dispatch,
-`parallel_execution_mode`, task graphs, dynamic mission profiles, loop control
-matrices, review clean-pass loops, optimize framework-cycle loops, or a
+`parallel_execution_mode`, task graphs, dynamic mission profiles, subagent
+runtime registries, runtime resource ledgers, loop control matrices, review
+clean-pass loops, optimize framework-cycle loops, or a
 multi-item agenda with independent work surfaces is active.

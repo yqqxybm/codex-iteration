@@ -10,6 +10,7 @@ trace, or finalizes a lifecycle task.
 - Protocol Evidence Gate
 - Executable Plan Quality
 - Plan Advancement Loop
+- Runtime Resource Ledger
 - Context Packet
 - Handoff Record
 - Trace Placement
@@ -64,6 +65,8 @@ perspective_model: <required when review, optimization, product readiness,
   project-system, or Codex self-iteration judgment is part of the goal>
 subagent_dispatch_policy: <auto_parallel_safe | blocked_by_runtime_or_tool_policy | unsafe_or_not_worth_it>
 runtime_capability_probe: <subagent/custom-agent/worktree/background/concurrency evidence>
+runtime_resource_ledger: <required when lifecycle creates subagent, server, browser, terminal, ssh, tunnel, automation, or other long-lived runtime handles>
+subagent_runtime_registry: <required when subagents are spawned; includes agent ids, receipt state, and close state>
 parallel_execution_mode: <sequential | subagent_wave | controller_team | workflow_batch,
   with task_graph, conflict edges, selected antichains, runtime capability,
   parallel ROI, merge strategy, join barrier, and optimality argument>
@@ -213,7 +216,14 @@ parallel_execution_mode:
     worktree_isolation: <available | unavailable | unknown>
     thread_or_background_sessions: <available | unavailable | not_requested>
     max_parallel_agents: <number | unknown>
+    subagent_close_mechanism: <callable | runtime_auto_closes | unavailable | blocked_by_policy>
     evidence: <tool discovery, runtime output, or explicit policy>
+  subagent_runtime_registry:
+    - agent_runtime_id: <spawned id or not_applicable>
+      agenda_item: <id>
+      receipt_state: <pending | received | consumed | rejected | missing>
+      close_state: <open | closed | not_found | close_failed | not_applicable>
+      close_evidence: <tool output or reason>
   selected: <sequential | subagent_wave | controller_team | workflow_batch>
   parallel_roi:
     expected_saved_work: <material | marginal | none>
@@ -230,7 +240,8 @@ parallel_execution_mode:
 Loop invariant: the plan is not complete while any required item is `pending`,
 `active`, unverified, or while concierge `cyclic_goal_loop` has material
 in-scope issues, unmet commit/push/deploy/health requirements, or insufficient
-clean passes.
+clean passes, or while lifecycle-created runtime resources remain open without
+a visible keep-open policy.
 
 Before invoking downstream skills, run the Executable Plan Quality gate over the
 agenda and the task graph. Do not start a vague item and hope the downstream
@@ -253,9 +264,11 @@ Loop until the agenda reaches a real stop condition:
    downgrade to the nearest valid mode and record the reason as a capability
    boundary, not as an equivalent execution path.
 4. Build a Context Packet for each selected item and invoke the owning skill or
-   bounded project subagent.
-5. Record Handoff Records and subagent receipts, then update the agenda and
-   persist the result to `plan_state_sink`.
+   bounded project subagent. Register any long-lived runtime handle immediately
+   in `runtime_resource_ledger`; for spawned agents, also update
+   `subagent_runtime_registry`.
+5. Record Handoff Records, subagent receipts, and runtime-resource deltas, then
+   update the agenda and persist the result to `plan_state_sink`.
 6. Mark the item `done` only when its `done_when` and verification evidence are
    satisfied and the source plan requirement is preserved.
 7. If the handoff creates new required work, add it to the agenda instead of
@@ -273,6 +286,8 @@ finished. Stop only when:
   unsafe operation,
 - verification fails after reasonable local fixes and further work would hide
   the failure,
+- lifecycle-created runtime resources cannot be closed, proven auto-closed, or
+  explicitly kept open with a user-visible reason,
 - the environment forces interruption; in that case write or update the trace,
   name the next agenda item, and do not claim the plan is complete.
 
@@ -314,6 +329,45 @@ An agenda item can be `done` only when:
 If verification cannot run, mark the item `blocked` unless the user explicitly
 accepts an unverified completion status.
 
+## Runtime Resource Ledger
+
+When lifecycle work creates a runtime handle that can outlive the immediate
+tool call, track it explicitly. This covers subagents, reusable browser or app
+sessions, dev servers, background terminal commands, SSH tunnels, remote batch
+sessions, automations, and any other handle that can consume quota, ports,
+state, or attention after the semantic work appears done.
+
+Use the ledger only for resources created or taken over by the lifecycle task;
+do not inventory unrelated user processes.
+
+```yaml
+runtime_resource_ledger:
+  - id: <tool/session/agent/process id, port, host, or handle>
+    type: <subagent | dev_server | browser | terminal_session | ssh_tunnel | remote_batch | automation | other>
+    owner: <main lifecycle thread | downstream skill>
+    purpose: <why it was created>
+    agenda_item: <id or none>
+    state: <active | completed | failed | abandoned | kept_open | closed | not_found | not_applicable>
+    close_policy: <close_after_receipt | close_after_verification | keep_open_for_user | runtime_auto_closes | none>
+    close_evidence: <command/tool result, URL disclosed to user, or reason>
+```
+
+Completion rules:
+
+- A lifecycle task may not claim complete while a created runtime resource is
+  `active`, `completed` but unclosed, or `failed` without an explicit close or
+  keep-open decision.
+- A lifecycle task may not claim complete while any runtime resource remains
+  active, completed-but-unclosed, failed-without-decision, or unaccounted.
+- `kept_open` is valid only when the user benefits from it, such as a dev server
+  URL to try, and the final response names the handle and reason.
+- `not_applicable` is valid only when no persistent handle was created or the
+  runtime proves auto-cleanup.
+- Do not record credentials, tokens, secret values, or private session contents
+  in the ledger.
+- For subagents, `subagent_runtime_registry` is the specialized ledger. Its
+  close state must agree with the general `runtime_resource_ledger`.
+
 ## Context Packet
 
 Before using a downstream skill, carry forward only the context it needs:
@@ -325,6 +379,10 @@ decisions_so_far: <accepted decisions>
 owned_scope: <files, modules, project area, or phase responsibility>
 project_goal/goal_runtime/cyclic_goal_loop/subagent_dispatch_policy/agent_owner/write_policy:
   <when concierge mode is active>
+runtime_resource_ledger:
+  <created long-lived runtime handles, close policy, and close evidence>
+subagent_runtime_registry:
+  <spawned agent ids, receipt state, still-needed state, close state, and close evidence>
 parallel_execution_mode/task_graph:
   <selected mode, dependencies, conflict edges, active antichain or phase, and
   why the assigned item is safe to run now>
@@ -375,6 +433,10 @@ verification: <command and key result>
 verification_scope: <docs-only | focused-code | ui | config/build | release | security | full-project>
 subagent_dispatch_policy/subagent_receipts/goal_runtime/goal_status:
   <dispatch policy, receipts consumed, and goal state, or none>
+runtime_resource_delta:
+  <created, kept_open, closed, not_found, close_failed, or not_applicable handles>
+subagent_runtime_registry_delta:
+  <agent ids joined, consumed, closed, not_found, close_failed, or still active>
 parallel_execution_mode/task_graph_delta:
   <selected mode, wave/phase joined, new dependencies/conflicts/blocked/unblocked
   items, suggested reclassification, or none>
@@ -437,7 +499,8 @@ promote that fact to formal docs and keep the trace minimal.
   nested agents, background sessions, or isolated worktrees unless current
   runtime evidence proves those capabilities. For every delegated node, derive a
   `dynamic_mission_profile`; do not assume the task graph alone tells the agent
-  how to execute the node.
+  how to execute the node. Register every spawned agent id and close or account
+  for its runtime handle before the next wave or completion claim.
 - "`目标! 推进小版本，把优化点落到项目计划文件`": use `plan_state_sink:
   trace_and_formal_plan`, create or update the smallest authoritative project
   plan file through `project-docs` if none exists, mark items active before
@@ -463,7 +526,7 @@ promote that fact to formal docs and keep the trace minimal.
   reference and `references/goal-subagent-orchestration.md`, maintain
   `cyclic_goal_loop` and `loop_control_matrix`, reset clean passes on material
   in-scope issues, and stop only at the combined
-  agenda/verification/review/optimization/known-issue boundary.
+  agenda/verification/review/optimization/known-issue/runtime-resource boundary.
 - "改完再深度 review / 全面审查不要只看改动": implement through the selected
   executor, then use the `review` skill at the requested depth. A focused
   closeout gate cannot be reported as deep or exhaustive review.
@@ -485,6 +548,9 @@ The final response names:
 - agenda completion status, if plan advancement mode was used,
 - project goal runtime/status and subagent receipt summary, when concierge mode
   was used,
+- runtime resource ledger summary, including any handles intentionally kept open
+  or close failures,
+- subagent runtime registry close state, when subagents were spawned,
 - subagent dispatch policy and fallback reason when automatic parallelism was
   evaluated,
 - parallel execution mode, runtime capability evidence, ROI decision, task graph

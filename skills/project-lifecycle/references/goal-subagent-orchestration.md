@@ -14,6 +14,7 @@ mode or needs bounded subagent delegation.
 - Agenda Extensions
 - Parallel Execution Mode
 - Subagent Dispatch
+- Runtime Handle Reclamation
 - Receipt And Convergence
 
 ## Goal Contract
@@ -164,11 +165,20 @@ goal_synthesis:
     fallback_when_blocked: <main_thread_sequential | main_thread_local_parallel_planning>
   runtime_capability_probe:
     subagent_spawn_mechanism: <callable | unavailable | blocked_by_policy>
+    subagent_close_mechanism: <callable | runtime_auto_closes | unavailable | blocked_by_policy>
     custom_project_agents: <available | unavailable | unknown>
     worktree_isolation: <available | unavailable | unknown>
     thread_or_background_sessions: <available | unavailable | not_requested>
     max_parallel_agents: <number | unknown>
     evidence: <tool discovery, runtime output, or explicit policy>
+  subagent_runtime_registry:
+    - agent_runtime_id: <spawned agent id or not_applicable>
+      agenda_item: <id>
+      wave: <wave id>
+      receipt_state: <pending | received | consumed | rejected | missing>
+      close_required: <true | false>
+      close_state: <open | closed | not_found | close_failed | not_applicable>
+      close_evidence: <tool result or reason>
   parallel_execution_mode:
     mode: <sequential | subagent_wave | controller_team | workflow_batch>
     reason: <why this is the smallest correct coordination structure>
@@ -191,13 +201,14 @@ goal_synthesis:
       lead: main lifecycle thread
       task_board: <trace/formal plan/in-conversation agenda>
       mailbox: <subagent receipts and main-thread join notes>
+      runtime_registry: <subagent_runtime_registry and runtime_resource_ledger>
       claim_policy: <lead_assigns | self_claim_not_supported | sequential>
     quality_gates:
-      before_start: <scope, owner, done_when, verification, conflict key>
-      before_complete: <receipt, evidence, join gate, verification/review>
+      before_start: <scope, owner, done_when, verification, conflict key, runtime handle registry>
+      before_complete: <receipt, evidence, join gate, verification/review, runtime handle closure>
       reset_on: <material issue, failed verification, conflict, or stale assumption>
   loop_control_matrix:
-    active_loops: <tool_goal | agenda | subagent_wave | review_clean_pass | optimize_framework_cycle>
+    active_loops: <tool_goal | agenda | subagent_wave | subagent_runtime_loop | review_clean_pass | optimize_framework_cycle>
     reset_edges: <which event resets which counters or states>
     stop_precedence: <which stop condition must be satisfied before completion>
     non_equivalence: <loops/counters that must not be counted as each other>
@@ -291,11 +302,15 @@ Default synthesis rules:
   safe subagent mechanism callable, reclassify to `auto_parallel_safe`.
 - Record `runtime_capability_probe` before choosing a non-sequential mode. Do
   not infer background sessions, peer-to-peer agent messaging, nested agents, or
-  isolated worktrees from the existence of a subagent spawn tool. If a capability
-  is unknown, treat it as unavailable for write isolation and choose
-  `same_worktree_disjoint`, `main_applies_patch`, or `sequential`.
+  isolated worktrees from the existence of a subagent spawn tool. Also record
+  whether spawned agents require an explicit close call, such as `close_agent`,
+  before dispatch. If a capability is unknown, treat it as unavailable for write
+  isolation and choose `same_worktree_disjoint`, `main_applies_patch`, or
+  `sequential`.
 - Set `runtime_permission` to `blocked_by_runtime_or_tool_policy` when the current
   Codex runtime has no callable subagent tool or the tool policy forbids spawning.
+  Also set it to blocked when spawned agents persist after completion but no
+  close mechanism or runtime auto-close guarantee exists.
   Set it to `unsafe_or_not_worth_it` when scopes overlap, the task is too small to
   justify dispatch, ordering matters, or the split would reduce correctness. In
   either case, preserve `eligible_parallel_groups` when useful and disclose the
@@ -403,6 +418,9 @@ Goal ownership is exclusive:
 - Subagents must not spawn further subagents. Keep `agents.max_depth = 1`.
 - The main thread is the only merge owner and the only actor allowed to mark the
   agenda or goal complete.
+- The main thread owns subagent runtime handles. Subagents return receipts; they
+  do not close themselves, mutate the runtime registry, or decide whether their
+  execution state can remain open.
 
 ## Goal State Machine
 
@@ -557,7 +575,9 @@ The goal may stop as complete only when all are true:
 - review clean passes satisfy the requested depth and count after the last
   material change,
 - the selected known-issue source contains no unresolved material issue inside
-  the phase boundary.
+  the phase boundary,
+- all lifecycle-spawned subagent runtime handles are `closed`, `not_found`, or
+  explicitly `not_applicable` with evidence.
 
 If code, docs, config, release state, or required evidence changes after a clean
 review pass, reset `clean_pass_count` to 0. If remote push or deploy evidence is
@@ -576,6 +596,7 @@ loop_control_matrix:
     tool_goal: <active | agenda_only | none>
     agenda_loop: <active | none>
     subagent_wave_loop: <active | none>
+    subagent_runtime_loop: <active | none>
     review_clean_pass_loop: <focused | deep | exhaustive | none>
     optimize_framework_cycle_loop: <active | none>
     release_or_sync_loop: <active | none>
@@ -592,9 +613,12 @@ loop_control_matrix:
       resets: <review clean pass, goal clean pass, affected subagent evidence>
     subagent_scope_or_merge_conflict:
       resets: <wave join and affected agenda item>
+    subagent_close_failure:
+      resets: <wave join and parent completion eligibility>
   stop_precedence:
     - all required agenda items done or user-approved skipped
     - all subagent receipts joined, rejected, or converted into visible agenda state
+    - all lifecycle-spawned subagent runtime handles closed, not_found, or explicitly not_applicable with evidence
     - required verification/release/sync evidence satisfied or explicitly blocked/not_applicable
     - required review clean passes satisfied after the last material artifact change
     - required optimize framework clean cycles satisfied after the last material optimization point
@@ -605,6 +629,7 @@ loop_control_matrix:
     - review clean passes are not optimize framework clean cycles
     - a passing command is not review coverage
     - a commit/push/deploy is not goal completion
+    - a consumed subagent receipt is not execution-handle closure
     - a goal completion claim is invalid while unjoined receipts or pending agenda items remain
 ```
 
@@ -651,6 +676,7 @@ agenda:
     objective: <user-visible outcome>
     owner_skill: <project skill or main>
     agent_owner: <main | project-explorer | project-worker | project-reviewer | project-verifier>
+    agent_runtime_id: <spawned runtime id when delegated, or none>
     prerequisites: <ids or none>
     owned_scope: <files, modules, artifact, read-only area, or project surface>
     write_policy: <read_only | same_worktree_disjoint | single_writer | isolated_worktree_if_supported | main_applies_patch>
@@ -718,6 +744,7 @@ parallel_execution_mode:
     worktree_isolation: <available | unavailable | unknown>
     thread_or_background_sessions: <available | unavailable | not_requested>
     max_parallel_agents: <number | unknown>
+    subagent_close_mechanism: <callable | runtime_auto_closes | unavailable | blocked_by_policy>
     evidence: <tool discovery, runtime output, or explicit policy>
   candidate_modes:
     sequential:
@@ -747,8 +774,8 @@ parallel_execution_mode:
     dominance: <why simpler valid modes are insufficient or why more complex
       modes add no material value>
     safety: <how dependency/conflict edges prevent unsafe parallel writes>
-    convergence: <how receipts, verification, review, and clean-pass counters
-      return control to the main lifecycle thread>
+    convergence: <how receipts, runtime handle closure, verification, review,
+      and clean-pass counters return control to the main lifecycle thread>
 ```
 
 The proof does not need to be long, but it must be explicit for goal-backed
@@ -775,16 +802,19 @@ Dispatch follows `parallel_execution_mode`:
 - `sequential`: do not spawn for speed; use a subagent only for isolated
   read-only context reduction or assigned verification/review.
 - `subagent_wave`: spawn the current antichain, wait for receipts, join, then
-  continue in the main thread.
+  close or account for each runtime handle, then continue in the main thread.
 - `controller_team`: keep the main lifecycle thread as lead; maintain the task
   board in the trace or formal plan, spawn bounded waves for unblocked items,
-  consume receipts, add new work, and repeat until the goal stop condition.
+  consume receipts, close or account for runtime handles, add new work, and
+  repeat until the goal stop condition.
 - `workflow_batch`: write the phase plan first, run each phase as one or more
   waves, include cross-check/reviewer phases, then synthesize only claims that
   survived the phase evidence.
 
 No next wave, phase, agenda item, clean-pass increment, or completion claim may
-start until the join barrier has consumed every receipt from the current wave.
+start until the join barrier has consumed every receipt from the current wave
+and the runtime registry shows every no-longer-needed spawned handle as
+`closed`, `not_found`, or explicitly `not_applicable`.
 
 If `runtime_permission` is `blocked_by_runtime_or_tool_policy`, keep the agenda's
 `parallel_group` metadata as planning evidence, then execute in the main thread
@@ -816,6 +846,8 @@ Parallel dispatch is allowed only when all are true:
 
 - `runtime_capability_probe.subagent_spawn_mechanism` is `callable` and current
   tool policy permits spawning,
+- `runtime_capability_probe.subagent_close_mechanism` is `callable` or the
+  runtime proves spawned agents auto-close after completion,
 - `parallel_roi.decision` is `parallelize`,
 - `merge_strategy.join_barrier` is `required` and the main lifecycle thread is
   the integration owner,
@@ -828,13 +860,23 @@ Parallel dispatch is allowed only when all are true:
   subagents, do not commit/push/deploy/sync, do not claim project completion, and
   return a receipt.
 
+Do not spawn persistent subagents when no close mechanism or runtime auto-close
+evidence exists. Use sequential execution or non-persistent main-thread work
+instead.
+
 If scopes overlap, run the items sequentially or ask one subagent for a patch or
 analysis-only recommendation and let the main thread apply the change.
+
+When a subagent is spawned, immediately add its returned id to
+`subagent_runtime_registry`. If spawning succeeds but registry update fails, do
+not start additional subagents; record the blocker and reconcile before
+continuing.
 
 Every subagent assignment prompt must include this contract:
 
 ```yaml
 subagent_assignment:
+  agent_runtime_id: <spawn_agent returned id when known>
   parent_goal_summary: <objective, boundary, stop condition>
   parallel_execution_mode: <selected mode, antichain, conflict keys, and why this item is safe to run now>
   subagent_dispatch_policy: <auto_parallel_safe decision basis and safety gate evidence>
@@ -881,12 +923,56 @@ new static custom agent only when all are true:
 
 Otherwise keep it as a dynamic mission profile attached to the assignment.
 
+## Runtime Handle Reclamation
+
+Subagent runtime handles are execution resources, not project evidence. A
+receipt can close the semantic loop only after the main thread consumes it; it
+does not release the runtime handle. Treat handle reclamation as part of the
+join gate, not as a separate optional cleanup task.
+
+Maintain this registry whenever the lifecycle thread spawns a subagent:
+
+```yaml
+subagent_runtime_registry:
+  - agent_runtime_id: <spawn_agent returned id>
+    agent_type: <project-explorer | project-worker | project-reviewer | project-verifier | default>
+    agenda_item: <id>
+    wave: <wave or phase id>
+    spawned_at: <turn or trace marker>
+    receipt_state: <pending | received | consumed | rejected | missing>
+    still_needed: <true | false>
+    close_required: <true | false>
+    close_state: <open | closed | not_found | close_failed | not_applicable>
+    close_evidence: <close_agent result, runtime auto-close evidence, or reason>
+```
+
+Rules:
+
+- Register the handle immediately after `spawn_agent` returns.
+- If `wait_agent` times out and the result is still on the critical path, keep
+  the agenda item `active`; do not close it merely to make the board clean.
+- If a timed-out or failed agent is abandoned, close the handle before
+  reassigning the item or starting another wave.
+- After a receipt is consumed, rejected, or converted into agenda state, call
+  `close_agent` when the runtime exposes it. Record `closed`, `not_found`, or
+  `close_failed` from the tool result.
+- `not_found` is acceptable only as close evidence for a handle that the runtime
+  no longer exposes. It is not evidence that the receipt was consumed.
+- `not_applicable` is acceptable only when the capability probe proves the
+  runtime auto-closes completed agents or no persistent handle was created.
+- `close_failed` blocks parent completion and the next subagent wave unless the
+  user explicitly accepts the open handle as residual operational risk.
+
+The main lifecycle thread must not report "all subagents joined" as equivalent
+to "all subagent execution state reclaimed." Report both separately.
+
 ## Receipt And Convergence
 
 Every subagent must return a receipt:
 
 ```yaml
 subagent_receipt:
+  agent_runtime_id: <id supplied by main thread, or unknown>
   agent: <project-explorer | project-worker | project-reviewer | project-verifier>
   agenda_item: <id>
   assigned_scope: <scope received>
@@ -918,11 +1004,12 @@ counter for the affected review loop.
 After a subagent wave, the main thread must join results before selecting the
 next item:
 
-1. Validate each receipt has `agent`, `agenda_item`, `assigned_scope`,
-   `changed_files`, `evidence`, `mission_profile_delta`, `task_graph_delta`,
-   `status`, `new_work`, and `stop_reason`. `mission_profile_delta` must state
-   whether the profile was sufficient and what lens/surface was missing, with
-   `none` allowed. `task_graph_delta` must include `new_dependency_edges`,
+1. Validate each receipt has `agent_runtime_id` when supplied, `agent`,
+   `agenda_item`, `assigned_scope`, `changed_files`, `evidence`,
+   `mission_profile_delta`, `task_graph_delta`, `status`, `new_work`, and
+   `stop_reason`. `mission_profile_delta` must state whether the profile was
+   sufficient and what lens/surface was missing, with `none` allowed.
+   `task_graph_delta` must include `new_dependency_edges`,
    `new_conflict_edges`, `blocked_items`, `unblocked_items`, and
    `suggested_reclassification`, with `none` allowed for every key.
 2. Reject or re-run receipts that omit required evidence, exceed scope, or
@@ -937,6 +1024,12 @@ next item:
 6. Run or assign the verification/review gate required by the parent agenda.
 7. Mark an item `done` only after its `done_when` condition and evidence match.
 8. Reset clean-pass counters whenever a material in-scope issue is found.
+9. For every spawned runtime handle in the wave that is no longer needed, call
+   `close_agent` when available or record runtime auto-close evidence. Update
+   `subagent_runtime_registry.close_state` and `close_evidence`.
 
 The join gate is complete only when every receipt is consumed, rejected, or
-converted into visible agenda state.
+converted into visible agenda state, and every no-longer-needed spawned runtime
+handle is `closed`, `not_found`, or explicitly `not_applicable` with evidence.
+The join gate must not complete while any no-longer-needed spawned runtime
+handle remains `open`, `close_failed`, or unaccounted.

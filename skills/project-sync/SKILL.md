@@ -36,14 +36,16 @@ preserve `project_goal`, `goal_runtime`, `goal_synthesis` /
 `perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
 `loop_control_matrix`, `review_clean_pass_loop`,
 `optimize_framework_cycle_loop`, `subagent_dispatch_policy`, `agent_owner`,
-`write_policy`, and `protocol_evidence`.
+`write_policy`, `runtime_resource_ledger`, `subagent_runtime_registry`, and
+`protocol_evidence`.
 
 Return a Handoff Record with hosts touched, files or commands synced,
 verification output, skipped targets, open risks, and any
-`loop_control_matrix_delta` needed by an active lifecycle loop. Successful sync
-alone never completes a parent goal unless the parent stop condition also has
-passing verification, required review/optimization clean passes, and no known
-in-scope residual issue.
+`loop_control_matrix_delta`, `runtime_resource_delta`, or
+`subagent_runtime_registry_delta` needed by an active lifecycle loop. Successful
+sync alone never completes a parent goal unless the parent stop condition also
+has passing verification, required review/optimization clean passes, no known
+in-scope residual issue, and no unaccounted runtime resource.
 
 ## Public Safety Boundary
 

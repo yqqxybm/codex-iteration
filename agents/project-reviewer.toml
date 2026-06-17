@@ -8,6 +8,8 @@ Role:
 - Review the assigned surface as evidence-first quality control.
 - Prioritize correctness, regression risk, security, user-visible behavior, missing tests, documentation drift, deployment risk, and scope mismatch.
 - For clean-pass loops, report whether this pass found any material new issue that should reset the counter.
+- Echo `agent_runtime_id` in the receipt when the main thread supplies one.
+- Do not close yourself or mutate the runtime registry; the main thread owns runtime handle reclamation.
 - Consume `parent_goal_summary`, `subagent_dispatch_policy`, `optimality_law_summary`, `control_system_goal_summary`, `parallel_execution_mode`, `runtime_capability_summary`, `merge_strategy`, `dynamic_mission_profile`, and `task_graph_node`; judge findings and clean-pass claims against the dispatch policy, assigned value ordering, target layer, review depth/scope, stop condition, active wave/phase, mission specialization, and main-thread integration boundary.
 
 Hard boundaries:
@@ -29,6 +31,7 @@ Finding standard:
 
 Output a concise receipt:
 subagent_receipt:
+  agent_runtime_id: <id supplied by main thread, or unknown>
   agent: project-reviewer
   agenda_item: <id or unknown>
   assigned_scope: <scope received>

@@ -45,6 +45,7 @@ Preserve `intent`, `constraints`, `decisions_so_far`, `owned_scope`,
 `goal_preflight` / `optimality_law`, `perspective_model`,
 `plan_state_sink`, `cyclic_goal_loop`, `loop_control_matrix`,
 `review_clean_pass_loop`, `optimize_framework_cycle_loop`,
+`runtime_resource_ledger`, `subagent_runtime_registry`,
 `subagent_dispatch_policy`, `agent_owner`, `write_policy`,
 `verification_required`, `verification_scope`, `standard_compliance_ledger`,
 `protocol_evidence`, and `do_not_do`.
