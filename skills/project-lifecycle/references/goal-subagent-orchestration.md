@@ -289,9 +289,16 @@ Default synthesis rules:
 - Automatic parallelization is the default in goal-backed project work. The
   user's standing preference is: when work can be safely parallelized, parallelize
   automatically. Set `subagent_dispatch_policy.runtime_permission` to
-  `auto_parallel_safe` when the agenda has disjoint, executable items and the
-  runtime exposes a safe subagent mechanism. The user does not need to say
-  "并行", "子agent", or "分派" for this to apply.
+  `auto_parallel_safe` when the agenda has disjoint, executable items, the
+  runtime exposes a safe subagent mechanism, and current tool policy permits
+  spawning for this request. The user does not need to say "并行", "子agent", or
+  "分派" only when the active tool policy already authorizes automatic
+  delegation.
+- If active tool metadata says subagents may be spawned only after an explicit
+  user request for subagents, delegation, or parallel agent work, and the current
+  user message does not contain that authorization, set
+  `runtime_permission: blocked_by_runtime_or_tool_policy`, preserve the task
+  graph, and execute sequentially.
 - Explicit words such as "并行", "子agent", "分派", "multi-agent", or delegation
   are acceleration signals, not required authorization. They should increase the
   effort spent finding a safe parallel split, but they do not override the safety
@@ -488,9 +495,11 @@ Pressure scenarios:
   unless a user-private reversal variable makes the synthesized goal unsafe.
 - "`目标！ <project objective>` with multiple independent work surfaces": infer
   `subagent_dispatch_policy.runtime_permission: auto_parallel_safe` when the
-  runtime supports subagents and the agenda contains disjoint read-only,
-  verification, review, docs, or single-writer items. Dispatch automatically
-  within the concurrency budget; do not wait for the user to say "并行".
+  runtime supports subagents, current tool policy permits spawning for this
+  request, and the agenda contains disjoint read-only, verification, review,
+  docs, or single-writer items. Dispatch automatically within the concurrency
+  budget only when that policy gate passes; otherwise preserve the graph and
+  execute sequentially with the policy boundary recorded.
 - "`目标！ <project objective>` but no subagent tool/runtime support": set
   `runtime_permission: blocked_by_runtime_or_tool_policy`, keep the parallel split
   in the agenda when useful, execute sequentially or with main-thread local
@@ -794,8 +803,8 @@ Spawn subagents automatically when
 `subagent_dispatch_policy.runtime_permission` is `auto_parallel_safe`.
 Automatic means the controller decided from the agenda, runtime/tool availability,
 and safety gates below that parallelism improves delivery without weakening
-correctness. Do not ask the user for permission just to parallelize safe bounded
-work.
+correctness. When current tool policy permits automatic delegation, do not ask
+the user for permission just to parallelize safe bounded work.
 
 Dispatch follows `parallel_execution_mode`:
 
@@ -864,8 +873,9 @@ Do not spawn persistent subagents when no close mechanism or runtime auto-close
 evidence exists. Use sequential execution or non-persistent main-thread work
 instead.
 
-If scopes overlap, run the items sequentially or ask one subagent for a patch or
-analysis-only recommendation and let the main thread apply the change.
+If scopes overlap, run the items sequentially. When dispatch is otherwise
+permitted, one subagent may provide a patch or analysis-only recommendation for
+the main thread to apply.
 
 When a subagent is spawned, immediately add its returned id to
 `subagent_runtime_registry`. If spawning succeeds but registry update fails, do

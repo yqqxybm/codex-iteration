@@ -83,7 +83,7 @@ with concise options; otherwise ask a short text question and stop.
 For deep or exhaustive reviews, use this chain without changing review-only
 scope:
 
-1. `three-step-analysis`: define standard, risk model, hidden assumptions, and likely failure paths.
+1. `three-step-analysis`: define standard, risk model, hidden assumptions, and likely failure paths. For software-project, Codex skill-system, lifecycle, config, or agent reviews governed by `project-lifecycle`, use the supplied `goal_preflight` / `optimality_law` or the `project-analysis` adapter as this three-step lens instead of bypassing the project controller.
 2. `review`: inspect direct evidence and produce findings.
 3. `self-refine`: critique the report for missing evidence, weak severity, duplicates, unclear impact, or overclaiming.
 4. `retrospective`: only when prior feedback or repeated review failure should change future behavior.
@@ -95,6 +95,7 @@ For deep or exhaustive reviews, stop only after two consecutive **auditable**
 clean passes. A pass counts only when it records:
 
 - risk model or review lens checked through `three-step-analysis`,
+  `project-analysis`, or a lifecycle-supplied `goal_preflight` adapter,
 - direct evidence surfaces inspected by `review`,
 - verification or pressure scenarios run, simulated, or explicitly skipped,
 - findings delta: new, changed, removed, or none,
@@ -318,8 +319,8 @@ actions. A project may pass only if no required item is unaccounted and no
 
 For software-project standard reviews, load `software-contract` and read
 `~/.codex/skills/software-contract/references/standard-development-contract.md`.
-Read `references/docs-deliverables.md` from that skill when equivalent document
-paths or handoff assets determine the finding.
+Read `~/.codex/skills/software-contract/references/docs-deliverables.md` when
+equivalent document paths or handoff assets determine the finding.
 
 ## Workflow
 

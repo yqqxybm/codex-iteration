@@ -128,12 +128,16 @@ Classify the request before acting:
 - **Any project request creates a multi-item agenda or independent work
   surfaces**: evaluate automatic parallel dispatch through
   `references/goal-subagent-orchestration.md`. If the work is safe, disjoint,
-  executable, materially worth dispatching, and the runtime exposes subagent
-  tools, choose the smallest correct `parallel_execution_mode` and parallelize
-  automatically; do not wait for the user to say "并行". Do not merely count
-  available agents. Build the task graph, dependency edges, conflict edges,
-  runtime capability probe, parallel ROI, merge strategy, join barrier, and
-  selected antichain first. Preserve exact fields:
+  executable, materially worth dispatching, the runtime exposes subagent tools,
+  and current tool policy permits spawning for this request, choose the smallest
+  correct `parallel_execution_mode` and parallelize automatically; do not wait
+  for the user to say "并行" when policy already allows delegation. If tool
+  policy requires an explicit subagent/delegation request and the user did not
+  make one, preserve the task graph but set the dispatch policy to blocked by
+  tool policy. Do not merely count available agents. Build the task graph,
+  dependency edges, conflict edges, runtime capability probe, parallel ROI,
+  merge strategy, join barrier, and selected antichain first. Preserve exact
+  fields:
   `runtime_capability_probe`, `parallel_roi`, `merge_strategy`,
   `subagent_spawn_mechanism`, `subagent_close_mechanism`, `join_barrier`,
   `same_worktree_disjoint`, `isolated_worktree_if_supported`, `main_applies_patch`,
