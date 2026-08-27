@@ -101,7 +101,7 @@ delivery; do not force every request into implementation.
 
 | Phase | User intent | Downstream capability |
 | --- | --- | --- |
-| `discovery` | research must determine users, product content, requirements, priorities, positioning, or scope | `project-discovery`, then controller adoption |
+| `discovery` | inquiry must establish the concrete project object or product direction before a commitment can be accepted | `project-discovery`, then controller adoption |
 | `idea` | accepted problem/user reality, but product intent is still vague | `project-brief`, then this controller |
 | `charter` | accepted reality, but product goal, workflow, constraints, or success criteria remain unresolved | `project-brief` + `project-lifecycle` |
 | `architecture` | stack, data model, service boundaries, risk tradeoffs | `project-analysis` |
@@ -123,11 +123,17 @@ delivery; do not force every request into implementation.
 - This controller chooses the downstream capability. Do not let user wording
   such as "修一下", "改个 bug", "写文档", or "发布" bypass the controller.
 - **The earliest unresolved commitment controls the chain**: when the actors,
-  situation, task or judgment, needed information or capability, or its effect
-  on the outcome is not accepted and would decide what the product should
-  contain, start with `project-discovery`. A broad user concern, example,
-  tentative claim, current UI/API/field, available integration, or action verb is
-  not an accepted product need. After adoption, route through `project-brief`
+  situation, task or judgment, needed capability, its effect on the outcome, or
+  the form through which the project would realize the user's purpose is not
+  accepted and would decide what the project should be or contain, start with
+  `project-discovery`. The user's purpose and value relation direct this
+  inquiry; Codex may question and deepen their meaning but may not silently
+  replace them. An accepted purpose does not by itself establish the object that
+  should realize it. Decide from the state of that object, not from content words
+  in the request. Preserve accepted legal, safety, factual, and scope boundaries.
+  A broad user concern, example, tentative claim, current UI/API/field,
+  available integration, or action verb is not an accepted product need. After
+  adoption, route through `project-brief`
   whenever the finding creates or changes product content, requirements, scope,
   or success criteria. When project reality is accepted but the product intent,
   user/workflow, requirement boundary, non-goals, or success criterion is not,
@@ -330,6 +336,12 @@ invalidates only causal descendants, and reopens the stage that owns the failed
 judgment. An explicit analysis waiver does not itself choose among these states.
 Preserve unrelated accepted state.
 
+When feedback challenges a premise shared by multiple outputs, test the premise
+before repairing those outputs one by one. If the premise no longer holds, this
+is model feedback: reopen the stage that formed it and invalidate only its
+causal descendants. More sources, requirements, tests, or review records cannot
+make a disputed model valid.
+
 Do not promote the correction's literal wording. A corrected judgment becomes a
 cross-task or cross-version rule only when the user explicitly makes it durable,
 it expresses a stable project invariant, or repeated causally equivalent
@@ -391,11 +403,11 @@ executor, normally `project-iteration`; the controller may close it from this
 core contract plus focused verification without loading the controller protocol
 only to format the final response.
 
-Referenced protocols are binding, not advisory. When this file requires a
-reference, the controller must read it before the governed action, apply its
-required schemas, gates, and stop conditions, and record `protocol_evidence`.
-Do not claim progress or completion from a governed action when the required
-reference was not read or its evidence fields were not carried forward.
+Referenced protocols govern the transitions they own. Read the relevant
+reference before the governed action, apply the decision boundary and stop
+condition it establishes, and preserve only the continuity state another stage
+or session needs. Completion follows the resulting project state and its
+material verification, not a record that the protocol was read.
 
 The controller itself remains responsible for:
 

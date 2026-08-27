@@ -4,15 +4,16 @@ description: >
   Resource-only software project contract skill. Use as the domain resource
   layer for software-project work when project-lifecycle, project-bootstrap,
   project-iteration, project-docs, project-frontend, review, or optimize needs
-  fixed software standards, standard development guide coverage, frontend
-  quality/taste contracts, coding quality gates, or docs deliverable mappings.
+  software standards, standard development guide coverage, frontend
+  quality/taste contracts, coding quality judgment, or docs deliverable mappings.
   Does not implement, edit, review, commit, deploy, or sync by itself.
 ---
 
 # Software Contract
 
-This is a resource-only skill for software-project domain standards. It exists
-to keep controller and executor skills short while preserving hard behavior.
+This is a resource-only skill for software-project domain standards. It keeps
+shared judgment available without turning methods, evidence, or checklists into
+the purpose of project work.
 
 ## Position In The Skill Stack
 
@@ -47,8 +48,8 @@ The calling skill must load the required reference before using the standard. If
 a required reference cannot be read, stop and report the missing resource. Do not
 replace it with generic memory or a weaker checklist.
 
-Report resource evidence in the handoff or final response when it affects a
-completion claim:
+Mention the loaded resource in a handoff or final response only when that
+context materially affects the judgment or completion claim:
 
 ```yaml
 domain_resource_evidence:
@@ -67,10 +68,10 @@ domain_resource_evidence:
   deciding what docs should exist, where standalone docs belong, what can be
   merged, what should not be created, and how docs-only changes should be
   verified for each project shape and lifecycle stage.
-- `references/coding-quality-contract.md`: coding-stage quality concerns for
-  implementation and review.
+- `references/coding-quality-contract.md`: shared practical quality judgment
+  for implementation, optimization, and review.
 - `references/frontend-quality-contract.md`: UI Contract schema, frontend state
-  pressure dimensions, and evidence packet expectations.
+  pressure dimensions, and realistic verification boundary.
 - `references/frontend-theme-contract.md`: fixed frontend aesthetic themes,
   theme contract schema, and anti-template prompt expansions.
 - `references/frontend-prototype-reference-contract.md`: source/prototype
@@ -78,11 +79,13 @@ domain_resource_evidence:
   theme words.
 - `references/frontend-motion-contract.md`: advanced frontend motion selection,
   GSAP usage boundaries, cleanup, accessibility, and verification rules.
-- `references/frontend-design-contract.md`: stable frontend visual design,
-  component, accessibility, responsive, and rendered QA standards.
+- `references/frontend-design-contract.md`: aesthetic quality as the core
+  frontend criterion and goal, universal AQ1/AQ2/AQ3 target levels and score
+  calibration, stable visual design, component, accessibility, responsive, and
+  rendered QA standards.
 - `references/frontend-taste-contract.md`: high-aesthetic frontend taste control
-  for design read, variance/motion/density dials, anti-default audit, redesign
-  preservation, and compact taste preflight.
+  for design read, component taste micro-gates, variance/motion/density dials,
+  anti-default audit, redesign preservation, and compact taste preflight.
 
 ## Boundary
 

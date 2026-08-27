@@ -1,6 +1,7 @@
 interface:
   display_name: "Optimize"
-  short_description: "Improve artifacts with bounded optimization."
+  short_description: "Help a formed object realize its purpose more fully."
   default_prompt: >
-    Use $optimize to improve this artifact under clear objectives, constraints,
-    and stop conditions.
+    Use $optimize to understand this formed object, find the relation that most
+    limits its purpose, and make the fitting authorized change while preserving
+    what the whole still needs.

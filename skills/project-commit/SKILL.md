@@ -26,15 +26,10 @@ description: >
 
 When invoked by `project-lifecycle` directly, or as a lifecycle-authorized
 commit step after `project-bootstrap` / `project-iteration`, consume the Context
-Packet, preserve `owned_scope`, `do_not_do`, and `standard_compliance_ledger`
-when present. When provided, also preserve `project_goal`, `goal_runtime`,
-`goal_synthesis` / `control_system_goal`, `goal_preflight` /
-`optimality_law`, `perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
-`loop_control_matrix`, `review_clean_pass_loop`,
-`optimize_framework_cycle_loop`, `runtime_resource_ledger`,
-`subagent_runtime_registry`, `subagent_dispatch_policy`, `agent_owner`,
-`write_policy`, and `protocol_evidence`. Stage only files inside
-`owned_scope`.
+Packet. Preserve the authorized file scope, exclusions, active goal/plan state,
+and only the verification, standard, or subagent projection relevant to the
+snapshot. Do not instantiate or echo absent packet fields. Stage only files
+inside the authorized scope.
 
 Return a Handoff Record with staged files, commit hash/message, skipped files,
 security checks, hook result, `standard_compliance_delta` when a ledger is
@@ -44,12 +39,14 @@ evidence needed by an active `plan_state_sink`. Never treat `.codex/traces/` as
 Git history; traces are operational context only and are not committed by
 default.
 
-Commit, push, tag, and release-history mutation are main-thread operations. If invoked as a subagent,
-do not edit the parent goal, do not spawn subagents, and
+Commit, push, tag, and release-history mutation are main-thread operations. If
+invoked as a subagent, preserve the assigned `assignment_id`,
+`execution_owner_id`, `agent_owner`, and `write_policy`; do not edit the parent
+goal, do not spawn subagents, and
 do not stage, commit, push, tag, deploy, sync remote state, broaden scope, or
-claim project completion. Return `new_work` plus a commit readiness receipt with
-candidate staged files, message proposal, risks, and blocked files to
-`project-lifecycle`.
+claim project completion. Return `new_work`, candidate staged files, message
+proposal, risks, and blocked files inside the exact assignment-required
+`subagent_receipt`; a Handoff Record may accompany but never replace it.
 
 When invoked inside a lifecycle `cyclic_goal_loop`, also return:
 
@@ -58,7 +55,7 @@ cyclic_goal_delta:
   commit_state: <committed | blocked | not_applicable>
   commit_hash: <hash or none>
   pushed_state: <not_requested | pushed | blocked | not_applicable>
-  clean_pass_reset_required: <true | false, with reason>
+  completion_revisit_required: <true | false, with reason>
   material_in_scope_new_work: <agenda items or none>
 ```
 

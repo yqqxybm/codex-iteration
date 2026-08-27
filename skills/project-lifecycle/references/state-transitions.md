@@ -6,10 +6,11 @@ these transitions; downstream skills act only on accepted state.
 
 ## Discovery-To-Adoption Changes
 
-Use `project-discovery` when user, market, competitor, product, or domain
-research must determine product content, target users, requirements,
-priorities, positioning, or scope. A bounded fact lookup or feasibility check
-for an already accepted decision stays with `project-analysis`.
+Use `project-discovery` when the concrete project object or product direction
+is not established strongly enough to form a commitment. This is an object-state
+judgment, not a keyword or research-source trigger. A bounded fact lookup or
+feasibility check for an already accepted decision stays with
+`project-analysis`.
 
 Discovery produces a provisional handoff whose authority status is
 `evidence_only`; that label does not reduce it to source collection or replace
@@ -47,9 +48,12 @@ correction to the research object, actors, task, judgment standard,
 explanatory relation, or method is `model_feedback`: set `status: model_reset`,
 identify the model's causal descendants, and remove their authority before
 rebuilding. This applies to dependent adopted decisions, charter fields,
-requirements, agenda items, docs, tests, fixtures, and implementation decisions,
-not to unrelated project state. Actual artifact repair remains subject to the
-user's mutation boundary and the owning downstream skill.
+requirements, agenda/task-graph items, docs, tests, fixtures, implementation
+decisions, and accepted review judgments or explicit review-round state that
+depended on the premise, not to unrelated project state. Preserve the historical
+observation, but do not reuse its conclusion as support for the rebuilt model.
+Actual artifact repair remains subject to the user's mutation boundary and the
+owning downstream skill.
 
 ## Root-State Changes
 

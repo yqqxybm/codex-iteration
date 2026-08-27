@@ -1,6 +1,9 @@
 interface:
   display_name: "Project Brief"
-  short_description: "Downstream project brief stage."
+  short_description: "Form an accepted product commitment."
   default_prompt: >
-    Use $project-brief when project-lifecycle assigns brief clarification; turn
-    the fuzzy software request into scope, success criteria, and deliverables.
+    Use $project-brief when project-lifecycle assigns product-commitment
+    formation; turn accepted project reality or adopted discovery into a clear
+    user/workflow, requirement boundary, non-goals, scope, success criteria, and
+    deliverable shape. Return unresolved user or product reality to
+    project-lifecycle for project-discovery instead of inferring it.

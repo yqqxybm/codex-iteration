@@ -33,28 +33,26 @@ Release work must follow the project lifecycle philosophy:
 
 When invoked by `project-lifecycle`, consume its Context Packet before release
 work. Preserve release target, environment, version/tag decision, rollback
-requirement, `standard_compliance_ledger`, and explicit deployment boundaries.
-When provided, also preserve `project_goal`, `goal_runtime`, `goal_synthesis` /
-`control_system_goal`, `goal_preflight` / `optimality_law`,
-`perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
-`loop_control_matrix`, `review_clean_pass_loop`,
-`optimize_framework_cycle_loop`, `runtime_resource_ledger`,
-`subagent_runtime_registry`, `subagent_dispatch_policy`, `agent_owner`,
-`write_policy`, and `protocol_evidence`.
+requirement, explicit deployment boundaries, active goal/plan state, and only
+the standard, verification, runtime-resource, or subagent projection relevant
+to this release. Do not instantiate or echo absent packet fields.
 
 Return a Handoff Record with version/tag, build artifact, deployment command,
 rollout or health evidence, rollback path, docs/runbook updates,
-standard compliance delta, `domain_resource_evidence` when `software-contract`
+standard compliance delta when its ledger is active,
+`domain_resource_evidence` when `software-contract`
 was loaded, open risks, the next recommended skill, and any item status, result,
 and verification evidence needed by an active `plan_state_sink`. Use
 `.codex/traces/` only for long releases or incident-prone chains; durable
 operations facts belong in runbooks through `project-docs`.
 
 Release mutation is a main-thread operation. If invoked as a subagent, preserve
-the assigned `agent_owner` and `write_policy`; do not edit the parent goal, do not spawn subagents,
+the assigned `assignment_id`, `execution_owner_id`, `agent_owner`, and
+`write_policy`; do not edit the parent goal, do not spawn subagents,
 and do not commit, push, deploy, publish, sync remote state, broaden scope, or
 claim project completion. Return release readiness findings, command evidence,
-blockers, or a runbook patch proposal to `project-lifecycle`.
+blockers, or a runbook patch proposal inside the exact assignment-required
+`subagent_receipt`; a Handoff Record may accompany but never replace it.
 
 When invoked inside a lifecycle `cyclic_goal_loop`, also return:
 
@@ -63,13 +61,13 @@ cyclic_goal_delta:
   release_state: <not_applicable | built | published | deployed | blocked>
   deploy_health: <pass | fail | not_applicable | blocked>
   rollback_ready: <true | false | not_applicable>
-  clean_pass_reset_required: <true | false, with reason>
+  completion_revisit_required: <true | false, with reason>
   material_in_scope_new_work: <agenda items or none>
 ```
 
 Failed build, publish, deploy, health, rollback, or release-doc evidence inside
-the parent goal boundary is material new work and resets the parent clean-pass
-counter.
+the parent goal boundary is material new work. Return it to the lifecycle so the
+agenda, verification boundary, and completion judgment can be revised.
 
 ## Release Preflight
 
@@ -79,8 +77,9 @@ Before executing release commands:
    release scope. Ask only when the target or action is ambiguous enough to
    mutate the wrong environment.
 2. Read project-local release sources in this order when present:
-   `docs/runbook*`, `docs/deploy*`, `README.md`, `AGENTS.md`, `Makefile`,
-   package scripts, CI config, deployment scripts.
+   `docs/operations/runbook*`, `docs/operations/deploy*`, project-native docs
+   indexes, legacy flat `docs/runbook*` / `docs/deploy*`, `README.md`,
+   `AGENTS.md`, `Makefile`, package scripts, CI config, deployment scripts.
 3. Identify the artifact, version/tag policy, publish destination, deployment
    command, health check, and rollback path.
 4. If project-local release instructions are missing, stale, or unsafe, stop and

@@ -7,7 +7,7 @@ trace, or finalizes a lifecycle task.
 ## Table Of Contents
 
 - Call Chain Plan
-- Protocol Evidence Gate
+- Continuity Principle
 - Executable Plan Quality
 - Plan Advancement Loop
 - Runtime Resource Ledger
@@ -17,31 +17,13 @@ trace, or finalizes a lifecycle task.
 - Pressure Scenarios
 - Final Response
 
-## Protocol Evidence Gate
+## Continuity Principle
 
-Referenced protocols are binding. When `project-lifecycle/SKILL.md` requires
-this reference, the controller must prove that the reference changed execution
-state instead of treating it as background reading.
-
-Maintain compact evidence:
-
-```yaml
-protocol_evidence:
-  loaded_references:
-    - references/controller-protocol.md
-    - <other required references, or none>
-  active_protocols: <call_chain | plan_advancement | goal_orchestration |
-    subagent_execution | context_packet | handoff | trace | final_response>
-  required_schemas: <only the authoritative schemas loaded for this request>
-  gates_applied: <analysis_gate | executable_plan_quality | stop_condition | verification_scope | none>
-  stop_condition_checked: <true | false, with reason>
-```
-
-Do not claim a governed action progressed or completed unless
-`protocol_evidence` shows the required reference, schemas, gates, and stop
-condition were applied. If the evidence is missing, reopen the controller step
-instead of allowing a downstream skill, commit, review, or verification command
-to stand in for lifecycle completion.
+Read the protocol that governs an actual transition and let it change the
+decision, boundary, action, or stop condition. Preserve state only when another
+stage, agent, or later session needs it to continue correctly. Completion rests
+on the resulting project state and the verification appropriate to its claims,
+not on a separate record proving that a protocol was read.
 
 ## Call Chain Plan
 
@@ -53,37 +35,15 @@ goal: <user-visible objective>
 selected_chain:
   - skill: <skill-name>
     purpose: <which unresolved commitment or requested outcome this skill owns>
-analysis_gate: <project-analysis required | explicitly_skipped_by_user |
-  not_required_read_only | not_required_very_small>
-discovery_gate: <required | ready_for_adoption | adopted | rejected |
-  model_reset (discovery-owned only) | blocked | insufficient | not_applicable>
 success_criterion: <observable finish condition for the whole request>
-skill_system_best_practice_packet: <required for fuzzy or under-specified project intents; input to goal prompt synthesis when goal-backed>
-standard_compliance_ledger: <required when a project is created, phase-advanced, or standard-audited>
-codegraph_init_required: <true for new software project bootstrap unless explicitly not a code project>
-goal_synthesis: <required for explicit 目标! / 目标！ or goal-backed concierge>
-goal_preflight/optimality_law: <required before creating or maintaining a
-  goal-backed tool goal; must include candidate calibration questions and
-  ask-or-not-ask handling>
-tool_goal_prompt: <required before create_goal/goal reconciliation; for looped goals,
-  must include continue_while, reset_on, stop_only_when, and never_complete_from>
-perspective_model: <required when review, optimization, product readiness,
-  project-system, or Codex self-iteration judgment is part of the goal>
-project_optimality_packet: <authoritative revisioned project-quality evidence
-  when its state must survive broad/unqualified review or optimization,
-  cross-phase or resumable work, multi-agent work, or concurrent mutation>
-subagent_execution: <required for independent work or delegation; authoritative
-  dispatch proof, assignment, receipt-join, and thread-accounting state from
-  references/subagent-execution.md>
-runtime_resource_ledger: <required when lifecycle creates a non-subagent server, browser, terminal, ssh, tunnel, automation, or other long-lived runtime handle>
-loop_control_matrix: <required when goal, agenda, subagent, review, optimize, release, or sync loops interact>
-review_clean_pass_loop: <review clean-pass counter and reset source when review depth requires clean passes>
-optimize_framework_cycle_loop: <framework exhaustion cycle counter and reset source when deep optimization is active>
-plan_state_sink: <trace_only | formal_plan_file | trace_and_formal_plan, with paths>
-cyclic_goal_loop: <required for goal-backed advancement, version closeout, or release readiness>
+active_control_state: <only the analysis/discovery disposition or goal, agenda,
+  subagent, runtime, release, sync, or standard state that this chain activates>
 stop_condition: <when not to continue the chain>
-protocol_evidence: <loaded references, active protocols, gates, and stop-condition check>
 ```
+
+Load and attach a specialized control structure only when its owner is active.
+Its authoritative reference defines the detail; the call-chain plan records the
+state that can change this chain, not a union of every possible controller field.
 
 The selected chain begins at the earliest unresolved commitment and reaches the
 user's requested outcome. Omit an earlier phase only when its state is already
@@ -277,9 +237,10 @@ subagent_execution: <required state summary from
 
 Loop invariant: the plan is not complete while any required item is `pending`,
 `active`, unverified, or while concierge `cyclic_goal_loop` has material
-in-scope issues, unmet commit/push/deploy/health requirements, or insufficient
-clean passes, while non-subagent runtime resources remain open without a visible
-keep-open policy, or while the subagent receipt-join/thread-accounting gate is unsatisfied.
+in-scope issues, unmet commit/push/deploy/health requirements, or unfinished
+user-explicit review rounds, while non-subagent runtime resources remain open
+without a visible keep-open policy, or while the subagent
+receipt-join/thread-accounting gate is unsatisfied.
 
 Before invoking downstream skills, run the Executable Plan Quality gate over the
 agenda and the task graph. Do not start a vague item and hope the downstream
@@ -424,25 +385,13 @@ Completion rules:
 ## Context Packet
 
 Before using a downstream skill, carry forward only the context it needs:
-Evaluate the Project Optimality State Contract activation conditions before
-dispatch. When project-quality evidence must survive broad/unqualified review or
-optimization, cross-phase or resumable work, multi-agent work, or concurrent
-mutation, `project-lifecycle` initializes the packet before dispatch and supplies
-the full packet, a resolvable reference, or a typed bounded projection. A
-downstream skill must return to lifecycle if required persistent state is
-missing; it must not silently substitute ephemeral probes. When none of those
-conditions applies, keep bounded probes ephemeral.
+use the goal, agenda, trace, and accepted Handoffs for continuity. Review and
+optimization judgments travel as compact context only while they can affect the
+next decision or action.
 
-A Context Packet is a typed bounded projection, not a form to fill. Include only
-active fields the recipient can use or invalidate. An absent field is inactive,
-not a request for a placeholder. Downstream skills preserve the supplied
-authority and return only relevant deltas; they do not reconstruct, echo, or
-instantiate the rest of this vocabulary.
-
-When persistent project-optimality context is active, load both
-`~/.agents/skills/software-contract/references/coding-quality-contract.md` and
-`~/.agents/skills/software-contract/references/project-optimality-state-contract.md`
-and record them in `protocol_evidence`.
+A Context Packet is a bounded projection, not a form to fill. Include only what
+the recipient can use or invalidate. Downstream skills preserve the supplied
+authority and return only a result or state change that matters to the caller.
 
 An upstream report, analysis, audit, proposal, or retrospective defaults to
 `evidence_only`. Its observations, hypotheses, and recommendations may inform
@@ -453,69 +402,20 @@ transition: adoption, `change_request`, or `model_reset`. This is a semantic
 boundary, not a new packet or ledger.
 
 ```yaml
-intent: <user goal>
-constraints: <hard limits and preferences>
-decisions_so_far: <controller-accepted decisions; upstream proposals remain evidence_only>
-discovery_gate: <status and adoption boundary when project-discovery is active>
-discovery_handoff: <evidence-only discovery result or resolvable reference,
-  supplied only to an adoption decision owner>
-analysis_gate: <project_analysis_consumed | explicitly_skipped_by_user |
-  not_required_read_only | not_required_very_small>
-analysis_gate_evidence: <Stage 3 decision and implementation boundary, exact
-  analysis-waiver wording, concise read-only proof, or concise proof of every
-  very_small condition>
-owned_scope: <files, modules, project area, or phase responsibility>
-skill_system_best_practice_packet:
-  <controller-written normalized prompt for fuzzy requests: raw user wording,
-  inferred target, skill survey, codex-written task-prompt fragment, quality
-  defaults, required contracts, selected skill-system utilization, downstream chain,
-  verification defaults, relationship to tool_goal_prompt, what the user is not
-  required to supply, and blocking-question boundary>
-project_goal/goal_runtime/cyclic_goal_loop:
-  <when concierge mode is active>
-runtime_resource_ledger:
-  <created long-lived runtime handles, close policy, and close evidence>
-subagent_execution:
-  <only the bounded assignment for a child, or the compact parent execution
-  summary required by references/subagent-execution.md; never the full parent
-  graph, V2 wave, CAO, or loop state when the recipient does not need it>
-loop_control_matrix:
-  <active loops, reset edges, stop precedence, and non-equivalent counters when
-  multiple loops interact>
-review_clean_pass_loop/optimize_framework_cycle_loop:
-  <active counter, clean target, reset source, and why one loop cannot count as the other>
-plan_state_sink:
-  <trace/formal plan state sink, active item, and update policy when agenda is active>
-goal_synthesis/control_system_goal:
-  <target layer, state model, sensors, actuators, hardness, delivery,
-  escalation, and stop condition when 目标! / 目标！ is active>
-goal_preflight/optimality_law:
-  <material model, calibration, task-specific value ordering, elegance
-  constraint, non-goal boundary, and falsification test>
-perspective_model:
-  <compact projection of project_optimality_packet, or material non-software
-  role/lens summaries>
-project_optimality_packet:
-  <authoritative project-quality evidence packet or resolvable revision-pinned
-  project_optimality_ref for broad review/optimization, never a replacement for
-  project_goal or optimality_law;
-  bounded recipients receive a typed project_optimality_projection>
-doc_profile: <when docs/assets are involved>
-docs_ia: <authorized root docs and docs/ subdirectories when standalone docs are involved>
-verification_required: <actual command or evidence expected>
-verification_scope: <docs-only | focused-code | ui | config/build | release | security | full-project>
-standard_compliance_ledger: <relevant guide entries and required status updates>
-ui_contract: <when downstream work is UI, core workflow and relevant operating conditions>
-aesthetic_target_level: <AQ1 local-integrity | AQ2 production-grade | AQ3 benchmark-grade, plus inherited floor and evidence basis>
-visual_target_gate: <required | not_applicable, with reason>
-aesthetic_generation_packet: <concrete beauty mechanism and implementation translation when Tier 2/3/high-aesthetic UI is in scope>
-visual_target: <concrete visual target or required downstream output when Tier 2/3/high-aesthetic UI is in scope>
-frontend_skill_experiment: <rule hypothesis, experiment path, pass threshold, and failure-to-skill feedback rule when a frontend skill/prompt is being validated by an experimental page>
-codegraph_init_required: <true for new software project bootstrap unless explicitly not a code project>
-related_surfaces: <same-pattern pages/components to inspect or explicitly exclude>
-do_not_do: <explicit exclusions, quality-reduction bans, or boundaries>
-protocol_evidence: <required controller protocols and gates the downstream skill must preserve>
+intent: <user goal and accepted purpose>
+constraints: <hard limits, explicit exclusions, and preserved commitments>
+accepted_state: <only decisions the recipient may rely on>
+owned_scope: <the decision or action this recipient owns>
+current_judgment: <only when it changes this recipient's work>
+active_control_state: <only the relevant discovery, analysis, goal, agenda,
+  subagent, runtime, release, or sync state; otherwise omit>
+verification_boundary: <the claim or consequence this recipient must test>
 ```
+
+Attach owner-specific detail by reference only when that owner needs it. For
+example, a UI owner may need its visual target, a release owner its environment
+and rollback path, and a delegated worker its exact assignment. Do not copy the
+vocabulary or state of unrelated owners into the packet.
 
 ## Handoff Record
 
@@ -524,39 +424,13 @@ After each downstream skill finishes, record a short handoff:
 ```yaml
 skill: <skill-name>
 status: <done | blocked | skipped>
-changed_artifacts: <files, commands, docs, commits, or none>
-decisions: <controller-accepted decisions only; otherwise proposals/evidence>
-state_transition_delta: <discovery handoff or adoption, change_request,
-  model_reset with owning stage and causal descendants, or not_applicable>
-verification: <command and key result>
-verification_scope: <docs-only | focused-code | ui | config/build | release | security | full-project>
-goal_runtime/goal_status: <goal state, or none>
-runtime_resource_delta:
-  <created, kept_open, closed, not_found, close_failed, or not_applicable handles>
-subagent_execution_delta:
-  <accepted receipt/graph changes, mode or model-route changes, join and
-  thread-accounting state, CAO evidence when active, or none; use the authoritative
-  schema from references/subagent-execution.md>
-loop_control_matrix_delta:
-  <counter resets, clean-pass increments, stop-condition changes, or none>
-review_clean_pass_loop/optimize_framework_cycle_loop_delta:
-  <increment, reset, satisfied, blocked, or not_applicable with reason>
-goal_review_delta:
-  <review depth, material new work, clean-pass delta, inspected stop surfaces,
-  and residual issues, or not_applicable>
-project_optimality_delta:
-  <typed base-revision delta for model, concerns, probes, append-only evidence,
-  invalidation, and human decisions, or none>
-cyclic_goal_delta: <material issues, clean-pass reset/increment, commit/push/deploy/health state, or none>
-frontend_evidence_packet: <when UI work occurred, verified and unverified conditions>
-standard_compliance_delta: <guide entries satisfied, missing, deferred, blocked, or not_applicable>
-codegraph_status: <initialized/indexed/status output or blocked reason, when bootstrap occurred>
-domain_resource_evidence: <software-contract references loaded or missing, when used>
-open_risks: <remaining blockers or risks>
-next_recommended_skill: <next skill or none>
-agenda_update: <done, blocked, added, or remaining items>
-plan_state_sink_delta: <trace/formal plan paths updated, active item flushed, or blocked>
-protocol_evidence_delta: <protocol gates satisfied, reset, blocked, or missing>
+judgment_or_result: <what the caller may now conclude or act on>
+changed_artifacts: <only actual mutations, or none>
+state_delta: <only an adoption, model reset, change request, goal/agenda,
+  subagent, runtime, release, or sync change that the controller must apply>
+verification: <the decisive check and result, when one was needed>
+open_limit: <only a blocker, uncertainty, or risk that changes the next step>
+next_recommended_skill: <next owner, when action remains>
 ```
 
 If the handoff proposes a change to the original plan, the controller must first
@@ -572,13 +446,9 @@ discovery-to-adoption transition from `references/state-transitions.md`; an
 adoption recommendation from `project-analysis` still requires controller
 acceptance.
 
-Validate and merge every `project_optimality_delta` against the
-controller-owned packet before replanning, optimization, review, or a clean-pass
-increment. Apply the revision, idempotency, stale-merge, evidence-invalidation,
-and derived-completion rules from the Project Optimality State Contract.
-A pending human decision must remain in the packet and `open_risks` or blocking
-state for every affected claim; it cannot disappear through summarization or
-handoff.
+Carry only judgments that can change the plan, action, or completion boundary.
+An unresolved human decision remains in `open_risks` or blocking state for
+every affected claim; it cannot disappear through summarization or handoff.
 
 ## Trace Placement
 
@@ -591,11 +461,6 @@ Use the lightest trace that preserves recoverability:
    `README.md`, project `AGENTS.md`, or `docs/` through `project-docs`.
 
 Trace files are operational working records, not backups and not formal docs.
-For a long chain with `project_optimality_packet`, the trace stores the
-authoritative packet snapshot and merged deltas. Any
-`project_optimality_ref` must name that trace section, exact revision, content
-hash, and assigned probe ids. Do not persist a second perspective or review
-ledger.
 Do not commit `.codex/traces/` by default. Commit them only if the user asks for
 trace history to be part of the repository. If `.codex/traces/` reveals a stable
 project fact or controller-accepted durable decision, route it to `project-docs`
@@ -671,28 +536,21 @@ merely because they were recorded.
   The packet must define implementation boundary, directly affected docs/tests,
   coding-quality contract applicability, verification scope, and focused vs deep
   review semantics.
-- "审查一下 / 深度审查 / 全面 review": synthesize a review packet that selects the
-  `review` skill. An unqualified software-project, repository, or product review
-  defaults to project-global `deep` scope and every reality domain in the Project
-  Optimality And Quality Contract. Explicit "全面", "完全", "穷尽",
-  "逐词逐句", or `exhaustive` wording selects `exhaustive` depth. An explicitly
-  bounded diff, file, issue, or workflow uses a focused completion-claim scope,
-  while depth remains governed by wording and risk. Carry the single
-  project-improvement `optimality_law`. For project-global, already
-  packet-backed, cross-phase, resumable, multi-agent, or concurrently mutating
-  review, carry the authoritative project-quality evidence
-  `project_optimality_packet` and its compact `perspective_model`; for a focused
-  single-owner review without a packet, carry only ephemeral scoped probes.
-  Always carry the applicable clean-pass requirements, inspected surfaces, and
-  not-inspected boundaries.
-  Do not ask the user to name the review surfaces when the project evidence can
-  derive them.
-- "优化一下 / 深度优化 / 深度审查优化": synthesize an optimization packet that selects
-  `optimize` or the project adapter owner, preserves the review-optimize loop when
-  requested, carries the authoritative project-quality evidence
-  `project_optimality_packet` for broad
-  software-project optimization, carries framework-exhaustion requirements, and
-  prevents novelty or bloat from replacing the user's target.
+- A review request selects `review` only when the user's actual intent is an
+  independent judgment of an existing object. Resolve scope from the object and
+  completion claim; depth follows the requested or risk-appropriate intensity.
+  Deep or exhaustive review follows more material relations; a named number of
+  passes applies only when the user explicitly makes it part of the result.
+- A request for something to become better selects `optimize` only after the
+  lifecycle has established that there is a formed object whose better and worse
+  realization can be judged. If the request instead challenges what the object
+  is or how it should embody the user's purpose, return to discovery or brief
+  formation. When the user explicitly requests both review and optimization,
+  preserve both responsibilities: let independent review establish the
+  diagnosis, let the authorized owner implement the optimization judgment, and
+  renew review when the change affects the initiating judgment as defined by
+  `optimize/references/deep-optimization.md`. Ordinary modification requests do
+  not acquire this compound chain by implication.
 - "`目标! <large audit/migration/version closeout>`": build a task graph before
   implementation and load `references/subagent-execution.md`. Use
   `subagent_wave` for one independent antichain,
@@ -713,23 +571,17 @@ merely because they were recorded.
   plan file through `project-docs` if none exists, mark items active before
   execution, write result/verification after each item, and record
   `change_request` for every mid-run user addition.
-- "`目标! 审查/优化/深度审查优化 <target>`": synthesize a
-  `goal_preflight`, task-specific `optimality_law`, and compact
-  `perspective_model` before the agenda. A broad or otherwise unqualified
-  objective builds the authoritative project-quality evidence
-  `project_optimality_packet` from the complete open discovery model in
-  `goal-orchestration.md`. An explicitly bounded objective uses only material
-  scoped probes and creates persistent packet state only when cross-phase,
-  resumable, multi-agent, or concurrent mutation control requires it. Carry the
-  active packet, typed projection, or ephemeral probes into review, optimize,
-  and subagent prompts. Preserve breadth in discovery while allowing only
-  evidence-backed findings and value-justified changes.
+- A goal-backed review or optimization first synthesizes `goal_preflight` and
+  the task-specific `optimality_law`. Carry the formed object, governing
+  tension, accepted agenda, and only observations capable of changing the next
+  action. Broad work uses the coding-quality contract as directions for inquiry,
+  not as a lens matrix or a second state store.
 - "只改这个 diff / 单点改动 / 不做整体推进": keep scope focused. Without an
   explicit `目标!` / `目标！`, do not create a goal. With the explicit marker,
   create a lightweight goal without broadening the scope. Record
   `analysis_gate: explicitly_skipped_by_user` only when the user explicitly
   skipped broader analysis, and keep final review labeled focused.
-  `protocol_evidence` must show the focused boundary and stop condition.
+  Preserve that focused boundary in the plan and stop condition.
 - "改一个错字 / 单一局部 token": use `not_required_very_small` only after all
   Entry Policy conditions are proved. Bounded uncertainty may remain light only
   when one targeted check conclusively resolves it without broader mutation;
@@ -742,11 +594,11 @@ merely because they were recorded.
   frozen charter, build an agenda with source/result/verification evidence, and
   do not downgrade to one local iteration. If the user asks to finish or close
   out the version, also load `references/goal-orchestration.md`.
-- "继续推进直到完成 / 两轮全局审查无新增问题 / 没有遗留问题": load both this
-  reference and `references/goal-orchestration.md`, maintain
-  `cyclic_goal_loop` and `loop_control_matrix`, reset clean passes on material
-  in-scope issues, and stop only at the combined
-  agenda/verification/review/optimization/known-issue/runtime-resource boundary.
+- A request to continue until completion loads
+  `references/goal-orchestration.md` and maintains the goal, agenda, delivery,
+  and runtime boundaries. A named review-round count becomes an explicit stop
+  condition and restarts after material in-scope change; no review or
+  optimization cycle is inferred from ordinary completion language.
 - "改完再深度 review": when an edit target exists, implement through the
   selected executor, then use `review` at deep depth. A focused closeout gate
   cannot be reported as deep review. If no edit target exists in the request or
@@ -765,28 +617,10 @@ A project-lifecycle task is complete only when the selected downstream skills
 have finished their own verification gates and, in plan advancement mode, every
 required agenda item is `done` or explicitly user-approved as `skipped`.
 
-The final response names:
-
-- phase handled,
-- call chain used,
-- agenda completion status, if plan advancement mode was used,
-- project goal runtime/status, when concierge mode was used,
-- runtime resource ledger summary, including any handles intentionally kept open
-  or close failures,
-- subagent execution summary when evaluated: chosen mode/model and reason,
-  blocker if sequential or unavailable, inspected task surfaces, receipt/join
-  result, remaining running V2 child count, and CAO evidence only when hard state was active,
-- cyclic goal loop state and stop-condition evidence, when goal-backed
-  advancement was used,
-- loop control matrix state when multiple loops interacted,
-- change requests accepted, deferred, rejected, or still blocking during
-  version-state work,
-- concrete artifact or decision produced,
-- verification evidence, including verification scope when narrower or broader
-  than normal,
-- standard compliance status and remaining gaps, when the contract was active,
-- CodeGraph initialization/index status, when project bootstrap occurred,
-- `domain_resource_evidence`, when `software-contract` was loaded,
-- `protocol_evidence`, when controller references governed the work,
-- trace location, if a trace file was created,
-- remaining lifecycle gap, if any.
+Lead with the concrete result and the judgment that matters to the user's next
+decision. Name what changed and the verification that supports the material
+claim. When a goal or agenda is active, state its completion and remaining work;
+when a resource, subagent, release, sync, or change request remains consequential,
+state only the condition the user or next session needs. Internal call chains,
+packets, ledgers, matrices, and protocol use remain internal unless the user asks
+for them or a failure in them limits the result.

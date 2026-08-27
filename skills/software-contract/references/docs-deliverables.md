@@ -44,8 +44,8 @@ can override them, but the override must be recorded in the ledger.
 | --- | --- | --- | --- |
 | `prototype` | README section with purpose, run command, and current limit | short `AGENTS.md` only if future Codex sessions need repo rules | PRD, ADR tree, runbook, release checklist, integration guide |
 | `frontend-app` | README; project `AGENTS.md` when local conventions matter; one architecture/design section when routing, state, API, or UI system is nontrivial | UI contract/design notes, deployment/runbook, API integration notes, accessibility/test notes | backend data model, SLO, postmortem, rollout plan unless operated in production |
-| `backend-api` | README; project `AGENTS.md`; API/route contract; config/env section | architecture, data model/schema, runbook, deployment, security notes, observability/SLO | UI design docs, product PRD, rollout plan unless product/release stage needs them |
-| `fullstack-product` | README; project `AGENTS.md`; scope/MVP section; architecture covering frontend/backend boundary | API/data contracts, runbook, deployment, metrics/NFR, release notes | separate PRD/Metrics/NFR files when a compact product section is enough |
+| `backend-api` | README; API/route contract; config/env section | project `AGENTS.md` when local agent conventions matter; architecture, data model/schema, runbook, deployment, security notes, observability/SLO | UI design docs, product PRD, rollout plan unless product/release stage needs them |
+| `fullstack-product` | README; scope/MVP and frontend/backend boundary in an existing authoritative surface | project `AGENTS.md` when local agent conventions matter; API/data contracts, architecture, runbook, deployment, metrics/NFR, release notes | separate PRD/Metrics/NFR files when a compact product section is enough |
 | `library` | README with install/use/API examples; project `AGENTS.md` when contributor rules matter | changelog/release notes, contributing, API reference, compatibility matrix | deployment, runbook, SLO, PRD unless the library is operated as a service |
 | `cli-or-automation` | README with commands, inputs, outputs, and config; project `AGENTS.md` if automation has local rules | runbook if scheduled/operated, troubleshooting, security/credential notes | PRD, integration guide, architecture doc unless workflows are complex |
 | `infra-or-ops` | README/runbook; topology or architecture; rollback/verification commands | security, observability/SLO, release checklist, incident template | product PRD, UI docs, API guide unless exposed to integrators |
@@ -106,7 +106,8 @@ Create a new documentation file only when all are true:
 2. no existing location can hold the information cleanly,
 3. the file will contain project-specific facts, commands, decisions, ownership,
    or next actions,
-4. the standard ledger records the mapping and status.
+4. ownership and placement are clear; when a standard ledger is active, it
+   records the mapping and status.
 
 If any condition fails, update existing docs or mark the item as
 `not_applicable`, `deferred`, `blocked`, or `missing` with evidence. Empty
@@ -124,8 +125,9 @@ proof that the documentation is correct:
   touched docs mention when practical,
 - run the configured markdown/docs lint or docs build only when it exists and is
   relevant,
-- check that durable docs avoid relative time such as `今天`, `昨天`, `最近`,
-  `today`, `yesterday`, or `recently`.
+- when the edit touches durable temporal claims, check that they avoid ambiguous
+  relative time such as `今天`, `昨天`, `最近`, `today`, `yesterday`, or
+  `recently`.
 
 Do not run `make verify`, full app test suites, full builds, or broad browser
 checks for docs-only edits unless the user explicitly requests full project

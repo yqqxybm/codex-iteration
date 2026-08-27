@@ -112,10 +112,12 @@ adoption candidate as `evidence_only`. Test it independently and return an
 adoption recommendation; only `project-lifecycle` can record the resulting
 project decision.
 
-Before analyzing an implementation path for user-facing product content or
-capability, require a controller-accepted product commitment. If unresolved
-actors, situations, tasks, needed information or capability, or value relations
-would decide what to build, return `project-discovery` as the next recommendation.
+Before analyzing an implementation path, require a controller-accepted project
+commitment. An accepted purpose does not close discovery when the object or the
+relation through which the project should realize that purpose remains unsettled
+enough to change the direction. Return that condition to `project-lifecycle` as
+an upstream judgment rather than inferring it from content words or the current
+artifact.
 If project reality is accepted but the requirement, scope, non-goal, or success
 boundary is missing, return `project-brief`. Do not use technical feasibility,
 current artifacts, or the user's action verb to manufacture either upstream
@@ -128,17 +130,12 @@ When the incoming packet carries `three_step_visibility: explicit`, preserve it
 in this Handoff so the controller can require the earlier owner to expose the
 same compact visible Stage 1/2/3 gate.
 
-After Stage 3 completes, return a Handoff Record with
-`analysis_gate: project_analysis_consumed`, `analysis_gate_evidence` containing
-the Stage 3 decision and implementation boundary, material alternatives rejected
-when any exist, assumptions, verification plan, implementation entry point, open risks,
-`standard_compliance_delta` only when its ledger is active,
-`project_optimality_delta` when the analysis changes the supplied model,
-concerns, probes, evidence needs, or human decisions,
-`domain_resource_evidence` when `software-contract` was loaded, and the
-next recommended skill. When a lifecycle agenda is active, include item status,
-result, and verification evidence needed for `plan_state_sink`
-persistence. Use `.codex/traces/` only for long or resumable chains.
+After Stage 3 completes, return an ordinary Handoff Record: the conclusions that
+change the project judgment, plan, or action; unresolved questions; and the
+verification boundary. Include the next recommended skill only when the
+conclusion directs a subsequent action. Preserve the visible Stage 3 decision and
+implementation boundary without turning the handoff into a parallel tracking
+protocol. Use `.codex/traces/` only for long or resumable chains.
 
 If invoked as a subagent, preserve the assigned `assignment_id`,
 `execution_owner_id`, `agent_owner`, and `write_policy`; do not edit the parent
@@ -146,7 +143,7 @@ goal, spawn subagents, commit, push, deploy, sync remote state, broaden scope, o
 claim project completion. Return the exact assignment-required
 `subagent_receipt`; a Handoff Record may accompany but never replace it.
 
-## Adapter Rules
+## Project Analysis Rules
 
 ### 1. Stage 1 Maps To Project Reality
 
@@ -223,21 +220,6 @@ and reversal conditions. Current UI, APIs, fields, docs, tests, available data,
 or competitor prevalence can test feasibility or constrain a choice; they cannot
 independently prove user or product need.
 
-When the Context Packet requires `project_optimality_packet`, or the assigned
-decision governs broad software-project review or optimization, load
-`software-contract` and read
-`~/.agents/skills/software-contract/references/coding-quality-contract.md` and
-`~/.agents/skills/software-contract/references/project-optimality-state-contract.md`.
-Use the Stage 1 model to propose initialization or correction of the packet's
-project model, concern set, atomic probes, and evidence needs.
-`project-lifecycle` alone creates the packet identity and merges changes. When
-an id/revision is supplied, return only the resulting changes as
-`project_optimality_delta`; otherwise return the proposal as Handoff evidence so
-the lifecycle can initialize the packet. Do not turn the discovery domains or
-responsibility positions into competing objectives. When a model correction can
-change an existing probe's answer, include that probe in
-`invalidated_probe_ids`.
-
 When the Standard Development Contract is active, evaluate analysis-owned guide
 entries: tech stack tradeoffs, ADR requirement, architecture boundaries,
 data/API contracts, deployment topology, observability/SLO applicability,
@@ -263,7 +245,8 @@ consume the user's perspective either.
 Ask and block only when the user's perspective is both non-substitutable and
 material to the project understanding or commitment. Materiality includes a
 substantive change in the problem model, product or implementation boundary,
-success standard, value ordering, risk acceptance, verification meaning, or
+success standard, value relation or concrete tradeoff, risk acceptance,
+verification meaning, or
 downstream chain; it is not limited to reversing the selected path. Resolve
 facts, repo state, external sources, and professional engineering judgments
 independently. If `request_user_input` is available and the question fits
@@ -393,7 +376,5 @@ Report:
 - material alternatives rejected, when any exist,
 - verification plan or command,
 - standard compliance delta, when a ledger was active,
-- project optimality delta when a supplied packet/ref/projection was changed, or
-  initialization proposal evidence when lifecycle has not created the packet,
 - `domain_resource_evidence`, when `software-contract` was loaded,
 - next implementation skill, if any.

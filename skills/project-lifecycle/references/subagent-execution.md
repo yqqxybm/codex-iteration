@@ -202,14 +202,12 @@ subagent_assignment:
     objective: <outcome served by this task>
     boundary: <relevant goal and non-goal boundary>
     scope_root: <absolute canonical base for every relative task scope>
-    value_ordering: <rule that resolves local tradeoffs>
+    value_relation: <how local values jointly serve the assignment and how a real tradeoff is resolved>
     stop_condition: <parent condition the child must not overclaim>
   task:
     id: <agenda id>
     agent_owner: <logical project role>
-    role_and_lens: <stable role plus assignment-specific emphasis; when a
-      project-optimality packet is active, include the complete typed
-      project_optimality_projection>
+    role_and_lens: <stable role plus assignment-specific emphasis>
     analysis_gate: <project_analysis_consumed | explicitly_skipped_by_user |
       not_required_read_only | not_required_very_small>
     analysis_gate_evidence: <Stage 3 boundary, exact waiver, concise read-only
@@ -242,26 +240,10 @@ Every field is required; `forbidden_scope` and `conflict_keys` may be empty.
 `current_task_status` records the status carried by the assignment; a
 spawn-ready CAO dispatch assignment carries `active`.
 Native lifecycle dispatch and CAO dispatch use this same complete assignment;
-CAO supplies it atomically when durable state is active.
-When a `project_optimality_packet` is active, carry the assigned concern/probe
-subset without extending this schema: put the complete
-`project_optimality_projection` in `role_and_lens`, including packet/base
-revision, claim boundary, concern basis/applicability, probe state/evidence ids,
-referenced evidence, and affecting human decisions. Put executable evidence
-surfaces and `observed_against` identity in `verification`; put local decision
-impact in `done_when`. Add every assigned probe id as a packet-scoped
-`conflict_key`, including read-only evidence assignments.
-
-The child receipt `evidence` must account for every assigned probe. Because the
-CAO receipt schema accepts evidence strings, encode each packet-backed probe
-record as one compact JSON string with `probe_id`, `previous_state`,
-`next_state`, `evidence_id`, protected `source_ref`, concise redacted
-`observation`, and `observed_against`; for pending/blocking results, encode the
-state and exact blocker instead of inventing evidence. The parent supplies
-`introduced_by` while normalizing the receipt into a base-revision
-`project_optimality_delta` and applies the contract's stale/conflict rules before
-merge. Bounded children cannot change global concern applicability. Material
-follow-up goes in `new_work`.
+CAO supplies it atomically when durable state is active. A child reports the
+material observations and verification that affect its assignment. Material
+follow-up goes in `new_work`; the parent forms the overall judgment and decides
+whether it belongs on the agenda.
 Do not spawn while the target, scope, write policy, done condition, or
 verification boundary remains unresolved.
 Use `not_required_read_only` only for a non-mutating node with an explicit
@@ -433,8 +415,7 @@ subagent_receipt:
   agenda_item: <task id>
   assigned_scope: <list>
   changed_files: <list; empty for read-only work>
-  evidence: <non-empty material string list when done; packet-backed probe
-    records use the compact JSON string contract above>
+  evidence: <non-empty material observations or verification outcomes when done>
   task_graph_delta:
     new_dependency_edges: <list; empty when none>
     new_conflict_edges: <list; empty when none>
@@ -450,7 +431,9 @@ The parent rejects receipts with the wrong task id, logical role, execution
 owner, or assignment id, missing required evidence, scope violations, or
 write-policy conflicts. A receipt never proves completion by itself. Inspect
 returned changes or findings, incorporate accepted graph deltas and `new_work`, run parent
-verification/review, and mark the node done only when `done_when` is evidenced.
+verification as appropriate, and mark the node done only when `done_when` is met.
+The parent carries the receipt into the lifecycle Handoff, agenda, and trace only
+as needed for the next judgment or action.
 When CAO is active, persist a passed parent-verification outcome with evidence.
 For every material follow-up, bind integration to concrete post-receipt task
 ids or an atomic replan fingerprint, or record a rejected outcome with
@@ -493,8 +476,8 @@ transport ledger.
   with canonical disjoint scopes and one parent integration barrier.
 - Ambiguous cross-module or security change: a Sol `worker`, serialized when
   conflict proof requires it; CAO only when durable state is needed.
-- Deep or exhaustive final review: a Sol `reviewer` with the review skill's
-  required clean-pass loop.
+- Deep or exhaustive final review: a Sol `reviewer` with the user-requested
+  scope; repeated passes occur only when explicitly requested.
 - Cyclic multi-wave objective spanning an interruption in the same parent task:
   first run the activation test; use V2 alone when the controller can reread
   and recompute safely, otherwise use CAO task state and a parent-owned CLI

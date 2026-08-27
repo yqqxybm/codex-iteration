@@ -22,8 +22,8 @@ without bloating every frontend task.
 motion_contract:
   interaction_thesis: <one sentence explaining why motion belongs here>
   motion_role: <feedback | hierarchy | narrative | delight | spatial_continuity>
-  library_choice: <gsap | gsap+threejs>
-  why_this_library: <why GSAP is applied, or why the task is blocked>
+  library_choice: <gsap | gsap+threejs | motion | gsap+motion | react-bits-component>
+  why_this_library: <why GSAP default applies, why an exception applies, or why the task is blocked>
   choreography:
     - trigger: <load | hover | click | scroll | route | data-change>
       target: <element, state, or workflow surface>
@@ -50,15 +50,35 @@ If a UI implementation includes motion, use GSAP as the motion engine.
 - CSS remains valid for static layout, colors, focus visibility, reduced-motion
   static states, and no-motion fallback styles. Do not use CSS
   `transition`/`animation` as the primary motion implementation.
-- WAAPI and Framer Motion are not default substitutes. Use them only when the
-  user explicitly asks, the existing project mandates them, or GSAP cannot be
-  used and the task is reported as blocked or user-approved.
+- Motion and WAAPI are not default substitutes. Use Motion only when the user
+  explicitly asks, the existing project already uses Motion, a selected
+  third-party component requires it, or React layout/exit/shared-layout/gesture
+  behavior is materially safer with Motion. Use WAAPI only when the existing
+  project mandates it or the user explicitly approves that exception.
 - Three.js / canvas can own real 3D/canvas rendering. GSAP still owns UI motion
   choreography around it when motion is present. Do not substitute flat GSAP
   effects for a requested 3D scene.
 - If GSAP cannot be installed, imported, or verified in the current project,
-  stop and report the blocker. Do not silently downgrade to CSS, WAAPI, Framer
-  Motion, or no animation.
+  stop and report the blocker. Do not silently downgrade to CSS, WAAPI, Motion,
+  or no animation.
+
+## Motion / React Bits Exception Gate
+
+Before choosing Motion, React Bits, or another third-party animated component
+source, record the exception in `motion_contract.why_this_library`:
+
+- existing stack and installed motion libraries;
+- component dependency requirements and whether they conflict with GSAP-first;
+- license boundary for project-local app use versus redistributing a component
+  library or Codex skill asset;
+- reduced-motion behavior, cleanup/unmount behavior, and rendered verification
+  plan;
+- why the exception improves the product motion role more than a GSAP
+  implementation.
+
+Do not switch the whole project from GSAP-first to Motion-first just because one
+gallery example is attractive. Install or adapt only the needed component or
+pattern, translate it into project tokens, and verify it in the rendered UI.
 
 ## GSAP Contract
 

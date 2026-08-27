@@ -1,6 +1,7 @@
 interface:
   display_name: "Review"
-  short_description: "Find risks with evidence-first review."
+  short_description: "Form an independent judgment of an artifact or system."
   default_prompt: >
-    Use $review to audit this artifact for material defects, risks, missing
-    evidence, and residual gaps.
+    Use $review to understand the object, its purpose, and the relations that
+    govern it; form an independent judgment and inspect reality where it could
+    materially correct that judgment.

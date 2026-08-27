@@ -2,11 +2,11 @@
 name: project-discovery
 description: >
   Downstream software-project discovery stage selected by project-lifecycle
-  when user, market, competitor, domain, or product research must determine
-  product content, target users, requirements, priorities, or scope before a
-  charter or implementation can be accepted. Produces an independent,
-  provisional discovery handoff. Does not create PRDs, requirements, agendas,
-  designs, implementation plans, code, or accepted product decisions.
+  when the project object or the concrete relation through which it should
+  realize the user's purpose is not yet sufficiently formed for a product
+  commitment. Produces an independent, provisional discovery handoff. Does not
+  create PRDs, requirements, agendas, designs, implementation plans, code, or
+  accepted product decisions.
 ---
 
 # Project Discovery
@@ -14,18 +14,19 @@ description: >
 Project discovery establishes what is true, what users or other actors are
 actually trying to accomplish, and what a project may therefore need before the
 project commits to what to build. It is not preliminary implementation planning
-and does not search for reasons to preserve an existing product shape.
+and does not presume that either the current shape or its rejection is already
+the answer.
 
 ## Lifecycle Position
 
 This is not the project entry point. Direct invocation still returns its result
 to `project-lifecycle` for handoff and any requested adoption.
 
-Use only when `project-lifecycle` determines that research must decide product
-content, target users, requirements, priorities, positioning, or scope. Typical
-requests include "先调研再决定功能", user or market research that will shape a
-product, competitor research before a product decision, and domain research
-whose result may remove or replace the assumed solution.
+Use when `project-lifecycle` determines that the object to be built, the reality
+it must answer to, or the relation through which it can realize the accepted
+purpose is still unsettled enough to change the project commitment. Make that
+decision from the state of understanding, not from topic words, document names,
+or the user's action verb.
 
 Do not use for a bounded factual lookup whose decision and downstream boundary
 are already accepted; use `project-analysis` with appropriate sources. Do not
@@ -107,6 +108,19 @@ discovery report into a three-section template:
    evidence;
 3. synthesize facts, interpretations, competing explanations, conclusions,
    unknowns, and reversal conditions into an independently readable account.
+
+When the accepted purpose cannot yet be carried by a settled form, test the
+inherited frame before proposing its contents. Form genuinely different causal
+accounts of how the concrete situation might change, including alternatives
+outside the current artifact whenever they are credible and material. Breadth
+exists to expose anchoring and reveal the governing relation; it is not a quota
+and does not manufacture novelty.
+
+Sources, constraints, available data, and comparable practice may correct the
+account of reality or reveal rival mechanisms. Accumulation does not generate a
+direction. The synthesis must explain why the leading account changes the
+concrete outcome and why credible alternatives do not do so as well under the
+accepted boundaries.
 
 Ask and stop only when the user's experience, purpose, value ordering, or real
 service commitment is non-substitutable and materially changes the discovery

@@ -2,10 +2,15 @@
 
 Use this reference from `project-frontend`, `review`, or `optimize` when UI
 work depends on first-impression quality: landing pages, portfolios, brand
-pages, redesigns, product pages, prototypes, high-aesthetic screens, or prior UI
-output that looks generic. This contract may also apply to a dashboard or
+pages, redesigns, product pages, prototypes, high-aesthetic screens, or surfaces
+with high generic-template risk. This contract may also apply to a dashboard or
 workspace only for its visual language and first-viewport composition; product
 state robustness remains owned by `frontend-quality-contract.md`.
+
+Universal aesthetic integrity, AQ1/AQ2/AQ3 target selection, calibrated visual
+scores, and rendered proof are owned by `frontend-design-contract.md`. This
+contract adds high-order taste judgment; it does not decide whether aesthetics
+apply.
 
 This is a local taste control layer inspired by public anti-generic frontend
 skill patterns, but it is not an installed copy and does not create a separate
@@ -15,18 +20,20 @@ resource architecture.
 ## Purpose
 
 Good frontend taste is not a bigger checklist. It is the ability to read the
-brief, choose the right visual language, resist model defaults, and verify the
-rendered result against that choice.
+brief, choose the right visual language, produce a concrete beauty mechanism,
+resist model defaults, and verify the rendered result against that choice.
 
-This contract adds four controls:
+This contract adds five controls:
 
 1. **Design read**: infer what kind of surface this is, who it serves, and what
    design language follows from that.
 2. **Taste dials**: calibrate variance, motion, and density before coding.
 3. **Anti-default audit**: identify likely generic AI habits before they enter
    the implementation.
-4. **Taste preflight**: run a compact mechanical check before claiming visual
-   quality.
+4. **Simple-Coherent-Elegant preflight**: reduce unjustified complexity, unify
+   the visual thesis, and preserve only the strongest useful expressive move.
+5. **Taste decision preflight**: confirm the selected direction is coherent
+   enough to implement.
 
 It does not replace:
 
@@ -60,11 +67,19 @@ taste_control:
     design_system: <official system | local design system | aesthetic approximation | none>
     prototype_reference: <reference packet id or not required>
     theme_contract: <theme id or custom>
+    effect_archetype: <none | selected expressive move, source, and why it serves the design thesis>
+  aesthetic_generation:
+    mechanism: <what will make the interface beautiful>
+    implementation_translation: <layout, type, material, density, content, asset, or motion decisions>
   anti_default_risks:
     - <specific generic pattern likely for this brief>
   preservation:
     mode: <greenfield | preserve_existing | overhaul_existing | surgical>
     must_preserve: <brand tokens, IA, routes, analytics, copy voice, accessibility wins>
+  simple_coherent_elegant:
+    simplicity_check: <what complexity was removed or justified>
+    coherence_check: <the single thesis tying layout, typography, color, motion, and content>
+    elegance_check: <the expressive move retained and why it is proportionate>
   taste_preflight:
     status: <pass | needs_revision | blocked>
     failed_checks: <none or exact failures>
@@ -76,10 +91,44 @@ The final response should report only a compact evidence boundary:
 taste_contract_evidence:
   design_read: <one sentence>
   dials: <variance/motion/density>
+  aesthetic_generation: <mechanism and implementation translation summary>
+  effect_archetype: <none | summary>
+  sce: <simple/coherent/elegant pass | revised | blocked>
   anti_default_risks_checked: <summary>
   preflight: <pass | revised | blocked>
   not_checked: <none or exact reason>
 ```
+
+## Component Taste Micro-Gate
+
+Load this compact gate for a bounded component even when the surrounding task is
+Tier 0/1 if the component carries trust, irreversible choice, conversion,
+identity, or explicit aesthetic importance. Examples include login/auth,
+payment/checkout, legal or consent notices, permission gates, destructive
+confirmations, onboarding decisions, pricing/upgrade prompts, and a component
+the user explicitly asks to make beautiful.
+
+```yaml
+component_taste_gate:
+  component_job: <decision, trust, consent, conversion, warning, identity, or other>
+  aesthetic_target: <AQ2 minimum or inherited higher floor>
+  trust_or_risk_posture: <calm | authoritative | urgent | reversible | irreversible>
+  reading_or_decision_path: <what the eye must understand first, second, and last>
+  action_hierarchy: <primary, secondary, destructive, dismiss, and why>
+  visual_pressure: <copy length, density, overlay dominance, interruption cost>
+  local_style_fit: <what must match the surrounding system>
+  expressive_move: <one proportionate visual move or none>
+  failure_tests: <coercive emphasis, weak hierarchy, generic modal, cramped copy, style break, or other>
+```
+
+This gate supplements `local_style_reference`; it does not authorize a full-page
+redesign or broad external-reference search. A legal/consent component must
+preserve meaning and action honesty while making the reading path and choice
+hierarchy aesthetically clear. If local grammar is visibly weak, improve the
+assigned component to AQ2 within scope rather than reproducing the defect.
+Interaction correctness alone does not pass the gate; the rendered component
+must receive the clean holistic aesthetic verdict owned by
+`frontend-design-contract.md`.
 
 ## Dial Calibration
 
@@ -111,6 +160,35 @@ If the dials conflict with the actual product job, the product job wins. A dense
 workspace should not become a sparse marketing poster because the user said
 "高级"; a landing page should not become a table-heavy admin screen because the
 data model is rich.
+
+## Effect Archetype Selection
+
+Public prompt/effect galleries and UI intelligence datasets can improve taste
+only when their ideas are converted into a single controlled expressive move.
+They are not prompt dumps and do not override the design read.
+
+For Tier 2/3 landing pages, portfolios, brand pages, product pages, and
+high-aesthetic prototypes, choose at most one primary `effect_archetype` when it
+improves first impression or comprehension. Candidate archetypes include:
+scroll-scrub product narrative, text reveal, magnetic hover, sticky card stack,
+liquid/glass material, marquee/ticker, 3D or canvas object, shader/particle
+field, sketch chart, and animated component system.
+
+An effect archetype is valid only when it answers one of these questions:
+
+- What hierarchy does it clarify?
+- What product story or workflow does it make easier to understand?
+- What spatial continuity or feedback does it create?
+- What brand character does it express more precisely than static layout?
+
+Reject the archetype when it is chosen only because a gallery example looks
+good, duplicates another flourish, conflicts with a dense workflow, introduces
+uncontrolled performance/accessibility risk, or weakens the Simple-Coherent-
+Elegant thesis.
+
+Use UIUXProMax-style style, color, typography, chart, and motion catalogs as
+input to the design read and dial calibration only. The final decision remains
+the project-specific design thesis plus rendered evidence.
 
 ## Design System Honesty
 
@@ -159,6 +237,21 @@ Overrides are allowed when the brief, brand, existing system, accessibility, or
 product job justifies the pattern. The audit is not a ban list; it is a default
 resistance mechanism.
 
+## Simple-Coherent-Elegant Rule
+
+Taste control converges through subtraction, unification, and proportion:
+
+- **Simple** asks what can be removed without weakening intent, trust,
+  comprehension, workflow speed, or product identity.
+- **Coherent** asks what single design thesis makes the typography, palette,
+  grid, components, content, assets, states, and motion belong together.
+- **Elegant** asks which expressive move deserves attention, then makes its
+  scale, rhythm, detail, and feedback precise enough that the UI feels designed
+  instead of decorated.
+
+High variance, high motion, or high density can still pass. They fail only when
+they are not controlled by the product job or the selected design thesis.
+
 ## Redesign Taste Protocol
 
 For redesigns, classify the mode before changing visuals:
@@ -183,73 +276,25 @@ Never silently change route slugs, primary nav labels, form field names/order,
 legal/consent copy, analytics selectors, logo/wordmark, or existing accessible
 focus/keyboard behavior.
 
-## Taste Preflight
+## Taste Decision Preflight
 
-Run the relevant checks before claiming a Tier 2/3, redesign, landing,
-portfolio, prototype, source-inspired, or high-aesthetic UI is visually done.
-This is a targeted preflight, not a full matrix for every UI task.
+Before implementing Tier 2/3, redesign, source-inspired, or high-aesthetic UI,
+confirm only the taste decisions this contract owns:
 
-### 1. Design Read
+- the design read and dials fit the product job and audience;
+- source grammar, theme, and any effect archetype serve one thesis;
+- likely model-default patterns have an explicit countermeasure;
+- redesign preservation boundaries are clear;
+- SCE identifies what is removed, what unifies the design, and the one
+  proportionate expressive move;
+- the aesthetic mechanism translates into layout, type, material, density,
+  content, asset, or motion decisions.
 
-- `taste_control.design_read` exists and matches the user goal.
-- Dials are explicit and reasoned, not silently defaulted.
-- Any official design system or aesthetic approximation is named honestly.
-- Quiet constraints override aesthetics when they conflict.
-
-### 2. First Viewport
-
-- The first viewport has a clear visual protagonist: product screenshot,
-  workflow surface, real/generated image, data visualization, 3D/canvas,
-  editorial type composition, or domain object.
-- Hero/primary screen content fits the initial viewport on desktop and mobile.
-- Primary action or core workflow is visible without hunting.
-- Trust/logos/metadata do not crowd the hero unless they are essential to the
-  product job.
-
-### 3. Composition
-
-- Section layout families are not repeated mechanically.
-- Long zigzag sequences, card piles, nested cards, and one-note bento grids are
-  corrected unless the product system requires them.
-- Dense operational pages use workbench/table/filter/detail-pane structure
-  instead of marketing-section rhythm.
-- Bento/grid cell count matches actual content; no blank filler cells.
-- Mobile collapse is explicit for every high-variance layout.
-
-### 4. Typography And Color
-
-- Font choice serves the product character, existing system, language support,
-  and performance; it is not chosen from habit.
-- Palette has one dominant logic and stable accent behavior.
-- Shape/radius language is consistent or follows an explicit rule.
-- Button, form, and critical text contrast are checked against actual surfaces.
-- The result does not read as one-note purple/blue, beige/brown, or dark slate
-  unless the brand or source grammar demands it.
-
-### 5. Motion
-
-- Every motion effect has a reason: hierarchy, storytelling, feedback, state
-  transition, progress, or spatial continuity.
-- GSAP usage, reduced-motion behavior, cleanup, mobile/resize checks, and
-  debug-marker absence are governed by `frontend-motion-contract.md`.
-- Motion claimed in the design direction is visible in the rendered UI; if
-  motion cannot be verified, report it as a blocker or residual risk.
-
-### 6. Assets And Content
-
-- Important visual surfaces use real, generated, source, or product-specific
-  assets; fake screenshots and empty rectangles are not treated as final.
-- Copy, data, names, and metrics are domain-real enough to make the interface
-  judgeable.
-- Social proof/logos use real marks or coherent generated marks when relevant;
-  plain text wordmark rows are not enough for a polished marketing surface.
-
-### 7. Product-State Robustness
-
-- Loading, empty, error, disabled/forbidden, long-content/list, theme,
-  localization, and responsive pressure are covered by
-  `frontend-quality-contract.md` when relevant.
-- A visually beautiful screen that only works for ideal data is not complete.
+This preflight decides whether the direction is ready for implementation. It
+does not repeat rendered composition, typography, component, responsive,
+state-pressure, or screenshot scoring checks. After implementation,
+`frontend-design-contract.md` owns the single holistic aesthetic verdict and
+the other contracts verify only their own hard constraints.
 
 ## Review And Optimization Use
 
@@ -257,6 +302,10 @@ For review:
 
 - Report missing `taste_control` or weak taste evidence as a finding only when
   visual quality is part of the stated standard or surface type.
+- Report a Simple-Coherent-Elegant issue only when unjustified complexity,
+  competing visual theses, or uncontrolled decoration weakens the stated user
+  goal, rendered hierarchy, workflow, accessibility, maintainability, or product
+  identity.
 - Do not turn personal taste into a finding. Tie it to the design read,
   anti-default audit, rendered evidence, user goal, or preflight failure.
 - For focused code reviews, inspect taste only inside the requested UI surface.

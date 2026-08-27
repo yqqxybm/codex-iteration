@@ -35,36 +35,36 @@ one-turn checklist.
 The text passed to `create_goal.objective` or used to maintain an existing tool
 goal is not a short title. It is a compact control prompt. If
 `control_system_goal.loop_policy.mode` is `bounded_goal_loop` or
-`cyclic_until_clean`, the tool goal prompt must explicitly include the loop
+`explicit_repeated_review`, the tool goal prompt must explicitly include the loop
 contract:
 
 ```yaml
 tool_goal_prompt:
   outcome: <single observable target>
-  loop_mode: <bounded_goal_loop | cyclic_until_clean>
+  loop_mode: <bounded_goal_loop | explicit_repeated_review>
   continue_while:
-    - <pending agenda item, failed verification, material in-scope issue,
-      missing commit/push/deploy/sync evidence, insufficient clean passes,
-      or unresolved residual issue source>
-  reset_on:
-    - <material in-scope issue>
+    - <pending agenda item, failed verification, material in-scope work,
+      missing commit/push/deploy/sync evidence, incomplete explicitly requested
+      review rounds, or unresolved material-work source>
+  revisit_on:
+    - <material in-scope work>
     - <verification failure>
-    - <code/docs/config/release/evidence change after a clean pass>
+    - <material state change during explicitly requested review rounds>
   stop_only_when:
     - <all agenda items done or user-approved skipped>
     - <required verification evidence exists>
     - <delivery states such as commit/push/deploy/sync are satisfied or
       explicitly not_applicable with evidence>
-    - <required review depth and clean-pass count are satisfied after the last
+    - <explicitly requested review rounds, if any, are satisfied after the last
       material change>
-    - <known residual issue source has no unresolved material issue>
+    - <material-work source has no unresolved accepted work>
   never_complete_from:
     - <single downstream handoff, commit, push, deploy, verification command,
-      or one clean review pass alone>
+      or review statement alone>
 ```
 
 For looped goals, do not call `create_goal` with only the user's outcome or a
-one-sentence summary. If the goal prompt lacks `continue_while`, `reset_on`, and
+one-sentence summary. If the goal prompt lacks `continue_while`, `revisit_on`, and
 `stop_only_when`, the prompt has failed the elegance gate even if the sidecar
 `cyclic_goal_loop` field is correct.
 
@@ -89,7 +89,7 @@ controller's `skill_system_best_practice_packet` when present, or synthesize it
 from the current skill metadata and selected/ambiguous `SKILL.md` files. This
 packet is not a replacement for `tool_goal_prompt`; it is the skill-system
 practice layer that determines which existing skills, adapters, contracts,
-framework loops, verification gates, delivery gates, and stop conditions should
+cognitive methods, verification gates, delivery gates, and stop conditions should
 shape the goal prompt.
 
 ```yaml
@@ -117,25 +117,16 @@ goal_synthesis:
         commitment; ask_user or one concise no-dialogue reason>
     optimality_law:
       what_best_means: <how this goal makes the software project better>
-      primary_ordering: <which value wins when lenses conflict>
+      value_relation: <how material values jointly serve the purpose; when a
+        real conflict occurs, the conditional priority and reason>
       elegance_constraint: <smallest control structure that preserves behavior>
       non_goal_boundary: <what must not be pulled into this goal>
       falsification_test: <evidence that would prove this goal prompt wrong>
-  perspective_model:
-    artifact_type: <code | product | skill | config | docs | release | workflow | mixed>
-    synthesized_lenses:
-      - role: <material viewpoint generated from the objective and evidence>
-        why_material: <why this role can change review, optimization, or stop condition>
-        core_question: <what this role would ask to judge success>
-        evidence_surface: <files, workflows, docs, commands, user behavior, or runtime proof>
-        defect_or_opportunity_standard: <what counts as a material issue or improvement>
-    excluded_lenses: <irrelevant lenses and why they were excluded>
-  project_optimality_packet:
-    <lifecycle-owned authoritative project-quality evidence packet or resolvable
-    revision-pinned project_optimality_ref; required when project-quality
-    evidence must survive broad/unqualified review or optimization, cross-phase
-    or resumable work, multi-agent work, or concurrent mutation; bounded
-    recipients receive project_optimality_projection>
+  project_judgment:
+    object_and_purpose: <what is being understood or changed and why it matters>
+    governing_tension: <relation that most affects the goal>
+    practical_judgment: <current revisable conclusion>
+    material_uncertainty: <what could alter the conclusion or action>
   control_system_goal:
     state_model:
       current_state_sources: <repo, docs, tests, deploy, trace, backlog, conversation>
@@ -146,16 +137,16 @@ goal_synthesis:
       repo_evidence: <git status, diff, tests, lint, typecheck, build, codegraph>
       product_evidence: <browser, API, workflow, UI, data, artifact output>
       operation_evidence: <deploy health, logs, remote sync, rollback path>
-      review_evidence: <focused, deep, or exhaustive pass logs and clean-pass count>
+      review_judgment: <core judgment and material limits when review is required>
       knowledge_evidence: <docs, handoff, standard ledger, trace, agenda>
     actuators:
       primary_skill_chain: <project-analysis -> owner skills -> review/release/sync as needed>
       allowed_mutations: <code, docs, tests, config, deploy, sync, commits>
       forbidden_mutations: <explicit exclusions, unsafe/destructive areas, out-of-scope layers>
     loop_policy:
-      mode: <single_pass | bounded_goal_loop | cyclic_until_clean>
-      reset_on: <material_in_scope_issue | verification_failure | state_change_after_clean_pass>
-      clean_pass_target: <0 | 1 | 2>
+      mode: <single_pass | bounded_goal_loop | explicit_repeated_review>
+      revisit_on: <material_in_scope_work | verification_failure | material state change>
+      explicit_review_rounds: <user-requested count | not_applicable>
     hardness_policy:
       verification: <targeted | full_project | release_health>
       review_depth: <focused | deep | exhaustive>
@@ -176,22 +167,19 @@ goal_synthesis:
     applicability: <required when the goal has independent work surfaces or delegates work>
     state: <task graph, parallel mode, model route, receipt/join state, hard-state status, or not_applicable>
   loop_control_matrix:
-    active_loops: <tool_goal | agenda | subagent_wave | review_clean_pass | optimize_framework_cycle>
+    active_loops: <tool_goal | agenda | subagent_wave | release_or_sync |
+      user_explicit_review_rounds>
     reset_edges: <which event resets which counters or states>
     stop_precedence: <which stop condition must be satisfied before completion>
     non_equivalence: <loops/counters that must not be counted as each other>
 ```
 
 `project_goal`, `goal_preflight`, and `optimality_law` remain the authoritative
-user/lifecycle objective and value ordering. When `project_optimality_packet` is
-active, its `project_model`, `perspective_model`, and
-`control_system_goal.state_model` are revision-pinned evidence projections, not
-parallel goal authority. If evidence challenges the objective or value ordering,
-the lifecycle reopens preflight and dialogue governance; review and optimize
-return evidence/deltas and never silently mutate the goal.
-The packet, ledger, and clean-pass count record the coverage and limits of a
-judgment; they do not exhaust the subject or turn no observed finding into
-quality.
+user/lifecycle objective and value relation. The agenda and trace preserve
+accepted action and continuity. `project_judgment` is a compact revisable
+understanding, not parallel goal authority or a quality ledger. If reality
+challenges the objective, value relation, or object model, reopen preflight and
+dialogue or apply `model_reset`.
 
 Default synthesis rules:
 
@@ -209,8 +197,10 @@ Default synthesis rules:
   and tests the leading model against the strongest opposing view,
   counterexample, boundary, or failure mode. Revise the model before calibration;
   compactness may compress this dialectical test, not omit it.
-- When research must decide users, product content, requirements, priorities,
-  positioning, or scope, select `project-discovery`. The initial agenda must
+- When the object through which the project should realize the user's purpose is
+  not yet established, select `project-discovery`. Make this judgment from the
+  concrete situation and accepted state, not from content keywords or the
+  current feature surface. The initial agenda must
   contain exactly the discovery work and its lifecycle-owned adoption gate; do
   not pre-create downstream nodes even as pending placeholders. Materialize brief,
   requirements, implementation, and their task graph only after adoption.
@@ -237,9 +227,10 @@ Default synthesis rules:
 - `optimality_law` is mandatory for review, optimization, project-system,
   Codex self-iteration, product readiness, version closeout, or any goal where
   "best", "done", or "no known issue" could otherwise expand without limit.
-  It must define the value ordering that resolves conflicts between user value,
-  engineering quality, product maturity, architecture, delivery, elegance, and
-  verification.
+  It must relate the user purpose, material qualities, binding constraints, and
+  preservation commitments. It names a conditional priority only where a real
+  conflict requires one; it does not force every value into a fixed score or
+  total ranking.
 - If `goal_preflight` finds that the user's perspective meets both dialogue
   thresholds, ask before creating or maintaining the tool goal. Otherwise
   proceed only after exposing the current judgment and the concise reason
@@ -254,31 +245,30 @@ Default synthesis rules:
   layer would materially change mutation, review, acceptance, or completion
   boundaries, ask instead of silently promoting the goal. Apparent completeness
   alone is not evidence that the higher layer is intended.
-- `local_change`: use `single_pass`, targeted verification, focused review, and
-  `clean_pass_target: 0` or `1` depending on risk. Do not add deploy/push unless
-  evidence or the user requires a delivered state.
-- `feature_workflow`: use `bounded_goal_loop`, affected-workflow review, targeted
-  or full-project verification based on shared surfaces, and `clean_pass_target:
-  1`; use `2` when the workflow is cross-module, user-visible, or regression
-  prone.
-- `version_phase`, `whole_project`, or "finish/close out/no residual issues":
-  use `cyclic_until_clean`, project-global deep review, full-project
-  verification, and `clean_pass_target: 2`.
-- `release_operation`: use `cyclic_until_clean`, release-readiness review,
-  release-health verification, rollback/deploy evidence, and `clean_pass_target:
-  2`; escalate review to exhaustive for production, data, security, payment,
-  credential, migration, or destructive risk.
-- `project_system` or `codex_self_iteration`: use `cyclic_until_clean`,
-  protocol/skill/config evidence, remote sync verification when cross-machine
-  behavior is intended, and `clean_pass_target: 2`.
+- `local_change`: use `single_pass` and targeted verification. Add an
+  independent review only when the risk or requested claim needs it. Do not add
+  deploy/push unless the user or accepted delivery boundary requires them.
+- `feature_workflow`: use `bounded_goal_loop` and affected-workflow or
+  full-project verification according to shared consequences. Review the changed
+  whole when implementation can alter a governing product or technical judgment.
+- `version_phase`, `whole_project`, or closeout work uses
+  `bounded_goal_loop`, full-project verification, and review scope/depth
+  proportionate to the completion claim; repeated rounds are not automatic.
+- `release_operation`: use `bounded_goal_loop`, release-readiness judgment,
+  release-health verification, and rollback/deploy evidence. Use exhaustive
+  review only when explicitly requested or when the accepted high-risk claim
+  genuinely requires traversing every material direction.
+- `project_system` or `codex_self_iteration`: use `bounded_goal_loop`,
+  realistic behavior checks, and remote sync verification when cross-machine
+  behavior is intended. Review only where independent judgment can change the
+  result.
 - Use `hardness_policy.review_depth: exhaustive` when the objective explicitly
   asks for exhaustive/全面/穷尽/逐词逐句 review, or when production release,
   security, data integrity, migration, payment, credential, or destructive
   operations are materially in scope.
-- Use `hardness_policy.review_scope: affected_workflow` and
-  `clean_pass_target: 1` only when the objective is explicitly a single bounded
-  feature/fix and does not claim version, release, closeout, whole-project, or
-  no-residual completeness.
+- Use `hardness_policy.review_scope: affected_workflow` for an explicitly
+  bounded feature or fix that does not claim version, release, closeout,
+  whole-project, or no-residual completeness.
 - `commit: required` whenever the project is Git-managed and the goal produces
   deliverable source/docs/config changes.
 - `push: required` only when the user explicitly asks for remote delivery or an
@@ -297,13 +287,13 @@ Default synthesis rules:
   targeted for local changes, full project for version/global goals, and release
   health for deploy/release goals.
 - If later evidence proves the target layer or stop condition was wrong, record
-  `control_reclassification`, regenerate the agenda, reset affected clean-pass
-  counters, and continue from the new control law instead of patching the old
-  loop silently.
-- Build a `loop_control_matrix` whenever more than one loop is active: tool goal,
-  agenda advancement, subagent waves, review clean passes, optimize framework
-  cycles, release/deploy health, or sync verification. Do not let one loop's
-  clean result stand in for another loop's stop condition.
+  `control_reclassification`, regenerate the affected agenda, revisit dependent
+  verification or explicit review rounds, and continue from the new control law
+  instead of patching the old loop silently.
+- Build a `loop_control_matrix` whenever more than one execution loop is active:
+  tool goal, agenda advancement, subagent waves, release/deploy health, sync
+  verification, or user-explicit repeated review. Do not let one loop's result
+  stand in for another loop's stop condition.
 - When the goal has independent work surfaces, delegated work, or durable
   execution state, load `references/subagent-execution.md`. That reference alone
   owns task-graph scheduling, model routing, V2 dispatch policy, CAO escalation,
@@ -312,49 +302,25 @@ Default synthesis rules:
   Carry only the accepted state summary in the goal contract; do not restate its
   schemas here.
 
-### Perspective Model Synthesis
+### Project Judgment Synthesis
 
-For review, optimization, deep review-optimize, product readiness, project
-system, or Codex self-iteration goals, synthesize `perspective_model` before
-writing the final goal or agenda. The user's examples are seed patterns, not the
-complete set.
+For broad review, optimization, product readiness, project-system, or Codex
+self-iteration goals, form a compact `project_judgment` before writing the
+agenda. Begin with the object, user purpose, concrete relationships, history,
+constraints, and governing tension. Use
+`~/.agents/skills/software-contract/references/coding-quality-contract.md` when
+software quality is material.
 
-When `目标!` / `目标！` asks for broad or otherwise unqualified review,
-optimization, or review-optimization, load `software-contract` and read
-`~/.agents/skills/software-contract/references/coding-quality-contract.md` and
-`~/.agents/skills/software-contract/references/project-optimality-state-contract.md`.
-Build the lifecycle-owned authoritative project-quality evidence
-`project_optimality_packet` in this order:
-`project_model` -> dynamic concerns -> atomic probes -> current evidence and
-derived claim state.
-Generate probes from the contract's open responsibility positions and add any
-project-specific authority or affected party required by reality. The named
-positions and concerns are discovery sources, not a gold-standard list or equal
-weighting system.
+Follow every project relation that could overturn the whole judgment, including
+project-specific relations not named by a generic contract. This is not a
+perspective matrix: do not create one item per role, dimension, or evidence
+surface, and do not require explicit dismissal of everything else. Evidence is
+selected where it can correct the object model, practical judgment, action, or
+claim strength.
 
-Derive `perspective_model` only as a compact human-readable projection of the
-packet. Each lens must retain its probe questions, evidence surfaces, and
-decision impact; it cannot replace concerns, probes, or evidence.
-Complete discovery coverage guarantees breadth, not artificial findings. Every
-probe serves the single `optimality_law`. For review goals, evidence becomes a
-finding when it changes completion, decision, risk acceptance, or the stop
-condition. For optimization goals, select a change only when expected project
-benefit exceeds added complexity, cost, scope, risk, and re-optimization drift.
-
-When the user explicitly limits the target, perspective, or review boundary,
-derive the material subset that can change that scoped result. Do not use an
-explicitly narrow request as permission to omit a lens that remains material
-inside the stated boundary.
-
-The lifecycle controller owns the full `project_optimality_packet`. Carry it or
-a resolvable, revision-pinned `project_optimality_ref` in `goal_synthesis` and
-the agenda. Give review or broad
-optimization the full packet; give bounded executors and subagents the complete
-typed `project_optimality_projection` defined by the state contract. Declared
-delta producers return `project_optimality_delta`; other owners return normal
-Handoff evidence and subagents return receipts, which the controller normalizes
-before merge, replanning, or counting a clean pass. Carry `perspective_model`
-with the same actors only as the packet's compact readable projection.
+Carry the judgment in the Context Packet and ordinary Handoff only while another
+owner needs it. The goal, agenda, and trace preserve accepted continuity; do not
+create a second quality truth source.
 
 ### Goal Prompt Elegance Gate
 
@@ -363,16 +329,17 @@ goal prompt. A goal prompt is elegant only when it is the smallest control law
 that still preserves correct behavior:
 
 - each field changes action, evidence, boundary, handoff, or stop condition,
-- the `optimality_law` resolves conflicts between lenses instead of letting all
-  lenses accumulate equal weight,
-- `project_optimality_packet` is the single project-quality state source;
-  `perspective_model` stays a compact projection rather than a parallel taxonomy,
+- the `optimality_law` keeps jointly served values visible and resolves only
+  genuine conflicts instead of forcing every lens into equal weight or a total
+  ranking,
+- the goal, agenda, and trace preserve only accepted direction, work, and
+  continuity; review or optimization records do not become a second truth source,
 - the agenda items are executable and do not repeat the same control rule,
 - the stop condition is falsifiable from named evidence,
 - the prompt states non-goals and forbidden mutations clearly enough to prevent
   silent expansion,
-- the user is not asked to provide loop hardness, review depth, clean-pass
-  count, role list, stop condition, or prompt wording that Codex can infer.
+- the user is not asked to provide loop mechanics, review depth, role list, stop
+  condition, or prompt wording that Codex can infer.
 
 If the gate fails, simplify or rebuild the goal prompt before creating the tool
 goal. Do not treat a longer, more philosophical, or more comprehensive prompt as
@@ -424,15 +391,16 @@ goal_runtime:
   activation_state: <active_tool_goal | agenda_only | blocked_by_existing_goal>
   tool_goal_status: <active | complete | blocked | unavailable | none>
   agenda_link: <trace path or in-conversation agenda>
-  last_state_change: <created | reconciled | progressed | reset_clean_pass | blocked | completed>
+  last_state_change: <created | reconciled | progressed | replanned | blocked | completed>
   next_goal_action: <continue_agenda | ask_user | update_complete | update_blocked | none>
 ```
 
 Completion and blockage are strict:
 
 - Mark a goal complete only after all required agenda items are done or
-  user-approved skipped, required verification evidence exists, required review
-  clean passes are satisfied, and no material in-scope `new_work` remains.
+  user-approved skipped, required verification supports the completion claim,
+  user-explicit review rounds are satisfied when any, and no material in-scope
+  `new_work` remains.
 - Do not mark a goal complete from a commit, deploy, receipt, or single
   verification command alone.
 - Use `update_goal(status="complete")` only at the strict completion boundary.
@@ -441,10 +409,15 @@ Completion and blockage are strict:
   is possible without user input or external state change. Otherwise keep the
   agenda active with a visible blocked item or ask for the missing decision.
 - Use `update_goal(status="blocked")` only at that strict blocked boundary.
-- If a material in-scope issue appears after a clean pass, reset the relevant
-  clean-pass counter, reopen or add agenda work, and keep the goal active.
-- If the product boundary or success criterion changes, create a visible
-  `change_request` and reconcile the goal contract before continuing.
+- If material in-scope work appears, reopen or add agenda work, revisit affected
+  verification and any explicit review sequence, and keep the goal active.
+- When the user deliberately changes an accepted goal, scope, priority, product
+  boundary, or success criterion, create a visible `change_request` and
+  reconcile the goal contract. When feedback instead reveals that Codex's
+  accepted object, premise, actor/task account, judgment standard, explanatory
+  relation, or method was wrong, apply `model_reset` first and invalidate its
+  causal descendants as defined by `state-transitions.md`; do not preserve that
+  state by relabeling the correction as a change request.
 
 Pressure scenarios:
 
@@ -452,9 +425,9 @@ Pressure scenarios:
   maintain a tool goal when available, infer the full control-system
   `goal_synthesis` from the objective, show `target_layer`,
   `control_system_goal`, `goal_runtime`, synthesized `cyclic_goal_loop`,
-  `protocol_evidence`, review/delivery/verification policies, and the initial
+  review/delivery/verification policies and the initial
   agenda before advancing. Do not ask the user to provide loop wording, stop
-  conditions, clean-pass count, review depth, review scope, commit/push/deploy
+  conditions, review depth, review scope, commit/push/deploy
   requirements, verification hardness, state model, sensors, or actuator chain
   unless the user's perspective on the target boundary, success criterion,
   non-goal, risk acceptance, delivery expectation, or external state is both
@@ -474,16 +447,14 @@ Pressure scenarios:
 - "完成 v0.1 收口 / 直到无遗留问题": create or maintain a tool goal when
   available, build a project-state-first agenda, create/update trace, and continue
   until the strict completion rule is met. Ask first when the phase boundary,
-  deploy target, known-issue source of truth, acceptance bar, or release/push
+  deploy target, material-work source of truth, acceptance bar, or release/push
   expectation cannot be inferred from project evidence without changing the
   goal.
 - "优化 project-lifecycle / goal 体系 / 项目 skill 体系 / 自我迭代规则":
   create or maintain a tool goal before editing unless the user explicitly says
-  no goal or wording-only. For a broad objective, build the contract
-  `project_optimality_packet` and its compact `perspective_model`; adapt its
-  probe sources to the control system and add control-law domain authority. Ask
-  first when the requested
-  change could reasonably mean
+  no goal or wording-only. Form `project_judgment` from the actual control
+  object, governing tension, realistic behavior, and the user's purpose. Ask
+  first when the requested change could reasonably mean
   behavior-only, light-rule, or full-protocol/schema mutation.
 - "优化 Codex 配置 / AGENTS / skills / custom agents": treat as the same
   future-behavior control-law change; use a tool goal unless explicitly
@@ -493,7 +464,8 @@ Pressure scenarios:
   `目标!` / `目标！`, do not create a goal; with the marker, use a lightweight
   goal. In both cases preserve the explicit narrow boundary.
 - "继续推进到两轮全局审查无新增问题": keep the goal active until the agenda,
-  verification loop, and required clean-pass counter are all satisfied.
+  verification, delivery obligations, and the two explicitly requested review
+  rounds after the last material change are all satisfied.
 - "已有不同 active goal": do not overwrite or silently switch; ask for the
   controlling goal or stop at the current goal boundary.
 - "goal tool unavailable": use `activation_state: agenda_only`, preserve the
@@ -503,51 +475,49 @@ Pressure scenarios:
 ## Cyclic Project Goal Loop
 
 Use a cyclic goal loop for project advancement, version closeout, release
-readiness, "继续推进直到完成", "完成 v0.1/v1.0", "没有已知遗留问题",
-"两轮全局审查无新增问题", or any goal whose correctness depends on fixing
-newly discovered in-scope issues before stopping.
+readiness, or any goal whose correctness depends on finishing newly discovered
+in-scope work before stopping. Repeated review belongs in this loop only when the
+user explicitly requests a number of rounds or the goal names an equivalent
+concrete condition.
 
 Maintain this state in the trace or Handoff Record:
 
 ```yaml
 cyclic_goal_loop:
   phase_boundary: <v0.1, v1.0, current milestone, release, or project objective>
-  issue_source: <agenda | trace | TODO/backlog | review findings | release checks>
-  clean_pass_target: 2
-  clean_pass_count: <0..target>
-  reset_on: material_in_scope_issue
+  work_source: <agenda | trace | TODO/backlog | review result | release checks>
+  explicit_review_rounds: <user-requested count | not_applicable>
+  completed_review_rounds: <0..requested count | not_applicable>
+  revisit_on: <material_in_scope_work | verification failure | material state change>
   latest_code_state: <uncommitted | committed | pushed | not_applicable | blocked>
   deploy_health: <pass | fail | not_applicable | blocked>
-  known_residual_issues: <none | list | unknown>
+  open_material_work: <none | accepted agenda work, findings, failures, gaps, or unknown>
   stop_state: <continue | blocked | complete>
 ```
 
 The loop order is:
 
-1. Discover the controlling agenda and known-issue source.
+1. Discover the controlling agenda and material-work source.
 2. Implement or delegate the next material item.
 3. Verify the changed surface.
 4. Commit, push, release, or deploy only when they are part of the goal boundary.
-5. Run the required focused/deep/exhaustive review gate.
-6. If a material in-scope issue appears, add or reopen agenda work, set
-   `clean_pass_count: 0`, and continue from step 2.
-7. If no material issue appears, increment the clean-pass count and continue
-   until `clean_pass_target` is reached.
+5. Run review only when the goal or a material risk requires independent
+   judgment; use the requested depth.
+6. If material in-scope work appears, add or reopen agenda work and continue
+   from step 2. Restart an explicit review-round sequence after the changed
+   object is ready.
+7. If no unresolved material work appears, satisfy any explicitly requested
+   review rounds, then evaluate the whole stop condition.
 
-A clean pass closes only the bounded claim supported by its inspected surfaces
-and evidence; by itself, it does not certify artifact quality or replace further
-judgment.
+Material in-scope work is an accepted finding, failed command, unresolved
+requirement, missing evidence that limits a required claim, or handoff gap
+that affects the declared phase boundary, required surface, acceptance
+criterion, security/data boundary, deploy health, standard compliance, handoff
+readiness, practical judgment, or stop claim.
 
-A material in-scope issue is any finding, failed command, missing evidence, or
-handoff gap that affects the declared phase boundary, required surface,
-acceptance criterion, security/data boundary, deploy health, standard
-compliance, handoff readiness, or "no known residual issue" claim. Material
-issues reset the clean-pass counter even if they are small to fix.
-
-Do not reset the counter for explicitly out-of-scope ideas, future-version
-improvements, optional polish, duplicate findings already represented in the
-agenda, user-deferred items, or risks whose non-blocking status is recorded with
-evidence.
+Do not reopen work for explicitly out-of-scope ideas, unaccepted possibilities,
+future-version improvements, optional polish, duplicate agenda items,
+user-deferred items, or risks whose non-blocking status is already understood.
 
 The goal may stop as complete only when all are true:
 
@@ -559,23 +529,24 @@ The goal may stop as complete only when all are true:
   requires remote synchronization,
 - deploy/health is `pass` when deployment is in scope, or `not_applicable` with
   evidence when no deploy target exists,
-- review clean passes satisfy the requested depth and count after the last
+- explicitly requested review rounds, if any, are satisfied after the last
   material change,
-- the selected known-issue source contains no unresolved material issue inside
-  the phase boundary,
+- the selected work source contains no unresolved accepted work inside the phase
+  boundary,
 - the authoritative subagent receipt-join and thread-accounting gate in
   `references/subagent-execution.md` passes when delegation occurred.
 
-If code, docs, config, release state, or required evidence changes after a clean
-review pass, reset `clean_pass_count` to 0. If remote push or deploy evidence is
-unavailable, record the blocker and keep the goal active unless the user changes
-the boundary.
+If code, docs, config, or release state changes during an explicit review-round
+sequence, restart that sequence after the changed object is ready. If remote
+push or deploy evidence is unavailable, record the blocker and keep the goal
+active unless the user changes the boundary.
 
 ## Loop Control Matrix
 
-Use this matrix whenever goal-backed work combines agenda advancement, subagent
-waves, review clean passes, optimize framework cycles, release/deploy checks, or
-sync verification. These loops are related but not interchangeable.
+Use this matrix when goal-backed work combines agenda advancement, subagent
+waves, release/deploy checks, sync verification, or user-explicit repeated
+review. It coordinates real execution state; it does not define the quality of
+review or optimization.
 
 ```yaml
 loop_control_matrix:
@@ -583,49 +554,41 @@ loop_control_matrix:
     tool_goal: <active | agenda_only | none>
     agenda_loop: <active | none>
     subagent_wave_loop: <active | none>
-    review_clean_pass_loop: <focused | deep | exhaustive | none>
-    optimize_framework_cycle_loop: <active | none>
+    explicit_review_rounds: <requested count and current count | none>
     release_or_sync_loop: <active | none>
   reset_edges:
-    material_in_scope_issue:
-      resets: <agenda item, goal clean pass, review clean pass, optimize cycle, or release/sync evidence>
+    material_in_scope_work:
+      revisits: <agenda item, affected verification, explicit review sequence, or release/sync state>
     verification_failure:
-      resets: <agenda item, affected clean passes, release/sync evidence>
-    artifact_change_after_clean_pass:
-      resets: <review clean pass and parent goal clean pass>
-    review_finding:
-      resets: <goal clean pass and optimize framework cycle when optimization is active>
-    optimization_delta:
-      resets: <review clean pass, goal clean pass, affected subagent evidence>
+      revisits: <agenda item, affected verification, or release/sync state>
+    material_change_during_explicit_review:
+      revisits: <the requested review sequence after the object is ready>
     subagent_scope_or_merge_conflict:
-      resets: <wave join and affected agenda item>
+      revisits: <wave join and affected agenda item>
     subagent_thread_failure:
-      resets: <wave join and affected agenda item>
+      revisits: <wave join and affected agenda item>
   stop_precedence:
     - all required agenda items done or user-approved skipped
     - all subagent receipts joined, rejected, or converted into visible agenda state
     - authoritative subagent receipt-join and thread-accounting gate satisfied when delegation occurred
     - required verification/release/sync evidence satisfied or explicitly blocked/not_applicable
-    - required review clean passes satisfied after the last material artifact change
-    - required optimize framework clean cycles satisfied after the last material optimization point
+    - user-explicit review rounds satisfied after the last material change, when any
     - tool goal marked complete only after the above parent stop condition is true
   non_equivalence:
     - a subagent receipt is not agenda completion
-    - one review clean pass is not two review clean passes
-    - review clean passes are not optimize framework clean cycles
-    - a passing command is not review coverage
+    - a passing command is not an independent review judgment
     - a commit/push/deploy is not goal completion
     - a completed V2 thread is not an accepted receipt
     - a goal completion claim is invalid while unjoined receipts or pending agenda items remain
 ```
 
-If any loop changes the target artifact after another loop was clean, reset the
-affected downstream and parent counters. Do not reset unrelated counters for
-explicitly out-of-scope ideas, duplicate findings already represented in the
+If one loop materially changes another loop's object, revisit only the affected
+judgment, verification, or explicit round sequence. Do not restart unrelated
+work for out-of-scope ideas, duplicate findings already represented in the
 agenda, or rejected non-material drift.
 
-The controller must record which loop caused a reset. A reset without a source
-is a false clean-pass audit trail.
+The controller must record which material event caused replanning. Do not retain
+process history that cannot change recovery, action, or completion.
 
 ## Incomplete Closeout Targets
 
@@ -638,7 +601,7 @@ to resolve:
 - plan/backlog source of truth: trace, issues, roadmap, TODO, release checklist,
   handoff doc, or explicit user message,
 - deploy target, run/deploy command, and health signal,
-- review scope and clean-pass requirement,
+- review scope and any user-explicit round requirement,
 - residual-issue source of truth.
 
 Ask the user only when project evidence cannot resolve the uncertainty and the
@@ -659,7 +622,7 @@ claim is limited to inspected evidence, not unknowable external backlog.
 
 Load `references/subagent-execution.md` whenever a goal delegates work, has
 parallel-safe nodes, or needs state to survive interruption. Preserve the goal's
-objective, boundary, value ordering, and stop condition when constructing the
+  objective, boundary, value relation, and stop condition when constructing the
 subagent parent target. Goal agenda items carry only the execution node id and
 accepted status/result summary; do not copy model-route, assignment, V2 wave,
 CAO, or receipt schemas back into this goal reference.
