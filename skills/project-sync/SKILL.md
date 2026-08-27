@@ -61,7 +61,7 @@ docs or environment-specific configuration outside public repositories.
 
 ## Codex Skills Sync Contract
 
-Default sync target for skills is `~/.codex/skills/`.
+Default sync target for skills is `~/.agents/skills/`.
 
 Valid skill directories must contain `SKILL.md`. Empty directories or directories
 without `SKILL.md` are not valid skills. Before and after syncing:
@@ -73,7 +73,7 @@ without `SKILL.md` are not valid skills. Before and after syncing:
 5. report skipped targets and open risks.
 
 Use `rsync -az --delete` only when the target directory is exactly the intended
-skill directory. Do not run broad deletes against `~/.codex/` or a home
+skill directory. Do not run broad deletes against `~/.agents/` or a home
 directory.
 
 ## Mac Or Workstation Sync Template
@@ -81,9 +81,9 @@ directory.
 Set these values in the shell or replace placeholders privately:
 
 ```bash
-SOURCE_SKILL_ROOT="${SOURCE_SKILL_ROOT:-$HOME/.codex/skills}"
+SOURCE_SKILL_ROOT="${SOURCE_SKILL_ROOT:-$HOME/.agents/skills}"
 TARGET_HOST="${TARGET_HOST:?set target host, for example user@example-host}"
-TARGET_SKILL_ROOT="${TARGET_SKILL_ROOT:-~/.codex/skills}"
+TARGET_SKILL_ROOT="${TARGET_SKILL_ROOT:-~/.agents/skills}"
 SKILL_NAME="${SKILL_NAME:?set skill name}"
 
 test -f "$SOURCE_SKILL_ROOT/$SKILL_NAME/SKILL.md"

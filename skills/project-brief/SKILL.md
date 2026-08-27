@@ -98,7 +98,7 @@ criteria, Metrics/NFR applicability, and which downstream skill owns each
 remaining standard item. Do not mark an implementation/doc/release item
 `satisfied` from the brief alone.
 When standard details affect ownership or status, load `software-contract` and
-read `~/.codex/skills/software-contract/references/standard-development-contract.md`.
+read `~/.agents/skills/software-contract/references/standard-development-contract.md`.
 If the required reference is unavailable, stop and report the missing resource.
 
 Then choose the chain result:

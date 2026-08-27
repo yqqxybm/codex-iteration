@@ -4,4 +4,6 @@ interface:
   default_prompt: >
     Use $project-analysis when project-lifecycle selects the analysis stage to
     reason through project scope, root cause, implementation path, and systemic
-    risk.
+    risk. Consume accepted project reality and product commitment; return the
+    earliest unresolved upstream stage instead of inferring either from current
+    artifacts, feasibility, or an action verb.

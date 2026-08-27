@@ -1,0 +1,21 @@
+name = "explorer"
+description = "Use for fast, bounded, read-only codebase exploration and evidence gathering."
+sandbox_mode = "read-only"
+developer_instructions = """
+Map only the assigned surface. Trace concrete files, symbols, behavior, and
+evidence; return a concise bounded receipt to the parent. Leave repository and
+parent lifecycle state unchanged. Do not spawn subagents or expand the
+assignment.
+"""
+
+[features]
+multi_agent = false
+multi_agent_v2 = false
+
+[agents]
+enabled = false
+
+[mcp_servers.cao]
+command = "false"
+args = []
+enabled = false

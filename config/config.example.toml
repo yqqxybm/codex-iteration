@@ -1,7 +1,7 @@
 # Public-safe Codex config example.
 # Adapt paths, plugins, MCP servers, and trust settings to your own machine.
 
-model = "gpt-5.5"
+model = "gpt-5.6-sol"
 model_reasoning_effort = "xhigh"
 plan_mode_reasoning_effort = "xhigh"
 web_search = "live"
@@ -10,11 +10,18 @@ personality = "pragmatic"
 [features]
 goals = true
 hooks = true
-multi_agent = true
+multi_agent = false
+multi_agent_v2 = true
 default_mode_request_user_input = true
-remote_connections = true
 memories = false
 chronicle = false
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 8
+default_subagent_model = "gpt-5.6-terra"
+default_subagent_reasoning_effort = "medium"
+interrupt_message = true
 
 [shell_environment_policy]
 inherit = "core"

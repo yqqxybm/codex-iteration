@@ -3,10 +3,15 @@ interface:
   short_description: "Software project, goal, and self-iteration controller."
   default_prompt: >
     Use $project-lifecycle as the single entry point to classify this software
-    project request or Codex skill/config/custom-agent self-iteration request.
-    For `目标!` / `目标！`, synthesize a control-system goal with target layer,
-    state model, sensors, actuator skill chain, loop policy, stop condition,
-    review hardness, verification, commit/push/deploy/sync applicability, and
-    agenda from the user's outcome, then route analysis, implementation, docs,
-    review, release, sync, or subagent work through the correct downstream
-    skills.
+    project request, requirement, correction, user-facing product/content
+    change, or Codex behavior-control change. Locate the earliest unresolved
+    project commitment, then build the complete owner-skill chain to the
+    requested outcome; later action verbs never waive missing upstream state.
+    Apply the visible analysis gate only when its boundary requires it and
+    preserve user boundaries. Route unresolved user/product reality through
+    project-discovery and unresolved product commitment through project-brief
+    before implementation. For `目标!` /
+    `目标！`, load the goal reference and synthesize the complete control goal.
+    For independent surfaces, load the subagent reference and parallelize unless
+    a concrete blocker exists. Those references are authoritative for goal,
+    model-routing, CAO, receipt, join, and stop behavior.

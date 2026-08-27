@@ -275,19 +275,19 @@ the surface is data-heavy, async, permissioned, responsive, or otherwise state
 sensitive.
 
 For software-project UI work, load `software-contract` and read
-`~/.codex/skills/software-contract/references/frontend-quality-contract.md` when
+`~/.agents/skills/software-contract/references/frontend-quality-contract.md` when
 the UI Contract details affect the finding. If the reference is required but
 unavailable, report that as missing evidence instead of reviewing from memory.
 When visual quality, component behavior, accessibility, responsive behavior, or
 rendered QA determines the finding, also read
-`~/.codex/skills/software-contract/references/frontend-design-contract.md` and
+`~/.agents/skills/software-contract/references/frontend-design-contract.md` and
 audit whether a compact `design_contract_evidence` or equivalent rendered QA
 evidence exists.
 
 When the reviewed UI is a landing page, portfolio, brand page, redesign,
 product page, prototype, source-inspired UI, high-aesthetic screen, or a UI the
 user says looks generic, also read
-`~/.codex/skills/software-contract/references/frontend-taste-contract.md`.
+`~/.agents/skills/software-contract/references/frontend-taste-contract.md`.
 Audit whether the work has a defensible design read, calibrated
 variance/motion/density, anti-default audit, redesign preservation boundary when
 applicable, and taste preflight evidence. Report taste issues only when they
@@ -295,7 +295,7 @@ contradict the stated design standard, user goal, rendered evidence, or this
 contract; do not report personal preference as a finding.
 
 When the reviewed UI includes any motion effect, also read
-`~/.codex/skills/software-contract/references/frontend-motion-contract.md`.
+`~/.agents/skills/software-contract/references/frontend-motion-contract.md`.
 Audit whether GSAP was used as the motion engine, whether a `motion_contract`
 exists, and whether reduced motion, mobile/resize, cleanup, and debug-marker
 risks were verified. If motion was implemented with CSS/WAAPI/Framer Motion
@@ -318,8 +318,8 @@ actions. A project may pass only if no required item is unaccounted and no
 `satisfied` item relies on an empty placeholder.
 
 For software-project standard reviews, load `software-contract` and read
-`~/.codex/skills/software-contract/references/standard-development-contract.md`.
-Read `~/.codex/skills/software-contract/references/docs-deliverables.md` when
+`~/.agents/skills/software-contract/references/standard-development-contract.md`.
+Read `~/.agents/skills/software-contract/references/docs-deliverables.md` when
 equivalent document paths or handoff assets determine the finding.
 
 ## Workflow

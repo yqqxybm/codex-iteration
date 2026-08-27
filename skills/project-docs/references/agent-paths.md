@@ -6,8 +6,8 @@
 |---|---|
 | 全局 Codex 指令 | `~/.codex/AGENTS.md` 或 `$CODEX_HOME/AGENTS.md` |
 | 项目级指令 | 项目根 `AGENTS.md`，可按目录层级嵌套 |
-| 全局 skills | `~/.codex/skills/<name>/SKILL.md` |
-| 项目 skills | `.codex/skills/<name>/SKILL.md` |
+| 全局 skills | `~/.agents/skills/<name>/SKILL.md` |
+| 项目 skills | `.agents/skills/<name>/SKILL.md` |
 
 Codex 没有独立的“长期上下文文件 + 索引”机制。需要跨会话保留的信息按以下规则沉淀：
 

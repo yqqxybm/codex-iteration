@@ -21,8 +21,8 @@ The system is built around cybernetic pragmatism:
   frontend quality, documentation, motion, and coding contracts.
 - `skills/co-star`, `skills/self-refine`, `skills/retrospective`: lightweight
   thinking frameworks.
-- `agents/project-*.toml`: optional Codex custom agents for project exploration,
-  bounded implementation, verification, and review.
+- `agents/{explorer,worker,reviewer}.toml`: optional V2 custom-agent postures for
+  bounded exploration, implementation or verification, and review.
 - `config/config.example.toml`: public-safe Codex config example.
 
 ## What Is Not Included
@@ -41,11 +41,11 @@ Git credentials.
 
 ## Install
 
-Copy the skills you want into your Codex skills directory:
+Copy the skills you want into the personal Codex skills directory:
 
 ```bash
-mkdir -p ~/.codex/skills
-rsync -az skills/ ~/.codex/skills/
+mkdir -p ~/.agents/skills
+rsync -az skills/ ~/.agents/skills/
 ```
 
 Optional custom agents can be installed the same way:
@@ -72,7 +72,8 @@ Use the smallest skill that owns the work:
 
 - ordinary writing or prompt shaping -> `co-star` or `self-refine`,
 - non-project deep decisions -> `three-step-analysis`,
-- software-project decisions -> `project-analysis`,
+- software-project requests -> `project-lifecycle`, which selects
+  `project-analysis` or the earliest unresolved downstream stage,
 - existing-project code changes -> `project-iteration`,
 - new projects or multi-skill plan advancement -> `project-lifecycle`,
 - review-only work -> `review`,

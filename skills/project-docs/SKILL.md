@@ -76,8 +76,8 @@ to apply the standard development guide, use any provided ledger as the current
 coverage state. If no ledger exists and standard coverage is requested, create a
 compact doc-owned ledger from the Standard Development Contract before editing.
 Load `software-contract` and read
-`~/.codex/skills/software-contract/references/standard-development-contract.md`
-and `~/.codex/skills/software-contract/references/docs-deliverables.md` before
+`~/.agents/skills/software-contract/references/standard-development-contract.md`
+and `~/.agents/skills/software-contract/references/docs-deliverables.md` before
 claiming standard doc coverage. If either reference cannot be read, stop and
 report the missing resource; do not recreate the coverage map or path mapping
 from memory.

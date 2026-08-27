@@ -41,12 +41,12 @@ authorized by the frozen charter:
 - focused initial commit when inside or creating a Git repo.
 
 When applying the standard, load `software-contract` and read
-`~/.codex/skills/software-contract/references/standard-development-contract.md`.
+`~/.agents/skills/software-contract/references/standard-development-contract.md`.
 Before creating documentation assets, also read
-`~/.codex/skills/software-contract/references/docs-deliverables.md` and apply
+`~/.agents/skills/software-contract/references/docs-deliverables.md` and apply
 the project documentation profile.
 For UI projects, also read
-`~/.codex/skills/software-contract/references/frontend-quality-contract.md`.
+`~/.agents/skills/software-contract/references/frontend-quality-contract.md`.
 If a required reference cannot be read, stop and report the missing resource;
 do not scaffold from a generic remembered checklist.
 

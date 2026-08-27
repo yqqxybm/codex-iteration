@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Discovery"
+  short_description: "Research before product commitments."
+  default_prompt: "Use $project-discovery when project-lifecycle selects discovery to determine user, product, market, or domain reality before requirements or implementation."

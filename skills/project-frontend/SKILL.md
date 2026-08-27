@@ -145,11 +145,11 @@ Tier 2/3 默认按极限质量模式执行，除非用户明确要求快速草�
 
 For UI Contract schema, operating conditions, and `frontend_evidence_packet`
 requirements, load `software-contract` and read
-`~/.codex/skills/software-contract/references/frontend-quality-contract.md`.
+`~/.agents/skills/software-contract/references/frontend-quality-contract.md`.
 
 For stable visual design, component, accessibility, responsive, and rendered QA
 standards, load `software-contract` and read
-`~/.codex/skills/software-contract/references/frontend-design-contract.md`.
+`~/.agents/skills/software-contract/references/frontend-design-contract.md`.
 Use that resource as the authoritative static design contract; keep this skill
 focused on design selection, implementation, verification, and evidence.
 For Tier 2/3 work, maintain a compact `design_contract_evidence` in the handoff
@@ -162,7 +162,7 @@ product-state robustness. Tier 1+ tasks need an explicit internal `ui_contract`,
 and final handoff must summarize the evidence boundary.
 
 For high-aesthetic control, load `software-contract` and read
-`~/.codex/skills/software-contract/references/frontend-taste-contract.md` when
+`~/.agents/skills/software-contract/references/frontend-taste-contract.md` when
 the task is Tier 2/3 and involves a landing page, portfolio, brand page,
 redesign, product page, prototype, source-inspired UI, "高级/好看/顶级/作品级",
 or prior output that looks generic. Use it to build `taste_control`: design
@@ -177,7 +177,7 @@ When the user names a concrete aesthetic direction such as "苹果风", "Linear 
 "主题设计模式", "源站级审美", or when a Tier 2/3 task needs stronger art
 direction and no existing project style already decides it, load
 `software-contract` and read
-`~/.codex/skills/software-contract/references/frontend-theme-contract.md`.
+`~/.agents/skills/software-contract/references/frontend-theme-contract.md`.
 
 Use the reference to expand vague style words into a `theme_contract`: art
 direction, visual protagonist, typography, color, layout, component behavior,
@@ -194,7 +194,7 @@ pages/viewports inspected, and any source-quality gap or skipped comparison.
 When the Context Packet or original request asks for "原型参考", "优秀设计参考",
 "不要只靠 prompt", "源站级审美", or when Tier 2/3 / 极限质量 work would otherwise
 rely only on theme words, load `software-contract` and read
-`~/.codex/skills/software-contract/references/frontend-prototype-reference-contract.md`.
+`~/.agents/skills/software-contract/references/frontend-prototype-reference-contract.md`.
 
 Use it to build an internal `prototype_reference_packet`: page role, selected
 source/prototype, extracted skeleton, visual protagonist, density model,
@@ -228,7 +228,7 @@ When a UI implementation includes any motion effect, or when the user asks for
 "GSAP", "gasp", 动效, 高级动效, 特效, 滚动叙事, scroll animation, pin, scrub,
 parallax, SVG/text animation, or Flip/layout transition, load `software-contract`
 and read
-`~/.codex/skills/software-contract/references/frontend-motion-contract.md`.
+`~/.agents/skills/software-contract/references/frontend-motion-contract.md`.
 
 Use it to build a concise `motion_contract` before implementation. Current
 default is GSAP-required for motion: ordinary hover, focus, active, menu,
@@ -290,11 +290,11 @@ Tier 2/3 任务按以下顺序执行：
 ## 2. Design Contract Resource
 
 Static frontend design standards live in
-`~/.codex/skills/software-contract/references/frontend-design-contract.md`.
+`~/.agents/skills/software-contract/references/frontend-design-contract.md`.
 Use that reference for anti-template aesthetics, design tokens, component
 baselines, accessibility, responsive behavior, and rendered visual QA.
 High-aesthetic taste controls live in
-`~/.codex/skills/software-contract/references/frontend-taste-contract.md`.
+`~/.agents/skills/software-contract/references/frontend-taste-contract.md`.
 Use that reference for design read, dials, anti-default audit, redesign
 preservation, and taste preflight.
 

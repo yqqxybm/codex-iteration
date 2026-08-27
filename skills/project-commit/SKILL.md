@@ -127,7 +127,7 @@ EOF
 
 When `standard_compliance_ledger` is present, update only version-workflow
 entries this skill can prove from the local commit. Load `software-contract` and
-read `~/.codex/skills/software-contract/references/standard-development-contract.md`
+read `~/.agents/skills/software-contract/references/standard-development-contract.md`
 when standard version-workflow details affect status. If the required reference
 is unavailable, stop and report the missing resource:
 

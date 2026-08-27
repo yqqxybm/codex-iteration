@@ -62,7 +62,7 @@ SLO/error-budget lessons, runbook updates, and ADR/retrospective follow-ups.
 If the retrospective discovers a standard gap, return it to `project-lifecycle`
 or `project-docs` instead of treating the lesson as complete.
 When standard learn-phase details affect status, load `software-contract` and
-read `~/.codex/skills/software-contract/references/standard-development-contract.md`.
+read `~/.agents/skills/software-contract/references/standard-development-contract.md`.
 If the required reference is unavailable, stop and report the missing resource.
 
 ## Learn Phase Timing

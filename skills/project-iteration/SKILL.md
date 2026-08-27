@@ -229,7 +229,7 @@ no owned items remain.
 
 When `standard_compliance_ledger` is present, or when the change touches a
 standard-sensitive area, load `software-contract` and read
-`~/.codex/skills/software-contract/references/coding-quality-contract.md`.
+`~/.agents/skills/software-contract/references/coding-quality-contract.md`.
 Evaluate the applicable coding requirements from that reference. If the
 reference cannot be read, stop and report the missing resource; do not replace it
 with a generic checklist.

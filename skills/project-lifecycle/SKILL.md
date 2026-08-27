@@ -2,49 +2,66 @@
 name: project-lifecycle
 description: >
   Software project lifecycle controller and the single entry point for
-  software-project requests, including new projects, small code edits, bug
-  fixes, project planning, plan advancement such as "根据计划全部推进",
+  software-project requests, including new projects, requirements, requests that
+  require determining what users actually need before deciding product content,
+  user-facing product or content changes, corrections, small code edits, bug
+  fixes, product or domain discovery, project planning, plan advancement such as
+  "根据计划全部推进",
   architecture, docs, release, sync, phase transitions, and multi-skill project
   work, explicit `目标!` / `目标！` goal-backed project objectives, plus Codex
   skill/config/custom-agent self-iteration that governs future project behavior.
-  Owns skill selection, philosophy, call chains, analysis gates, goal-backed
-  concierge mode, subagents, agendas, contracts, and traces. Do not use for
-  non-project three-step-analysis requests or non-project thinking tasks.
+  Owns skill selection, skill-system best-practice synthesis, philosophy, call
+  chains, analysis gates, goal-backed concierge mode, subagents, agendas,
+  contracts, and traces. Do not use for non-project three-step-analysis requests
+  or non-project thinking tasks.
 ---
 
 # Project Lifecycle
 
 This is the software-project controller, not a simple dispatcher. It does not
-implement features itself. It identifies the project phase, applies the project
-philosophy, builds the call chain, and hands each downstream skill the smallest
-useful context packet.
+implement features itself. It locates the earliest unresolved project
+commitment, applies the project philosophy, builds the chain through the user's
+requested outcome, and hands each downstream skill the smallest useful context
+packet.
 
 ## Unified Philosophy
 
-Codex's software-project job is to turn user intent into software assets that
-are runnable, verifiable, releasable, maintainable, handoff-ready, and able to
-evolve.
+Codex's software-project job is to make the project better under the user's
+actual intent and real constraints. This is the sole governing standard.
+Runnable, verifiable, releasable, maintainable, handoff-ready, and evolvable
+software are evidence-bearing qualities only when they serve that standard.
 
-Every software-project skill must serve five principles:
+Every software-project skill uses five control principles in service of it:
 
 1. **Intent fidelity**: preserve the user's actual goal across every layer.
 2. **Structure first**: establish boundaries, architecture, quality gates, and
    project context before large implementation.
 3. **Runnable first**: prefer a working vertical slice over empty scaffolding or
    abstract plans.
-4. **Evidence loop**: verify code, releases, and decisions with concrete output.
-5. **Knowledge capture**: record decisions, run commands, operations, and lessons
-   where future Codex sessions and humans can find them.
+4. **Reasoned evidence loop**: form an explicit model and judgment, then test
+   decisions, code, and releases with concrete output.
+5. **Selective continuity**: preserve only accepted durable decisions and stable
+   project knowledge in their authoritative home; keep task-local corrections,
+   evidence, and process state local to the task.
 
 ## Control System Model
 
 Project lifecycle applies cybernetic pragmatism to software work: user intent is
-the objective, repo/runtime evidence is feedback, skill boundaries are action
-constraints, and verified project state change is completion.
+the objective, reasoned judgment directs action, repo/runtime evidence is
+feedback, and skill boundaries are action constraints. Completion is a judgment
+that the intended state has been reached, bounded by verification.
+
+Evidence, sensors, ledgers, and verification are fallible feedback for testing
+judgment and bounding completion claims. They are not the objective and cannot,
+by themselves, substitute for understanding, thought, or an artifact-quality
+judgment.
 
 In this controller:
 
-- the agenda is the current world-state model,
+- the project model and accepted state are the current understanding of the
+  world,
+- the agenda records authorized work and unfinished commitments; it is not
+  project truth,
 - the Context Packet is bounded state transfer to a downstream skill,
 - the Handoff Record is control transfer back to the controller,
 - verification is feedback from the changed world,
@@ -56,60 +73,42 @@ Do not add process unless it improves one of these control functions.
 
 ## Project Standard Contract
 
-All software projects are governed by the Standard Development Contract derived
-from the user's `标准开发指南`. Full standard enforcement means every guide
-requirement must be accounted for; it does not mean every project receives long
-same-name documents or enterprise ceremony up front.
+Use `software-contract` and
+`~/.agents/skills/software-contract/references/standard-development-contract.md`
+for new-project bootstrap,
+phase advancement, readiness review, or an explicit standard-guide request.
+The controller owns its compact compliance ledger; downstream skills receive
+only relevant entries and return deltas.
 
-In the control model, the standard ledger is the observable project-state for
-development maturity: a requirement without evidence is unknown, a missing owner
-is uncontrolled, and a claimed completion without verification is false
-completion.
-
-Use the `software-contract` resource skill when creating a new project,
-advancing a project phase, auditing project readiness, or when the user mentions
-the standard guide. Required reference:
-`~/.codex/skills/software-contract/references/standard-development-contract.md`.
-If it cannot be read, stop and report the missing resource; do not replace it
-with memory or a generic checklist.
-
-Maintain a compact `standard_compliance_ledger`:
-
-```yaml
-standard_compliance_ledger:
-  source: 标准开发指南
-  entries:
-    - requirement: <guide phase/item>
-      owner_skill: <project skill>
-      status: <satisfied | not_applicable | blocked | deferred | missing>
-      evidence: <file, command, setting, test, or reason>
-      next_action: <agenda item, none, or user decision needed>
-```
-
-Rules:
-- Record `domain_resource_evidence` when the standard contract affects a
-  completion claim.
-- Full mandatory means every item has a status and evidence boundary.
-- Equivalent project paths are allowed, but the mapping must be recorded.
-- Optional guide items must still be evaluated; if their condition applies, they
-  become required. If not, mark `not_applicable` with a reason.
-- Short skeleton docs are acceptable at bootstrap when they give a real entry,
-  owner, and verification path. Empty placeholder docs are not `satisfied`.
-- Missing standard work becomes agenda, `blocked`, or `deferred`; it is never
-  silently ignored.
+Full coverage means every applicable requirement has an owner, justified state,
+and evidence boundary. It does not require same-name files, empty templates, or
+enterprise ceremony. Use project-native equivalents when they perform the real
+job, and load
+`~/.agents/skills/software-contract/references/docs-deliverables.md` before
+deciding document shape.
 
 ## Phase Map
 
-Classify the request before acting:
+This table names phase owners; it is not a keyword router. Determine the earliest
+unresolved commitment in this order: project reality, product commitment,
+solution judgment, execution, then delivery or learning. Start the selected
+chain there and continue through every later owner needed for the requested
+outcome. A later-phase verb such as "开始改", "实现", "推进", or "发布" authorizes
+the endpoint; it does not prove that earlier commitments already exist.
+The resulting control decision may stop for dialogue, return a stage-only
+handoff, repair or reopen accepted state, or continue through execution and
+delivery; do not force every request into implementation.
 
 | Phase | User intent | Downstream capability |
 | --- | --- | --- |
-| `idea` | vague app/product idea, "想做一个..." | `project-brief`, then this controller |
-| `charter` | define goals, users, constraints, success criteria | `project-brief` + `project-lifecycle` |
+| `discovery` | research must determine users, product content, requirements, priorities, positioning, or scope | `project-discovery`, then controller adoption |
+| `idea` | accepted problem/user reality, but product intent is still vague | `project-brief`, then this controller |
+| `charter` | accepted reality, but product goal, workflow, constraints, or success criteria remain unresolved | `project-brief` + `project-lifecycle` |
 | `architecture` | stack, data model, service boundaries, risk tradeoffs | `project-analysis` |
 | `bootstrap` | create a new project from zero | `project-bootstrap` |
 | `iteration` | feature, fix, refactor, tests, behavior change | `project-iteration` |
 | `ui` | UI/UX, page, component, visual behavior | `project-frontend` + `project-iteration` or `project-bootstrap` |
+| `review` | focused, deep, exhaustive, project, product, or readiness audit | `review` |
 | `release` | version, tag, build, deploy, rollout, rollback | `project-release` |
 | `sync` | machines, skills, config distribution, SSH fleet work | `project-sync` |
 | `handoff` | docs, README, AGENTS, newcomer readiness | `project-docs` |
@@ -120,90 +119,185 @@ Classify the request before acting:
 
 - **All software-project requests enter here first**: new projects, existing
   project code edits, bug fixes, tests, UI, docs, release, sync, architecture,
-  planning, review-after-implementation, and plan advancement.
+  planning, standalone or post-implementation review, and plan advancement.
 - This controller chooses the downstream capability. Do not let user wording
   such as "修一下", "改个 bug", "写文档", or "发布" bypass the controller.
+- **The earliest unresolved commitment controls the chain**: when the actors,
+  situation, task or judgment, needed information or capability, or its effect
+  on the outcome is not accepted and would decide what the product should
+  contain, start with `project-discovery`. A broad user concern, example,
+  tentative claim, current UI/API/field, available integration, or action verb is
+  not an accepted product need. After adoption, route through `project-brief`
+  whenever the finding creates or changes product content, requirements, scope,
+  or success criteria. When project reality is accepted but the product intent,
+  user/workflow, requirement boundary, non-goals, or success criterion is not,
+  start with `project-brief`. When those commitments are accepted but the root
+  cause, architecture, solution, risk tradeoff, or implementation boundary is
+  unresolved, use `project-analysis`. Only an accepted implementation boundary
+  may reach an executor. A bounded fact, source, or feasibility lookup for an
+  already accepted decision stays with `project-analysis` and sets
+  `discovery_gate: not_applicable`.
+- **Personal skill root**: treat `~/.agents/skills` as the authoritative home
+  for user-installed skills. During the built-in transition, pass that path to
+  creators when supported; if a helper writes a personal skill under
+  `$CODEX_HOME/skills`, relocate and validate only that skill. Never migrate
+  `$CODEX_HOME/skills/.system` or plugin-managed skills.
+- **Any requested project modification must be classified before editing**:
+  `very_small` or `material_change`. `very_small` requires all of these: one
+  local reversible semantic change, no behavior/API/schema/security/data/deploy/
+  durable-test-contract/generated-artifact/docs-IA/control-law impact, no
+  independent cross-file or cross-module dependency, no unclear scope, and no
+  meaningful user-visible risk beyond what one targeted local check can
+  conclusively resolve. An
+  incidental snapshot or text assertion that merely mirrors the current literal
+  is not a durable test contract; removing or relaxing that mechanically coupled
+  assertion is part of the same semantic change and does not by itself force
+  escalation. A
+  bounded reversible uncertainty may remain `very_small` when that targeted
+  check can close it without expanding the mutation boundary. If a failed check
+  exposes neither semantic risk nor broader mutation, correct only the originally
+  authorized semantic change and check again. If it exposes either, reclassify as
+  `material_change` before any further edit. If any material condition is false
+  or remains uncertain after inspecting the affected surface, classify as
+  `material_change`.
+  For
+  `material_change`, route through visible `project-analysis` Stage 1, Stage 2,
+  and Stage 3 before implementation unless the user explicitly waives that
+  analysis under the Mandatory Project Analysis Gate, even when the user did not
+  say "三步分析".
+  Do not satisfy this requirement with hidden reasoning, a private handoff, or
+  the generic lifecycle gates alone; a `material_change` must not enter
+  `project-iteration`, `project-bootstrap`, `project-docs`, `project-sync`,
+  commit, or release before the visible `project-analysis` gate completes, stops
+  at a blocking Stage 2 question, or records that explicit waiver.
+  Codex skills, AGENTS/global instructions, config, goal prompts, subagent
+  orchestration, sync rules, and future project behavior controls are
+  `material_change` by default unless the edit is literal typo or formatting
+  only. `very_small` versus `material_change` controls analysis and verification
+  weight after the earliest unresolved commitment is known; it cannot convert an
+  unaccepted product need or requirement boundary into implementation state.
+- **Proportional best-practice synthesis**: the user's short request is enough. For
+  any fuzzy or under-specified project request, synthesize the strongest
+  applicable `skill_system_best_practice_packet` instead of asking the user to
+  write a prompt, name skills, choose review depth, or list quality gates. Only
+  clear tiny local edits stay in the light path: examples include moving one
+  icon, fixing one typo/copy string, changing one local spacing/color token, or
+  another reversible single-semantic-surface adjustment with no meaningful
+  behavior,
+  workflow, architecture, docs, durable contract, release, security, data,
+  design-direction, or independent cross-file impact. This semantic
+  classification remains controlling when the literal lives in a UI file;
+  generic frontend routing does not override a proved `very_small` boundary.
+  Everything else receives only the owners and gates whose decisions or
+  evidence can change the requested result, with target-appropriate
+  verification. Do not activate docs, tests, review, version, contracts, or
+  other lifecycle surfaces merely because the change is not `very_small`.
 - **User asks to execute an existing plan end to end**: create an agenda and
   keep ownership until the agenda reaches a stop condition.
+- **Frontend/UI work**: route design judgment through `project-frontend` and
+  the applicable `software-contract` frontend references. Short fuzzy UI
+  requests are sufficient; the controller supplies the design-quality target,
+  reference/visual-target needs, and verification boundary instead of asking the
+  user to write a frontend prompt. Explicit UI-preservation instructions govern
+  the protected scope. For every other visible change, the
+  `project-frontend` aesthetic target and Simple-Coherent-Elegant judgment
+  remain binding; Tier 2/3 and high-aesthetic work must satisfy its
+  pre-implementation visual-target gate before an executor codes from style
+  adjectives.
 - **Any project request creates a multi-item agenda or independent work
-  surfaces**: evaluate automatic parallel dispatch through
-  `references/goal-subagent-orchestration.md`. If the work is safe, disjoint,
-  executable, materially worth dispatching, the runtime exposes subagent tools,
-  and current tool policy permits spawning for this request, choose the smallest
-  correct `parallel_execution_mode` and parallelize automatically; do not wait
-  for the user to say "并行" when policy already allows delegation. If tool
-  policy requires an explicit subagent/delegation request and the user did not
-  make one, preserve the task graph but set the dispatch policy to blocked by
-  tool policy. Do not merely count available agents. Build the task graph,
-  dependency edges, conflict edges, runtime capability probe, parallel ROI,
-  merge strategy, join barrier, and selected antichain first. Preserve exact
-  fields:
-  `runtime_capability_probe`, `parallel_roi`, `merge_strategy`,
-  `subagent_spawn_mechanism`, `subagent_close_mechanism`, `join_barrier`,
-  `same_worktree_disjoint`, `isolated_worktree_if_supported`, `main_applies_patch`,
-  `dynamic_mission_profile`, `mission_profile_delta`, and
-  `subagent_runtime_registry`, `runtime_resource_ledger`,
-  `close_state`, and `loop_control_matrix`.
+  surfaces**: load `references/subagent-execution.md` and apply its dispatch
+  proof. Parallelism is opt-out; only a concrete blocker permits sequential
+  execution. That reference is the sole authority for runtime/lifecycle/CAO
+  boundaries, model routing, V2 dispatch, assignments, receipts, joins, and
+  thread accounting.
 - **User asks to finish, close out, deliver, complete a version/phase, keep going
   until done, or optimize project/goal/subagent/Codex controls**: use
-  goal-backed concierge unless explicitly single-point.
+  inferred goal-backed concierge unless explicitly single-point; an explicit
+  `目标!` / `目标！` is governed by the next rule.
 - **User starts a project request with `目标!` or `目标！`**: treat the rest of
-  the message as an explicit goal-backed project objective. The user supplies
-  only the desired outcome; this controller must synthesize the control-system goal:
-  goal preflight, task-specific optimality law, target layer, state model,
-  feedback sensors, actuator skill chain, loop policy, stop condition,
-  verification, commit/push/deploy applicability, review depth/scope,
-  clean-pass count, escalation boundary, perspective model, plan state sink,
-  automatic parallel dispatch policy, runtime capability probe, parallel
-  execution mode, task graph, dynamic mission profiles, parallel ROI, merge
-  strategy, join barrier, loop control matrix, and agenda. Preserve exact
-  fields: `task_graph`, `dynamic_mission_profile`, `mission_profile_delta`,
-  `subagent_runtime_registry`, `runtime_resource_ledger`,
-  `cyclic_goal_loop`, `loop_control_matrix`, `review_clean_pass_loop`, and
-  `optimize_framework_cycle_loop`. Read
-  `references/goal-subagent-orchestration.md` before creating or maintaining a
-  Codex goal. Create or maintain a Codex goal only after the goal prompt passes
-  the elegance gate. Then show `goal_runtime`, synthesized `goal_synthesis`/
-  `goal_preflight`/`perspective_model`/`plan_state_sink`/
-  `subagent_dispatch_policy`/`parallel_execution_mode`/`cyclic_goal_loop`,
-  `loop_control_matrix`, `protocol_evidence`, and the initial agenda.
-- **Project request that asks for "三步分析"**: route to `project-analysis` as
-  the adapter around the three-step-analysis core, then return control here for
-  any requested execution.
+  the message as an explicit goal-backed objective. The user supplies the
+  outcome; Codex supplies the best-practice packet, calibration, optimality law,
+  control goal, agenda, loops, evidence, delivery policy, and stop condition.
+  Load `references/goal-orchestration.md` before goal activation. If work is
+  delegated, also load `references/subagent-execution.md`; children receive
+  bounded assignments and the main thread retains completion authority.
+- **Project request that asks for "三步分析" / "三步认真分析" /
+  "three-step-analysis" / "project-analysis"**: enter this controller first,
+  then let it select `project-analysis` or an earlier unresolved owner. Carry
+  `three_step_visibility: explicit` into `project-analysis`, `project-discovery`,
+  and `goal_preflight` when they occur in that chain. Those stages must expose a
+  compact, object-appropriate Stage 1, Stage 2, and Stage 3 before this
+  controller starts implementation, sync, commit, final completion, or any other
+  downstream execution. If Stage 2 finds the user's perspective both
+  non-substitutable and material to the project understanding or commitment,
+  stop at Stage 2 and wait; do not continue the chain.
 - **Non-project request that asks for "三步分析"**: use `three-step-analysis`.
-- **Software-project analysis without implementation**: route to
-  `project-analysis` and stop after the analysis Handoff Record.
-- **Fuzzy software-project request**: route to `project-brief` before choosing
-  the chain.
+- **Software-project analysis without implementation**: start at the earliest
+  unresolved commitment; when upstream reality and product commitment are
+  accepted, route to `project-analysis` and stop after its Handoff Record.
+- **Skill-system best-practice synthesis**: the user supplies the desired
+  outcome, not a production prompt or skill-use recipe. For fuzzy or
+  under-specified project intent, load `references/controller-protocol.md` and
+  synthesize its authoritative `skill_system_best_practice_packet` before
+  asking, writing a goal prompt, or handing off. It is controller-owned context
+  and, in goal-backed work, input to rather than a substitute for the final
+  `tool_goal_prompt`. Only questions meeting the Stage 2 dual threshold block.
+
 ## Lifecycle Gates
 
 Before building the chain, state:
 
-1. current phase,
-2. selected call chain,
+1. earliest unresolved phase and the accepted upstream commitments,
+2. selected complete call chain to the requested outcome,
 3. assumption and tradeoff,
 4. verifiable success criterion.
 
-Do not ask for preferences that do not change the call chain. Ask only when a
-wrong chain would waste work or risk data loss.
+Resolve facts and routine project choices independently. Ask only when the
+user's perspective is non-substitutable and materially affects the project
+understanding or commitment; a wrong chain, root direction, scope boundary, or
+data-loss risk is a common case, not the whole test.
+When the same wording could be either a concrete user-owned product commitment
+or a hypothesis about what users need, that distinction is blocking whenever it
+changes the earliest phase and cannot be resolved from accepted project state.
 
 ### Mandatory Project Analysis Gate
 
 Before handing project work to an executor, include `project-analysis` in the
 chain by default. The default assumption is that a local request may be a symptom
-of a broader project issue unless the user explicitly says full-project/systemic
-analysis is unnecessary.
+of a broader project issue unless the user explicitly waives analysis or the
+controller proves every `very_small` condition. A narrower mutation boundary is
+carried into analysis rather than treated as a waiver.
 
-Only bypass full `project-analysis` when the user clearly says to keep the work
-local, diff-only, no broader analysis, no systemic analysis, or equivalent. In
-that case record `analysis_gate: explicitly_skipped_by_user` and preserve the
-user's narrow boundary. Do not infer this skip from the change looking small.
+`project-analysis` is the solution-judgment gate, not a substitute for missing
+project reality or product commitment. When either upstream layer is unresolved,
+route through `project-discovery` or `project-brief` before analysis can authorize
+an executor.
+
+Only bypass full `project-analysis` when the user explicitly waives that analysis
+or when the controller has proved every `very_small` condition in Entry Policy.
+A mutation boundary such as "只改这一处", "不要扩展范围", or "diff-only"
+constrains what analysis may authorize; it is not by itself an analysis waiver.
+Record the disposition in `analysis_gate` and its proof in
+`analysis_gate_evidence`: the Stage 3 decision and implementation boundary, the
+user's exact analysis-waiver wording, or a concise proof of every `very_small`
+condition. Uncertainty restores the visible analysis gate only when semantic
+impact or user-visible risk remains unresolved after the affected surface is
+inspected; an incidental assertion that mirrors a mutable literal is not such
+uncertainty.
+
+When explicit user boundaries exist, pass them to `project-analysis` through
+`constraints` and `do_not_do`. Its Handoff Record must separate authorized work
+from excluded-scope findings or `new_work` instead of turning the latter into
+implementation requirements.
 
 `project-analysis` is especially mandatory when any of these are true:
 - root direction, PRD, requirements, architecture, tech stack, MVP, version
   boundary, or acceptance criteria may change,
 - a bug, UI flaw, failed test, performance issue, or user-visible defect may be
-  a symptom of a broader pattern instead of a single local line,
+  a symptom of a broader pattern instead of a single local line; for UI, this
+  includes recurring SCE failures such as unjustified complexity, competing
+  visual theses, missing state pressure, or sibling surfaces using the same
+  broken pattern,
 - the correct fix path depends on root cause, data model, API contract, module
   boundary, deployment/runtime behavior, security, performance, or compatibility,
 - sibling surfaces, shared components, shared state, cross-page workflows, or
@@ -217,94 +311,85 @@ This controller owns project state transitions. Downstream executor skills act
 only on authorized state changes; they must not expand scope from templates,
 standard checklists, or local convenience.
 
+### Explicit Boundary Authority
+
+When the user explicitly limits scope, such as "不改 UI", "保持原版",
+"只替换数据", "不准创新", "不要改结构", or equivalent, preserve that boundary in
+`constraints` and `do_not_do`. Current implementation, docs, tests,
+productization inference, and compliance inference are evidence to reconcile,
+not authority to override the user's explicit boundary.
+
+An explicit correction is feedback on the validity of current project state, not
+a `change_request` or durable rule by default. A controller-proved `very_small`
+correction remains a bounded repair. For material corrections,
+`project-analysis` distinguishes a bounded source, fact, execution, or artifact
+error; a user-confirmed change to an already accepted goal, scope, or priority;
+and feedback that invalidates the project model. Only the second enters the
+existing `change_request` transition. Model feedback sets `model_reset`,
+invalidates only causal descendants, and reopens the stage that owns the failed
+judgment. An explicit analysis waiver does not itself choose among these states.
+Preserve unrelated accepted state.
+
+Do not promote the correction's literal wording. A corrected judgment becomes a
+cross-task or cross-version rule only when the user explicitly makes it durable,
+it expresses a stable project invariant, or repeated causally equivalent
+failures justify the generalization. Preserve its scope and the condition that
+would retire or reverse it.
+
+Do not mechanically apply a higher-level principle to a user-excluded scope. If
+current docs, tests, fixtures, scripts, CI, or implementation appear to protect a
+conflicting direction, mark them suspect. Route cleanup to the owning skill only
+when it is inside the authorized mutation boundary; otherwise record it as
+excluded-scope `new_work` or ask when the boundary itself remains ambiguous.
+
+### Discovery-To-Adoption Changes
+
+For product or domain research that can decide what the project should contain,
+read `references/state-transitions.md`. `project-discovery` output remains
+`evidence_only`; this controller must record adoption before `project-brief`,
+requirements, agendas, acceptance criteria, or executors may consume a finding
+as project direction. Material adoption uses `project-analysis` to test the
+finding and return an adoption recommendation.
+
+When an accepted `model_reset` is discovery-owned, reopen discovery and apply
+`references/state-transitions.md`. Do not preserve the invalid discovery model
+by deleting one candidate, changing a count, renaming a category, or adding a
+caveat.
+
 ### Root-State Changes
 
-Treat these requests as root-state changes: new project creation, project
-initialization, scaffolding from a product idea, PRD, requirements document,
-MVP boundary, root architecture/design document, tech-stack decision, and
-version target such as `v0.x`.
-
-Before handing root-state work to `project-bootstrap`, `project-docs`, or
-`project-iteration`, produce or consume a frozen charter:
-
-```yaml
-frozen_charter:
-  intent: <user-visible product goal>
-  target_user: <primary user/operator>
-  core_workflow: <main scenario>
-  non_goals: <explicit exclusions>
-  success_criterion: <observable completion criterion>
-  constraints: <hard limits>
-  project_shape: <profile from docs-deliverables when docs/assets are involved>
-  docs_ia: <authorized root docs and docs/ subdirectories when standalone docs are involved>
-```
-
-Use `project-brief` for fuzzy scope and `project-analysis` for root decisions
-or architecture tradeoffs. Use question governance for missing charter fields:
-ask only when a user-private variable would alter project direction; otherwise
-resolve, verify, assume, or carry each key question as risk before proceeding
-through the authorized chain. Do not let an executor infer a root direction from
-one broad sentence and write durable project files.
+For project initialization, PRD/requirements, MVP/root architecture or stack,
+and other root-direction work, read `references/state-transitions.md`. No
+downstream executor or durable project document may proceed before its
+`frozen_charter` gate is satisfied.
 
 ### Version-State Changes
 
-Treat these requests as version-state changes: "做一个版本", "实现一个版本",
-"MVP", "v0.x", "milestone", "sprint", "完成当前阶段", and equivalent
-phase-completion language.
-
-Version-state work must enter the agenda loop. If the user supplies no existing
-plan, create a version agenda from the frozen charter and current request; do
-not downgrade it to a single local iteration. Each item must record source,
-status, result, and verification evidence.
-
-While a version agenda is active, any new user requirement that changes scope is
-a `change_request`, not a side note:
-
-```yaml
-change_request:
-  source: <user message or evidence>
-  requested_change: <what changed>
-  impact: <agenda item, root direction, docs/assets, tests, release, or none>
-  decision: <add_now | replace_item | defer | reject | ask>
-  reason: <why this preserves the user goal and current version boundary>
-```
-
-Only `add_now` or `replace_item` changes the active agenda. `defer`, `reject`,
-or `ask` must be visible in the trace or final response.
+For version, milestone, sprint, MVP implementation, or phase-completion work,
+read `references/state-transitions.md`. Version work must use a lifecycle agenda;
+user-confirmed changes to an already accepted scope enter its `change_request`
+gate rather than a local side note.
 
 ### Goal-Backed Project Concierge
 
-The recommended explicit trigger is `目标!` or `目标！` at the start of a
-project request. Natural-language completion wording may still imply concierge
-mode, but do not teach or rely on a long keyword list as the primary trigger.
-Use concierge mode for explicit `目标!` / `目标！` requests, version closeout,
-plan completion, release readiness, project skill system, goal system, subagent
-orchestration, or Codex self-iteration control optimization, including Codex skills, global
-instructions, config, and custom agents that govern future project behavior.
-Default to goal-backed unless the user explicitly narrows the work to a
-single-point/local/diff-only edit. For `目标!` / `目标！`, never require the
-user to write the loop, review depth, review scope, clean-pass count,
-commit/push/deploy requirements, stop condition, target layer, state variables,
-sensors, actuator chain, review/optimization perspectives, optimality law, or
-elegance gate, plan state sink, automatic parallel dispatch policy, or agenda
-split; infer them from the project objective and evidence.
-Read `references/goal-subagent-orchestration.md` first, then write the project
-goal control prompt yourself from the user's incomplete target. The prompt passed
-to the Codex goal tool must embed the selected loop contract when the goal uses
-`bounded_goal_loop` or `cyclic_until_clean`; do not rely on sidecar fields,
-conversation text, or the agenda to remember the loop. Do not create or maintain
-a Codex goal, maintain `cyclic_goal_loop`, spawn subagents, or join subagent
-receipts before that reference has been read and applied. Do not activate a goal
-prompt that has not first passed its `goal_preflight`, loop-contract, and
-elegance gates.
+`目标!` / `目标！` explicitly activates goal-backed mode even for local scope;
+version/plan closeout, release readiness, and Codex self-iteration may infer it
+unless the request is explicitly single-point. Before creating or reconciling a
+goal, read `references/goal-orchestration.md` and use its final self-contained
+`tool_goal_prompt`, preflight, dialogue, loop, and elegance gates. Load
+`references/subagent-execution.md` only when delegation is active. A materially
+different future-behavior edit boundary remains a blocking dialogue fork.
 
 ## Call Chain Protocol
 
 This controller keeps the decision rules here and moves mechanical protocol
 details to references. Read `references/controller-protocol.md` before any work
 that crosses lifecycle phases, advances a plan/version, needs Context Packets or
-Handoff Records, creates a trace, or prepares the final project-lifecycle
-response.
+Handoff Records, creates a trace, or needs full lifecycle closeout. A
+single-semantic-surface `very_small` implementation still goes to its owning
+executor, normally `project-iteration`; the controller may close it from this
+core contract plus focused verification without loading the controller protocol
+only to format the final response.
 
 Referenced protocols are binding, not advisory. When this file requires a
 reference, the controller must read it before the governed action, apply its
@@ -314,17 +399,18 @@ reference was not read or its evidence fields were not carried forward.
 
 The controller itself remains responsible for:
 
-- selecting the phase and downstream skill chain,
+- locating the earliest unresolved commitment and building the complete
+  downstream skill chain,
 - enforcing analysis, state-boundary, goal, and standard gates,
+- recording discovery adoption and model-level invalidation,
 - preserving the user's boundary and explicit exclusions,
 - owning the agenda and goal state,
 - accepting or rejecting downstream `new_work`,
 - deciding whether the stop condition is actually satisfied.
 
-Use `references/goal-subagent-orchestration.md` in addition to
-`references/controller-protocol.md` whenever goal-backed concierge,
-`cyclic_goal_loop`, subagents, automatic parallel dispatch,
-`parallel_execution_mode`, task graphs, dynamic mission profiles, subagent
-runtime registries, runtime resource ledgers, loop control matrices, review
-clean-pass loops, optimize framework-cycle loops, or a
-multi-item agenda with independent work surfaces is active.
+Use `references/goal-orchestration.md` in addition to
+`references/controller-protocol.md` for goal-backed concierge, cyclic goals,
+goal loop matrices, or goal-bound review/optimization loops. Use
+`references/subagent-execution.md` for independent work surfaces, task graphs,
+subagents, model routing, V2 dispatch, durable task state, receipts, joins, or
+thread accounting. Load both only when both control domains are active.

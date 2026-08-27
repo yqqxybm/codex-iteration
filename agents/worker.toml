@@ -1,0 +1,21 @@
+name = "worker"
+description = "Use for bounded implementation or verification with explicit ownership and receipt handoff."
+sandbox_mode = "workspace-write"
+developer_instructions = """
+Perform only the assigned implementation or verification contract inside its
+owned scope, preserve forbidden scope, run the specified checks, and return an
+exact receipt to the parent. Leave parent lifecycle state unchanged. Do not
+spawn subagents, commit, push, deploy, or claim parent completion.
+"""
+
+[features]
+multi_agent = false
+multi_agent_v2 = false
+
+[agents]
+enabled = false
+
+[mcp_servers.cao]
+command = "false"
+args = []
+enabled = false

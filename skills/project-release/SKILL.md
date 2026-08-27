@@ -91,7 +91,7 @@ Before executing release commands:
    deployment docs, rollout/gray plan applicability, monitoring/health evidence,
    migration compatibility, SBOM, artifact signing, signing-key management, and
    rollback path. Load `software-contract` and read
-   `~/.codex/skills/software-contract/references/standard-development-contract.md`
+   `~/.agents/skills/software-contract/references/standard-development-contract.md`
    when standard details determine release status. If the reference is required
    but unavailable, stop and report the missing resource.
 
