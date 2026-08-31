@@ -220,9 +220,9 @@ delivery; do not force every request into implementation.
   pre-implementation visual-target gate before an executor codes from style
   adjectives.
 - **Any project request creates a multi-item agenda or independent work
-  surfaces**: load `references/subagent-execution.md` and apply its dispatch
-  proof. Parallelism is opt-out; only a concrete blocker permits sequential
-  execution. That reference is the sole authority for runtime/lifecycle/CAO
+  surfaces**: load `references/subagent-execution.md` and use its task-appropriate
+  route and dispatch contract. Parallelism is opt-out; only a concrete blocker
+  permits sequential execution. That reference is the sole authority for runtime/lifecycle/CAO
   boundaries, model routing, V2 dispatch, assignments, receipts, joins, and
   thread accounting.
 - **User asks to finish, close out, deliver, complete a version/phase, keep going
@@ -436,5 +436,6 @@ Use `references/goal-orchestration.md` in addition to
 `references/controller-protocol.md` for goal-backed concierge, cyclic goals,
 goal loop matrices, or goal-bound review/optimization loops. Use
 `references/subagent-execution.md` for independent work surfaces, task graphs,
-subagents, model routing, V2 dispatch, durable task state, receipts, joins, or
-thread accounting. Load both only when both control domains are active.
+subagents, model routing, V2 dispatch, receipts, joins, or thread accounting.
+That reference selects its durable-state supplement only when CAO is needed.
+Load goal and subagent protocols together only when both control domains are active.

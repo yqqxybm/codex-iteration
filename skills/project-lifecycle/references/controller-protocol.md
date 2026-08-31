@@ -238,7 +238,7 @@ Before invoking downstream skills, run the Executable Plan Quality gate over the
 agenda and the task graph. Do not start a vague item and hope the downstream
 skill discovers the missing scope. Do not parallelize until dependency edges,
 conflict edges, selected antichain, owner, `done_when`, verification evidence,
-and the complete dispatch proof required by
+and the task-appropriate route and dispatch contract required by
 `references/subagent-execution.md` are known.
 For any agenda with multiple independent surfaces, sequential mode is valid only
 when `parallel_blocker` names why parallel execution is impossible or materially
@@ -269,7 +269,8 @@ Loop until the agenda reaches a real stop condition:
    bounded project subagent through V2. Keep only the compact V2 wave state
    required by `references/subagent-execution.md`; register non-subagent
    long-lived handles in `runtime_resource_ledger`.
-5. Record Handoff Records, subagent receipts, and runtime-resource deltas, then
+5. Check native receipts or ingest CAO receipts through the selected protocol;
+   retain the accepted Handoff, result, and runtime-resource deltas, then
    update the agenda and persist the result to `plan_state_sink`.
 6. Mark the item `done` only when its `done_when` and verification evidence are
    satisfied and the source plan requirement is preserved.

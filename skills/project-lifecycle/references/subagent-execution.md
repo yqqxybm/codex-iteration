@@ -1,528 +1,215 @@
 # Subagent Execution
 
-Use this reference whenever project-lifecycle finds independent work surfaces,
-delegates a bounded task, selects a subagent model, or evaluates whether
-delegated state must survive interruption. Loading this reference does not
-activate CAO. This is the single authority for project subagent control policy
-and accounting. Codex multi-agent V2 is the only runtime backend.
+Use when lifecycle finds independent work, delegates a task, selects child
+capacity, or joins results. This file owns ordinary native V2 parallelism.
+Read [subagent-durable-state.md](subagent-durable-state.md) only when the
+persistence decision below requires CAO.
 
-## Table Of Contents
+The purpose is better work sooner, counting setup, reasoning, retries,
+verification, and integration together. Roles organize responsibility; model
+and effort supply the capacity this particular task needs. Neither a model
+default nor a longer protocol replaces that judgment.
 
-- Control Boundary
-- Task Graph And Dispatch Proof
-- Model Routing
-- V2 Native Dispatch
-- Durable State With CAO
-- Receipt Contract
-- Join And Thread Accounting
-- Pressure Scenarios
+## Runtime And Ownership
 
-## Control Boundary
+Native V2 owns spawning, follow-up, messages, waiting, interruption, status,
+and resident capacity. Lifecycle owns decomposition, conflict decisions,
+assignment, model selection, integration, and completion. CAO, when needed,
+persists task authority; it neither spawns nor makes project decisions.
 
-The system has three layers:
+Use the live V2 tool contract and available model catalog. The installed setup
+enables `multi_agent_v2` and `agents.enabled` and disables `multi_agent`.
+If V2 is unavailable or policy blocks it, keep delegated work visibly blocked;
+do not claim a substitute backend executed it. Preserve the user's model and
+service-tier settings; service tier is not a task-difficulty decision.
 
-1. Codex multi-agent V2 owns spawn, model and reasoning overrides, canonical
-   `task_name`, follow-up, messaging, wait, interruption, status listing, and
-   terminal-thread lifecycle.
-2. Project-lifecycle owns task decomposition, dependency and conflict proof,
-   model-class judgment, assignment boundaries, receipt acceptance,
-   integration, verification, and convergence.
-3. CAO owns durable machine-checkable task state only after the CAO activation
-   test proves that a required same-parent interruption/resume would make
-   ownership, locks, attempt identity/history, receipt acceptance, or
-   convergence unsafe without machine persistence. V2 thread persistence alone
-   does not justify CAO.
+Parallelism is opt-out, including daily work and opportunities discovered
+mid-task. Dispatch independent reads and disjoint writes when they shorten the
+critical path. A concrete dependency, conflict, capacity, policy, or greater
+coordination cost can justify serial work; a habit of working alone cannot.
+Commit, push, publish, release/tag mutation, deploy, remote sync, and parent
+completion remain with the main thread. Children return new work and
+coordination needs to that thread.
 
-Do not mirror native thread events in skills or CAO. Do not make CAO a second
-controller. Do not send the full parent goal, graph, loop counters, or unrelated
-context to a child when one bounded assignment is sufficient. Always use
-`fork_turns: "none"` and carry the complete bounded assignment in the initial
-message.
+## Select Role, Model, And Effort
 
-V2 is required. If it is disabled, unavailable, or blocked by policy, record the
-node as blocked and stop delegation; do not substitute another subagent backend.
-In config, enable `multi_agent_v2`, disable `multi_agent`, and set
-`agents.enabled = true`: the feature flags select V2 while the agents switch
-exposes its tools. Use the current Fast tier's native
-`service_tier = "priority"` id. This system optimizes elapsed time rather than
-preserving a slower service-tier path.
+Before each assignment, make three distinct choices:
 
-Parallel execution is opt-out. For every agenda with multiple independent
-surfaces, identify dependency and write-conflict edges, then dispatch the
-obvious safe wave that shortens the critical path. Use available capacity when
-it saves more work than scheduling it costs; do not turn decomposition into an
-optimization problem. Sequential execution is valid only with a concrete
-dependency, conflict, runtime, policy, ROI, integration, or verification
-blocker.
+- **Role** follows the work: `explorer` investigates a bounded read-only
+  question; `worker` produces or changes the assigned artifact; `reviewer`
+  independently judges it. All three can require light or demanding reasoning.
+- **Model** follows the cognitive difficulty: how uncertain the explanation or
+  solution is, how tightly decisions interact, what a wrong judgment would
+  cost, and how clearly the result can be checked. A large mechanical change
+  may be easy; a one-line permission decision may be hard.
+- **Effort** follows the reasoning needed within that model, not the parent's
+  setting or a permanent role tier.
 
-## Task Graph And Dispatch Proof
+In the currently available catalog, Terra with low/medium effort suits clear,
+bounded work whose outcome can be checked directly; higher Terra effort can
+fit careful but well-bounded tracing. Sol with high/xhigh or greater effort
+fits unresolved causal or design judgment, tightly coupled changes, or errors
+that are consequential and hard to expose. These are starting judgments, not
+task-name mappings: a review need not be hard and a writer need not be easy.
+Use the route most likely to reach the required result efficiently; do not run
+a knowingly underpowered first attempt merely to qualify for escalation.
 
-Represent work as nodes with dependency edges and conflict edges. A parallel
-wave may contain only an antichain with no dependency or conflict edge between
-selected nodes. Treat the same file, lockfile, schema, route, shared component,
-migration, generated artifact, global configuration, deployment target, and
-release state as conflict keys unless evidence proves isolation.
+Give a brief task-specific `route_reason` and pass explicit `model` and
+`reasoning_effort` to every fresh spawn. Global Terra/medium defaults are
+runtime defaults, not completed routing decisions. Check the selected role is
+available and its custom file does not pin a conflicting model/effort. The
+installed `explorer`, `worker`, and `reviewer` files deliberately leave those
+values unpinned. Resolve a conflict before dispatch rather than silently using
+`default` or substituting a weaker route.
 
-Before dispatch, record:
+Reassess when findings change the task's uncertainty, coupling, stakes, or
+verification difficulty. More effort is not the remedy for missing facts,
+ambiguous authorization, a bad decomposition, or a malformed receipt. Correct
+the cause. Later mechanical work may use a lighter route even when its parent
+required difficult reasoning.
 
-~~~yaml
-subagent_execution:
-  runtime_capability:
-    backend: multi_agent_v2
-    state: <enabled | unavailable | blocked_by_policy>
-    controls: <spawn_agent, followup_task, send_message, wait_agent,
-      interrupt_agent, list_agents>
-    agent_types: <default, explorer, worker, reviewer>
-    concurrency_limit: <number>
-    evidence: <feature/config/tool metadata or runtime output>
-  task_graph:
-    nodes: <agenda ids>
-    dependency_edges: <blocking edges>
-    conflict_edges: <unsafe concurrent edges>
-    selected_antichain: <ids or none>
-    critical_path: <ids>
-  mode: <sequential | subagent_wave | controller_team | workflow_batch>
-  model_route: <per-node route records>
-  merge:
-    write_policy: <read_only | same_worktree_disjoint | single_writer>
-    integration_owner: main lifecycle thread
-    join_barrier: required
-  roi: <why the wave shortens the critical path, or why delegation would cost more>
-  parallel_blocker: <none or concrete blocker>
-~~~
+`followup_task` cannot change model or effort. Reuse a resident only when its
+known route and retained context fit the next assignment; provide a fresh
+assignment for new work. A route change requires a fresh spawn. Before replacing
+unfinished work, interrupt it and confirm it has stopped, inspect its partial
+changes, then assign the remaining work. Do not run two attempts against the
+same writable scope or claim an in-place model upgrade occurred.
 
-Use these modes:
+## Form A Useful Wave
 
-- `sequential`: no profitable safe antichain;
-- `subagent_wave`: one bounded antichain;
-- `controller_team`: multiple controller-owned waves over an evolving agenda;
-- `workflow_batch`: phased parallel execution over many similar or
-  cross-checked items.
+Keep dependencies and conflicts with the existing agenda. For a short in-turn
+wave, the assignments and native handles can carry this state without a new
+plan document. Use the existing modes when a caller needs them:
+`sequential`, `subagent_wave`, `controller_team`, or `workflow_batch`.
 
-Use configured V2 concurrency capacity for profitable nodes from the selected
-antichain without forcing unsafe or unprofitable slot filling. Target practical
-utilization of expensive child slots; do not claim absolute yield or guaranteed
-fill. Do not impose a smaller fixed reader or writer quota. Writer nodes still
-require disjoint canonical scopes and conflict keys.
-Commit, push, deploy, release mutation, remote sync mutation, parent-goal
-completion, and final project completion remain main-thread actions.
+Select ready nodes with no dependency or write-conflict edge between them.
+Files, lockfiles, schemas, migrations, shared components, generated output, and
+external targets may be shared conflict keys. Resolve path aliases before
+claiming scopes are disjoint. A read that needs a coherent snapshot also waits
+for a conflicting writer; not all reads are independent.
 
-Refresh the graph and wave whenever user feedback, a receipt, verification
-failure, review finding, or accepted `new_work` changes nodes or edges. Do not
-continue a serial plan by inertia when a new safe antichain appears.
+Describe the actual split briefly before dispatch. Use available capacity for
+profitable independent nodes, not to fill a quota. Keep a real integration
+owner and continue non-overlapping parent work while children run. When a
+finding, user addition, failed check, or returned result changes dependencies,
+replan the next wave instead of continuing serially by inertia.
 
-## Model Routing
+## Decide Whether Persistence Is Necessary
 
-Keep the root lifecycle controller on the native proactive V2 effort
-(`ultra` in the current model catalog). Route child capacity independently;
-controller effort is not a reason to send every child to Sol.
+Use V2 alone when the parent can safely reconstruct its task ownership and
+results from the current task. Length, multiple waves, loops, or the existence
+of V2 history do not themselves require CAO.
 
-The global fast path is `gpt-5.6-terra` with `medium` reasoning. Override it per
-node when task shape requires more capacity:
+Use CAO only when an actual or required interruption/resume in this same parent
+task would make ownership, locks, attempt identity/history, receipt acceptance,
+or convergence unsafe without machine persistence. Then load
+`subagent-durable-state.md` before dispatch. Its atomic assignments and strict
+receipts replace the ordinary preparation/check path below; do not translate a
+CAO payload into the compact native format.
 
-- Terra `low` or `medium`: bounded exploration, broad read-heavy scans,
-  deterministic verification, summarization, and mechanical low-coupling work.
-- Terra `high`: bounded work that needs careful tracing but not frontier
-  judgment.
-- Sol `high`, `xhigh`, or stronger: ambiguous or coupled implementation,
-  architecture or control-law judgment, security/data/release-sensitive work,
-  deep or exhaustive review, disputed evidence, and final synthesis.
-- `inherit`: only when the parent model and effort already match the selected
-  class.
+## Ordinary Native Dispatch
 
-Record the exact native `agent_type`, logical role, model, reasoning effort,
-reason, and availability per node. Select the smallest sufficient controlled
-execution posture:
+Use `scripts/native_handoff.py` under this skill as a stateless contract
+compiler/checker. It stores no task graph, writes no files, calls no model,
+and makes no routing or acceptance judgment. It makes an explicit route and
+small complete assignment available as actual spawn arguments, rather than
+leaving them as optional prose.
 
-- `explorer`: specific, bounded, read-only codebase questions;
-- `worker`: bounded implementation or production work with explicit ownership;
-- `reviewer`: independent focused, deep, or exhaustive review.
+Prepare with `python3 <skill-root>/scripts/native_handoff.py prepare
+--request-json '<JSON>'`. Supply:
 
-The installed `explorer`, `worker`, and `reviewer` custom-agent layers under
-`~/.codex/agents/` disable CAO and nested multi-agent tools inside child
-threads.
-Prove the selected posture is discoverable before dispatch and repair its
-definition instead of silently substituting `default`. CAO-backed work uses
-only these controlled postures.
+```yaml
+task_id: <existing node or local task label>
+task_name: <unique native lowercase/digit/underscore label>
+agent_owner: <logical responsibility>
+agent_type: <explorer | worker | reviewer>
+model: <explicit available model>
+reasoning_effort: <explicit effort supported by that model>
+route_reason: <why this task needs that capacity>
+scope_root: <absolute canonical root>
+owned_scope: <nonempty list of relative paths>
+forbidden_scope: []
+write_policy: <read_only | same_worktree_disjoint | single_writer>
+analysis_gate: <project_analysis_consumed | explicitly_skipped_by_user |
+  not_required_read_only | not_required_very_small>
+analysis_gate_basis: <actual decision/boundary, waiver, or read-only/tiny proof>
+task: <self-contained problem, context, relevant purpose and protected boundary>
+done_when: <local outcome the parent can judge>
+verification: <check needed for that outcome>
+```
 
-Native `agent_type` does not replace `agent_owner` or `role_and_lens`: the former
-sets the reusable runtime posture, while the latter two carry the
-project-specific responsibility and lens. Model and effort resolve
-independently. A value pinned in the selected custom-agent file wins; otherwise
-the precedence is explicit spawn override, the corresponding `[agents]`
-default, then the parent value. The controlled agent files deliberately leave
-model and effort unpinned so lifecycle routing remains dynamic.
+The compiler returns `contract` plus `spawn_args`, with new assignment and
+execution-owner identities and `fork_turns: "none"`. Retain the returned
+contract and pass the exact `spawn_args` to native `spawn_agent`. Its message
+contains only this bounded assignment, child authority limits, and a small
+receipt template. Do not pass the parent's full conversation or goal machinery.
+The native tool still validates live role/model availability; the compiler
+cannot establish that a model actually ran.
 
-Never silently replace a Sol-class assignment with Terra. If the selected route
-is unavailable, keep the node pending and replan or ask. Using Sol for a
-Terra-class node is allowed only when availability or consolidation makes it
-the faster total path.
+Dispatch exists only when `spawn_agent` returns a canonical `task_name`. Keep
+that handle with its contract and selected route until the result is integrated.
+The compiler's output alone is not a running agent. Rejected spawn arguments
+leave the node pending or blocked; no synthetic receipt can close it.
 
-## V2 Native Dispatch
+Use `not_required_read_only` only for a non-mutating task. Material writers
+consume the accepted analysis boundary or an actual user waiver; tiny writers
+need the lifecycle's `very_small` proof. Scope is canonical and root-relative:
+`.` is the root, a trailing `/` includes descendants, and a bare path denotes
+the exact file. `write_policy` is an instruction, not OS isolation; parent
+permission and runtime restrictions still apply. The checker does not prove
+that peer scopes are conflict-free or that the child reported all its writes.
 
-Select the logical role, model route, assignment boundary, and verification
-contract before spawning. When CAO is active, obtain `execution_owner_id`,
-immutable `assignment_id`, and the complete spawn-ready assignment, including
-universal hard boundaries, from its atomic `dispatch`; otherwise lifecycle
-creates those identities and the same complete contract. Never reuse either
-identity in the parent objective's attempt history. Include the complete
-assignment in the initial spawn. Neither identifier is a native V2 thread id.
-Never create an empty child or use a pre-assignment handshake.
+For compatible resident reuse, prepare a fresh contract and send its generated
+message through `followup_task` only after confirming the resident's actual
+role/model/effort match. Keep the same native handle but replace the active
+contract. Correcting a malformed receipt for the same completed work keeps the
+original contract and assignment identity.
 
-Use the native V2 spawn arguments directly:
+## Check Results, Then Accept Work
 
-~~~yaml
-v2_spawn:
-  task_name: <unique lowercase/digit/underscore runtime label>
-  agent_type: <default | explorer | worker | reviewer>
-  fork_turns: "none"
-  model: <omit for configured Terra default, or explicit route override>
-  reasoning_effort: <omit for configured medium default, or explicit override>
-  message: <complete subagent_assignment below>
-~~~
+Ordinary children return only:
 
-`fork_turns: "none"` is the only protocol path. Put every irreducible input in
-the bounded initial assignment so context transfer stays explicit, minimal, and
-compatible with per-task model and effort routing. Do not use a positive integer
-or `fork_turns: "all"`.
-`task_name` is the V2 runtime handle; it is not the agenda id,
-`execution_owner_id`, or `assignment_id`.
-Dispatch exists only when `spawn_agent` returns the canonical `task_name`.
-Narration, an intended task label, `wait_agent`, or an empty `list_agents`
-result is not spawn evidence; mark the node blocked instead of simulating a
-child or its result.
-
-~~~yaml
-subagent_assignment:
-  wave_id: <unique dispatch wave id>
-  assignment_id: <unique attempt id>
-  execution_owner_id: <stable logical execution-slot id>
-  current_task_status: <current task status at assignment time>
-  parent_target:
-    objective: <outcome served by this task>
-    boundary: <relevant goal and non-goal boundary>
-    scope_root: <absolute canonical base for every relative task scope>
-    value_relation: <how local values jointly serve the assignment and how a real tradeoff is resolved>
-    stop_condition: <parent condition the child must not overclaim>
-  task:
-    id: <agenda id>
-    agent_owner: <logical project role>
-    role_and_lens: <stable role plus assignment-specific emphasis>
-    analysis_gate: <project_analysis_consumed | explicitly_skipped_by_user |
-      not_required_read_only | not_required_very_small>
-    analysis_gate_evidence: <Stage 3 boundary, exact waiver, concise read-only
-      proof, or concise very_small proof>
-    owned_scope: <relative scopes>
-    forbidden_scope: <relative denied scopes; empty when none>
-    write_policy: <read_only | same_worktree_disjoint | single_writer>
-    conflict_keys: <opaque shared-resource keys; empty when none>
-    done_when: <observable local completion condition>
-    verification: <commands, artifacts, or evidence>
-  output_requirement:
-    format: subagent_receipt
-    evidence:
-      role_and_lens: <task role_and_lens echoed as the evidence lens>
-      done_when: <task done_when echoed as the acceptance boundary>
-      verification: <task verification echoed as required proof>
-    schema: <embed the exact Receipt Contract>
-  hard_boundaries:
-    - do not mutate or complete the parent goal
-    - do not spawn subagents
-    - do not message, steer, follow up, interrupt, or retask peer agents
-    - do not commit, push, publish, release, deploy, sync, or claim project completion
-    - do not write outside owned_scope or inside forbidden_scope
-    - preserve user and peer changes
-    - return peer coordination, graph changes, and material follow-up to the parent
-      in task_graph_delta and new_work
-~~~
-
-Every field is required; `forbidden_scope` and `conflict_keys` may be empty.
-`current_task_status` records the status carried by the assignment; a
-spawn-ready CAO dispatch assignment carries `active`.
-Native lifecycle dispatch and CAO dispatch use this same complete assignment;
-CAO supplies it atomically when durable state is active. A child reports the
-material observations and verification that affect its assignment. Material
-follow-up goes in `new_work`; the parent forms the overall judgment and decides
-whether it belongs on the agenda.
-Do not spawn while the target, scope, write policy, done condition, or
-verification boundary remains unresolved.
-Use `not_required_read_only` only for a non-mutating node with an explicit
-read-only contract. A material review that consumes a project-analysis or
-goal-preflight model remains `project_analysis_consumed`.
-
-Canonicalize filesystem identity before conflict proof or dispatch. Resolve
-`scope_root` to one absolute real path; reject absolute task paths, NUL, `..`,
-and any resolved path outside that root. Normalize symlink aliases to the same
-root-relative identity. `.` means the whole root, a trailing slash means a
-directory and descendants, and a bare path means one exact file. When the user
-names an absolute target, place its common absolute base in `scope_root` and
-keep `owned_scope` and `forbidden_scope` relative to that base.
-
-Subagents inherit the parent turn's live permission policy. `write_policy` is an
-assignment boundary, not OS enforcement. When correctness requires enforced
-read-only isolation, run the parent turn read-only; otherwise disclose that the
-boundary is instructional.
-
-After spawn, keep only the compact controller state needed to join the wave:
-
-~~~yaml
-v2_wave_state:
-  - assignment_id: <attempt id>
-    execution_owner_id: <logical execution-slot id>
-    task_id: <agenda id>
-    task_name: <canonical V2 runtime handle returned by spawn_agent>
-    agent_type: <native V2 execution posture>
-    logical_role: <agent_owner plus role_and_lens>
-    model_route: <model and effort>
-    thread_state: <latest state returned by list_agents>
-    receipt_state: <pending | received | consumed | rejected>
-~~~
-
-Native V2 remains the thread source of truth. Do not duplicate its event history
-or build a transport registry. Continue non-overlapping parent work while
-children run, use completion notifications, and wait only at a critical-path or
-join barrier. Steer a live child for bounded corrections instead of spawning
-duplicate work. For a later compatible assignment in the same parent turn,
-use `followup_task` on an idle completed agent with the complete new assignment
-when its retained context saves setup. Otherwise use a fresh spawn; V2 may
-automatically unload an eligible resident when it needs the slot.
-
-## Durable State With CAO
-
-Run the CAO activation test before activating it: ask whether an actual or
-required interruption/resume in this same parent task would make ownership,
-locks, attempt identity/history, receipt acceptance, or convergence unsafe
-without machine persistence. Activate CAO only on a concrete yes. Long,
-cyclic, multi-wave, cross-turn, read-only, or V2-persistence work is never
-sufficient by itself: use V2 when the controller can safely reread and
-recompute the needed state.
-
-The current Codex host supplies request-local thread identity in MCP call
-metadata while leaving the MCP process environment without a per-task
-`CODEX_THREAD_ID`. Host metadata availability is not authority by itself: the
-installed CAO MCP runtime does not yet bind and validate that request-local
-identity for controller mutations.
-Therefore the main lifecycle task runs every CAO mutation and semantic join
-through the current-task CLI wrapper `~/.codex/bin/cao`. MCP may only validate,
-report conflicts, or report status; never use inherited environment, a static
-id, or a user-visible tool argument to pretend task identity. Children never run
-CAO mutations or joins.
-Keep the MCP allowlist read-only until the installed runtime consumes trusted
-request-local identity and proves both same-task continuity and different-task
-takeover rejection, including concurrent-request isolation.
-Here, every `dispatch`, `receipt`, `replan`, `release`, `reopen`, `complete`,
-reconciliation, and semantic `join` means that wrapper path.
-
-Ordinary in-turn parallel work uses V2 alone.
-Event-history validation reuses incremental created-id/task-status projections
-and receipt/add-task indexes instead of copying growing event prefixes.
-Nonempty dispatch builds one historical identity set and updates it in place
-for the wave. Material `replan` retains full-graph validation. Treat projection
-reuse and growth as the complexity evidence, not a helper invocation count by
-itself.
-
-The durable sequence is:
-
-1. Initialize the parent contract and add only graph nodes whose route,
-   dependencies, conflicts, scope, and evidence contract are stable.
-2. Run `~/.codex/bin/cao validate`, then call
-   `~/.codex/bin/cao dispatch --capacity <configured V2 capacity>`. One locked
-   transition first evaluates the deterministic
-   stable-order greedy route over the complete ready sequence and returns it
-   when it fills available capacity. On underfill, it constructs complete
-   whole-ready conflict adjacency, compares a bounded deterministic greedy
-   portfolio, and runs one step-bounded greedy-color search with the best route
-   as its incumbent. The search keeps a better partial wave when the target is
-   unreachable or the shared budget expires. It chooses greatest evaluated
-   cardinality, then greater deterministic residual-wave cardinality, then the
-   lexicographically smaller sorted original-ready index tuple. Capacity,
-   dependencies, active locks, and write conflicts remain hard
-   constraints. A result below available capacity is inclusion-maximal, and
-   unique logical pair evaluation is bounded by `n(n-1)/2`. The deterministic
-   heuristic does not promise an exact/global maximum, globally minimal wave
-   count, a fixed approximation ratio, or guaranteed fill. The same transition
-   creates all attempt identities, marks selected nodes active, and persists
-   every exact spawn-ready
-   payload as `subagent_assignment` with its canonical digest in
-   `subagent_assignment_fingerprint`. It returns those complete durable
-   assignments. There is no separate `ready`, `claim`, or `prompt` step.
-3. Verify each returned assignment includes the authoritative hard boundaries
-   and spawn the whole wave directly through native V2. Do not rewrite or append
-   ad hoc policy to the durable payload.
-4. Ingest each returned receipt with `~/.codex/bin/cao receipt`.
-5. Inspect and integrate the result. If receipt ingestion rejects a result and
-   the contract must change, call `~/.codex/bin/cao replan` directly against the
-   still-active assignment. If the rejected result needs only a same-contract
-   retry, release that assignment and dispatch again. Use
-   `~/.codex/bin/cao reopen` only after an ingested receipt and only for an
-   unchanged-contract retry. Use receipt-bearing `~/.codex/bin/cao replan` when
-   scope, dependency, conflict, owner, lens, done condition, or verification
-   changes; supply the complete replacement contract so receipt
-   archival and replacement are one atomic transition. Reject material
-   follow-up with evidence, bind integrated same-contract follow-up to concrete
-   tasks added after the receipt, or let integrated `replan` bind it to the
-   replacement fingerprint.
-6. Run parent verification/review, then call `~/.codex/bin/cao complete` with
-   the same assignment id, a passed verification outcome, material evidence,
-   and concrete post-receipt task ids for any integrated follow-up.
-7. Run `~/.codex/bin/cao join`; unresolved tasks, locks, receipts, or evidence
-   become the next lifecycle agenda state.
-
-If a mutating CAO command exits with code `3`, do not repeat it. Run the
-reported `reconcile_argv` arrays through the current-task CLI wrapper exactly
-as argv, without shell evaluation, then
-continue from the observed committed state. The recovery status command uses
-`--include-assignments` so a committed dispatch with a lost response retains its
-complete spawn payloads. For each active lock, recovery uses `assignment_id` to
-locate exactly one historical dispatch event assignment, validates the event
-envelope against the lock and the payload fingerprint and task history, and
-returns a deep copy of the exact persisted `subagent_assignment`. It must not
-call the current assignment builder or reconstruct policy. Non-identity policy
-content in `hard_boundaries` and the embedded receipt schema comes from the
-structurally valid, fingerprint-consistent historical payload rather than
-current constants, so one assignment identity cannot drift to later policy.
-Treat the digest as an internal consistency check inside CAO's local-state trust
-boundary, not an authenticity signature.
-
-CAO stores execution state, not native V2 thread mechanics. It must not persist
-task navigation, wait, messaging, interruption, or terminal-thread events.
-
-On resume in the same parent task, inspect V2 child threads and run
-`~/.codex/bin/cao validate`, `~/.codex/bin/cao status --include-assignments`,
-and `~/.codex/bin/cao join` before new
-dispatch. Match durable work through
-`execution_owner_id` plus `assignment_id`. If a thread is still active, wait or
-steer it. If it completed, ingest its receipt. If it failed or disappeared
-without a receipt, interrupt obsolete native work when needed, confirm its
-latest state, then release the active durable assignment before dispatching
-replacement work. Reserve `reopen` for attempts whose receipt was already
-ingested. A different controller thread id is a hard-state blocker, not a
-takeover signal. Never blind-resend or spawn a duplicate attempt.
-
-Hard state is blocked only when the activation test concretely requires CAO and
-the current-task CLI wrapper is unavailable or invalid. Do not silently
-downgrade to conversational state in that case.
-
-## Receipt Contract
-
-Every child returns:
-
-~~~yaml
+```yaml
 subagent_receipt:
-  assignment_id: <assignment id echoed exactly>
-  execution_owner_id: <execution owner echoed exactly>
-  agent: <logical project role>
-  agenda_item: <task id>
-  assigned_scope: <list>
-  changed_files: <list; empty for read-only work>
-  evidence: <non-empty material observations or verification outcomes when done>
-  task_graph_delta:
-    new_dependency_edges: <list; empty when none>
-    new_conflict_edges: <list; empty when none>
-    blocked_items: <list; empty when none>
-    unblocked_items: <list; empty when none>
-    suggested_reclassification: <non-empty string; use none when unchanged>
+  assignment_id: <exact id from assignment>
   status: <done | blocked | failed | out_of_scope>
-  new_work: <list; empty when none>
-  stop_reason: <meaningful reason why the child stopped>
-~~~
+  changed_files: <relative paths; empty for read-only work>
+  result: <actual result or material findings>
+  verification: <checks and outcomes, or what was not verified and why>
+  new_work: <material follow-up; empty when none>
+```
 
-The parent rejects receipts with the wrong task id, logical role, execution
-owner, or assignment id, missing required evidence, scope violations, or
-write-policy conflicts. A receipt never proves completion by itself. Inspect
-returned changes or findings, incorporate accepted graph deltas and `new_work`, run parent
-verification as appropriate, and mark the node done only when `done_when` is met.
-The parent carries the receipt into the lifecycle Handoff, agenda, and trace only
-as needed for the next judgment or action.
-When CAO is active, persist a passed parent-verification outcome with evidence.
-For every material follow-up, bind integration to concrete post-receipt task
-ids or an atomic replan fingerprint, or record a rejected outcome with
-evidence, before `cao complete`; `cao join` must reject any gap.
+The parent already owns the task id, role, execution owner, and assigned scope;
+children need not reconstruct those bookkeeping fields. Run
+`python3 <skill-root>/scripts/native_handoff.py check --contract-json '<contract>'
+--receipt-json '<receipt>'` before associating a result with an agenda item.
+The checker rejects wrong identities, invalid states/types, reported read-only
+writes, and reported paths outside the owned boundary. It associates a valid
+result with the parent's retained contract, never with a child-invented task id.
+Request a bounded correction after rejection; do not accept a guessed mapping
+or run the entire task again just to repair formatting.
 
-## Join And Thread Accounting
+A valid receipt is not a correct result or a completed task. Inspect the actual
+findings or changed files, run the consequential parent check, and decide
+whether `done_when` is met. Integrate useful `new_work` into the existing agenda
+or reject it with a reason; only then mark the task done. Failed, blocked,
+unverified, or missing results remain visible. No parsing success can stand in
+for professional judgment.
 
-Before starting a dependent wave or accepting parent completion:
+## Join And Resident Lifecycle
 
-1. Every dispatched assignment has a receipt that is consumed, rejected, or
-   converted into visible agenda state.
-2. No failed or missing child result is treated as success.
-3. Required parent inspection, verification, integration, and review are
-   complete.
-4. `list_agents` shows no running child that lacks an active agenda item. Use
-   `interrupt_agent` for obsolete running work. Treat completed threads as
-   bounded reusable residents. Use `followup_task` with a fresh complete
-   assignment when a compatible resident's retained context saves setup;
-   otherwise a fresh spawn is valid. When a new slot is required, V2
-   automatically unloads the least-recently-used eligible resident whose status
-   is `Completed`, `Errored`, or `Interrupted`. A resident is eligible only
-   when it has no active turn and no pending mailbox. If fresh spawn returns
-   `AgentLimitReached`, this reservation attempt did not successfully unload a
-   resident: none may be eligible, or an eligible unload may have failed. Do not
-   spin or blind-retry. Inspect resident/runtime state, continue
-   capability-compatible root work, wait for a state change, or keep the node
-   visibly blocked.
-5. `~/.codex/bin/cao join` passes when durable state was active.
+Before dependent work or parent completion, account for every dispatched
+contract: accepted result, rejected result with a next action, or visible
+unfinished work. Inspect and verify integration. Use native notifications and
+wait only at a real dependency or join barrier.
 
-Thread state is capacity evidence, not semantic completion proof. A missing
-thread without an accepted receipt keeps its task pending. Report the semantic
-join result and remaining running child count; do not emit a per-event
-transport ledger.
+Inspect `list_agents` when accounting for remaining work. Interrupt obsolete
+running children. Completed residents are reusable context, not unfinished work
+and not durable acceptance. V2 may unload an eligible completed, errored, or
+interrupted resident when it needs capacity. If spawn reports a limit, inspect
+the current state, use compatible root work or a fitting resident, wait for a
+state change, or report the blocker; do not spin or blind-retry.
 
-## Pressure Scenarios
-
-- Bounded read-heavy scan: one or more `explorer` agents on Terra, dispatched
-  in a profitable safe V2 wave up to available capacity; no CAO.
-- Mechanical disjoint writer nodes: `worker` agents on Terra in one V2 wave,
-  with canonical disjoint scopes and one parent integration barrier.
-- Ambiguous cross-module or security change: a Sol `worker`, serialized when
-  conflict proof requires it; CAO only when durable state is needed.
-- Deep or exhaustive final review: a Sol `reviewer` with the user-requested
-  scope; repeated passes occur only when explicitly requested.
-- Cyclic multi-wave objective spanning an interruption in the same parent task:
-  first run the activation test; use V2 alone when the controller can reread
-  and recompute safely, otherwise use CAO task state and a parent-owned CLI
-  join.
-- Long read-only cross-turn investigation: V2 alone when its findings and
-  ownership can be reread and recomputed; duration and persistence do not
-  activate CAO.
-- Resume needs an ownership lock and immutable attempt identity that cannot be
-  reconstructed safely: activate CAO, and have the main lifecycle task use
-  `~/.codex/bin/cao`; do not trust local stdio MCP `env_vars` or a supplied
-  thread-id argument.
-- Activation test requires CAO but `~/.codex/bin/cao` is unavailable or invalid:
-  mark hard state blocked; do not downgrade to V2-only state.
-- Parent discovers a new safe antichain during execution: refresh the graph and
-  dispatch immediately instead of preserving the old serial order.
-- Compatible second-wave work in the same parent turn: use `followup_task` on a
-  completed agent with a fresh complete assignment and assignment id when its
-  retained context saves setup; otherwise use a fresh spawn. Do not carry the
-  previous task boundary forward implicitly.
-- Resident capacity pressure: a fresh spawn may automatically unload the
-  least-recently-used eligible `Completed`, `Errored`, or `Interrupted`
-  resident. If it returns `AgentLimitReached`, this reservation attempt did not
-  successfully unload one: none may be eligible, or an eligible unload may
-  have failed. Do not spin or blind-retry. Inspect resident/runtime state,
-  continue capability-compatible root work, wait for a state change, or leave
-  the node visibly blocked.
-- Scheduler pressure validation: hide compatible tasks in ready-sequence
-  suffixes and use layouts that distinguish the stable-order fast path, bounded
-  greedy portfolio, partial-wave improvement, residual-wave scoring, and clean
-  budget exhaustion.
-  Prove deterministic output, safety under capacity/dependency/active-lock/
-  write-conflict constraints, greatest evaluated cardinality, residual-wave
-  scoring before the lexicographic sorted-original-index tie-break,
-  inclusion-maximal below-capacity results, and at most `n(n-1)/2` unique
-  logical pair evaluations. Do not claim an exact/global maximum, globally
-  minimal wave count, fixed approximation ratio, or never-underfill behavior.
-- Receipt rejected before ingestion with a changed contract: atomically
-  `replan` the exact active assignment, then dispatch the replacement.
-- Receipt rejected before ingestion with an unchanged contract: release the
-  exact active assignment, then dispatch a fresh attempt.
-- Ingested failed or parent-rejected durable receipt with the same contract:
-  resolve material follow-up during `reopen`, then dispatch again.
-- Ingested receipt that changes any task-contract field: use atomic `replan`,
-  then dispatch the replacement contract; never reopen and mutate later.
-- Sol route unavailable: keep the node pending; do not claim Terra equivalence.
-- V2 unavailable: block delegation and report the runtime requirement.
-- User explicitly disables parallelism: preserve the graph, record
-  `user_explicit_no_parallel`, and execute serially.
+A missing thread without an accepted result keeps its task unfinished. When
+CAO was active, its semantic join must also pass. Report meaningful remaining
+work, not a per-event transport ledger.
