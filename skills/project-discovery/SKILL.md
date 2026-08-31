@@ -2,9 +2,9 @@
 name: project-discovery
 description: >
   Downstream software-project discovery stage selected by project-lifecycle
-  when the project object or the concrete relation through which it should
-  realize the user's purpose is not yet sufficiently formed for a product
-  commitment. Produces an independent, provisional discovery handoff. Does not
+  when an unresolved product object, user need, or product commitment must be
+  understood before deciding what the project should be or offer. Produces an
+  independent, provisional discovery handoff. Does not
   create PRDs, requirements, agendas, designs, implementation plans, code, or
   accepted product decisions.
 ---
@@ -22,11 +22,16 @@ the answer.
 This is not the project entry point. Direct invocation still returns its result
 to `project-lifecycle` for handoff and any requested adoption.
 
-Use when `project-lifecycle` determines that the object to be built, the reality
-it must answer to, or the relation through which it can realize the accepted
-purpose is still unsettled enough to change the project commitment. Make that
-decision from the state of understanding, not from topic words, document names,
-or the user's action verb.
+Use when `project-lifecycle` determines that an unresolved product object, user
+need, or product commitment would decide what the project should be or offer.
+The project may already have an artifact, plan, or product category; none proves
+that its product commitment is accepted. Make the decision from accepted project
+state, not topic words, document names, or the user's action verb.
+
+Do not use merely because a technical explanation, root cause, architecture,
+data model, operation, or implementation path remains difficult. Within an
+accepted product boundary, those are `project-analysis` questions, even when a
+better technical form must be imagined.
 
 Do not use for a bounded factual lookup whose decision and downstream boundary
 are already accepted; use `project-analysis` with appropriate sources. Do not
@@ -98,16 +103,20 @@ an adopted choice later; it cannot independently establish product value.
 
 ## Inquiry And Synthesis
 
-Load `three-step-analysis` as the cognitive core without turning an ordinary
-discovery report into a three-section template:
+Load `three-step-analysis` as the cognitive core, preserving its movement
+without turning the report into a three-section template. Begin by expanding the
+concrete world: situation, actors, relations, history, stakes, tensions, and
+possibilities, alongside the parts of project reality that could correct that
+initial account. Sources, user evidence, comparable practice, and contrary cases
+are ways to encounter that reality, not a collection stage that precedes or
+substitutes for thought.
 
-1. establish the research question, the decision it may inform, the governing
-   standard, current hypotheses, and what could overturn them;
-2. inspect the smallest sufficient mix of project reality, authoritative domain
-   sources, user or operator evidence, comparable alternatives, and contrary
-   evidence;
-3. synthesize facts, interpretations, competing explanations, conclusions,
-   unknowns, and reversal conditions into an independently readable account.
+Then test the leading understanding against genuine alternatives and identify
+what only the user's lived purpose or commitment can settle. Finally form a
+provisional discovery judgment: what is explained, which possibility is worth
+carrying forward, what remains unknown, and what would reverse the judgment.
+This judgment is independently readable and revisable; it is not a source count,
+requirements draft, or hidden implementation plan.
 
 When the accepted purpose cannot yet be carried by a settled form, test the
 inherited frame before proposing its contents. Form genuinely different causal

@@ -168,9 +168,13 @@ analysis_gate: <project_analysis_consumed | explicitly_skipped_by_user | not_req
 analysis_gate_basis: <Stage 3 decision and implementation boundary, exact analysis-waiver wording, or concise proof of every very_small condition>
 ```
 
-Require non-empty `analysis_gate_basis` that matches the recorded disposition.
-If it is missing or mismatched, return a required `project-analysis` agenda item
-to `project-lifecycle` before implementation instead of trusting the enum alone.
+Require `analysis_gate_basis` to match the disposition. For
+`project_analysis_consumed`, assess the actual judgment: why this change addresses
+the governing cause, what it preserves, and what boundary follows. The enum
+preserves continuity; a filled field does not prove adequate analysis. A missing
+basis or an upstream return for discovery, brief, or necessary dialogue goes
+back to `project-lifecycle`, not execution. A valid explicit waiver or
+`very_small` proof does not require that full judgment.
 
 For material user-facing product work, that basis must also rest on a
 controller-accepted product commitment. If it instead exposes unresolved user

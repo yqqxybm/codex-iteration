@@ -1,8 +1,4 @@
 interface:
   display_name: "Three-Step Analysis"
   short_description: "Deep non-project thinking framework."
-  default_prompt: >
-    Use $three-step-analysis to form a concrete, object-appropriate judgment:
-    expand the relevant reality and genuine alternatives, ask and stop when the
-    user's perspective is indispensable, then make a proportionate practical
-    commitment open to correction.
+  default_prompt: "Use $three-step-analysis to understand how the situation arose and could change, explore grounded possibilities, bring indispensable user experience into dialogue, and form a practical judgment."

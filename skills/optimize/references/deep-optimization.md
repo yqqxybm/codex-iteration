@@ -7,12 +7,13 @@ alternative futures, or practical consequences that govern the work.
 ## Deepen The Judgment
 
 Begin by asking whether the inherited definition of the object conceals a
-decisive possibility. A purpose may be accepted while the mechanism,
-relationship, or overall form meant to realize it is not. If that form is still
-the live question, return to `project-lifecycle`/discovery for software work or
-`three-step-analysis` for a consequential non-project question.
+decisive possibility. Neither an existing form nor an inherited diagnosis fixes
+the space of possible improvement. Deep inquiry may reconstruct that form;
+it must not silently replace the user's purpose or adopt a new product
+commitment. Use `project-lifecycle` to select the unresolved project owner, or
+`three-step-analysis` for a consequential non-project judgment.
 
-For an established object, expand only the inquiry needed to understand:
+Expand the inquiry far enough to understand:
 
 - the object and its purpose in the concrete situation;
 - the relations, dependencies, history, affected parties, and pressures that

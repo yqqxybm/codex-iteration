@@ -15,16 +15,18 @@ mode, synthesizes a tool goal, or controls a cyclic project objective.
 
 ## Goal Contract
 
-Convert incomplete user targets such as "完成 v0.1" into a verifiable goal:
+Turn a user target such as "完成 v0.1" into a goal that can direct inquiry and,
+once the judgment is sufficient, execution. Do not make a provisional goal look
+like an already accepted product boundary:
 
 ```yaml
 project_goal:
   objective: <single project outcome>
-  product_boundary: <what the project is and is not>
-  non_goals: <explicit exclusions and phase limits>
-  required_surfaces: <product, docs, code, security, tests, deploy, handoff, review>
-  success_criterion: <observable finished state>
-  evidence_boundary: <what evidence can and cannot prove>
+  product_boundary: <accepted boundary, or the concrete question preventing one>
+  non_goals: <explicit exclusions and phase limits known so far>
+  required_surfaces: <only surfaces made necessary by the current commitment>
+  success_criterion: <observable finish condition appropriate to that commitment>
+  evidence_boundary: <what reality can and cannot establish before the next commitment>
 ```
 
 When the Codex goal tool is available and the request is goal-backed, create or
@@ -80,23 +82,22 @@ lightweight single-pass goal, but it is still controlled by this reference.
 ## Control-System Goal Synthesis
 
 For `目标!` / `目标！`, the user should not have to write the loop, hardness,
-or stop condition. The controller must synthesize a control-system goal before
-asking, planning, or executing. The goal is the control law; the agenda is the
-mutable execution state.
+or stop condition. First form the preflight understanding and dialogue judgment;
+then create the goal and control structure appropriate to the next commitment.
+The goal is the control law; the agenda is the mutable execution state.
 
-Before writing `goal_synthesis` or the final `tool_goal_prompt`, consume the
-controller's `skill_system_best_practice_packet` when present, or synthesize it
-from the current skill metadata and selected/ambiguous `SKILL.md` files. This
-packet is not a replacement for `tool_goal_prompt`; it is the skill-system
-practice layer that determines which existing skills, adapters, contracts,
-cognitive methods, verification gates, delivery gates, and stop conditions should
-shape the goal prompt.
+Before writing `goal_synthesis` or the final `tool_goal_prompt`, form the
+project's working judgment. Select skills, contracts, verification, delivery,
+and execution structure only after that judgment establishes their necessity.
+An unresolved premise may justify an inquiry goal, but must not be silently
+filled with downstream requirements, task nodes, quality defaults, or delivery
+obligations.
 
 ```yaml
 goal_synthesis:
   user_objective: <text after 目标! or 目标！>
   project_goal: <normalized Goal Contract above; the single semantic target>
-  skill_system_best_practice_packet: <skill survey and selected practice layer used as input, or why not applicable>
+  skill_system_best_practice_packet: <judgment-led selected/deferred capabilities; not a prefilled execution recipe>
   target_layer: <local_change | feature_workflow | version_phase | release_operation |
     whole_project | project_system | codex_self_iteration>
   goal_preflight:
@@ -106,8 +107,8 @@ goal_synthesis:
         request; subordinate to direct_intent>
       target_world: <repo/product/skill/config/runtime system being changed>
       controlling_tension: <governing structure, value conflict, action tension, or tradeoff that governs success>
-      candidate_paths: <genuine alternatives needed to test the objective; omit
-        when the strongest counterview or failure mode is the better test>
+      candidate_paths: <genuine ways the situation could change; use alternatives,
+        counterviews, or failure modes only where they test the leading understanding>
     calibration:
       default_judgment: <best current interpretation before asking>
       key_assumptions: <facts or values the judgment depends on>
@@ -127,31 +128,31 @@ goal_synthesis:
     governing_tension: <relation that most affects the goal>
     practical_judgment: <current revisable conclusion>
     material_uncertainty: <what could alter the conclusion or action>
-  control_system_goal:
+  control_system_goal: # Include only controls made meaningful by the next commitment.
     state_model:
       current_state_sources: <repo, docs, tests, deploy, trace, backlog, conversation>
       desired_state: <observable finished state>
       unknown_state: <facts to inspect, assume with risk, or ask about>
       reversal_conditions: <conditions that would change target_layer, scope, or stop condition>
-    sensors:
+    sensors: # Select only feedback that can correct the next action.
       repo_evidence: <git status, diff, tests, lint, typecheck, build, codegraph>
       product_evidence: <browser, API, workflow, UI, data, artifact output>
       operation_evidence: <deploy health, logs, remote sync, rollback path>
       review_judgment: <core judgment and material limits when review is required>
       knowledge_evidence: <docs, handoff, standard ledger, trace, agenda>
-    actuators:
+    actuators: # Include only when a mutation boundary is accepted.
       primary_skill_chain: <project-analysis -> owner skills -> review/release/sync as needed>
       allowed_mutations: <code, docs, tests, config, deploy, sync, commits>
       forbidden_mutations: <explicit exclusions, unsafe/destructive areas, out-of-scope layers>
-    loop_policy:
+    loop_policy: # Include only when execution or an explicit review sequence exists.
       mode: <single_pass | bounded_goal_loop | explicit_repeated_review>
       revisit_on: <material_in_scope_work | verification_failure | material state change>
       explicit_review_rounds: <user-requested count | not_applicable>
-    hardness_policy:
+    hardness_policy: # Include only when verification or review is in scope.
       verification: <targeted | full_project | release_health>
       review_depth: <focused | deep | exhaustive>
       review_scope: <diff | affected_workflow | project_global | release_readiness>
-    delivery_policy:
+    delivery_policy: # Include only when delivery is in scope.
       commit: <required | not_applicable>
       push: <required | not_applicable | blocked>
       deploy_health: <required | not_applicable | blocked>
@@ -162,11 +163,11 @@ goal_synthesis:
       block_when: <missing secret, inaccessible deploy/remote, conflicting
         active goal, unsafe operation>
     stop_condition: <controller-written completion boundary>
-  subagent_execution:
+  subagent_execution: # Include only when accepted work has independent executable surfaces.
     protocol: references/subagent-execution.md
     applicability: <required when the goal has independent work surfaces or delegates work>
     state: <task graph, parallel mode, model route, receipt/join state, hard-state status, or not_applicable>
-  loop_control_matrix:
+  loop_control_matrix: # Include only when more than one active execution loop exists.
     active_loops: <tool_goal | agenda | subagent_wave | release_or_sync |
       user_explicit_review_rounds>
     reset_edges: <which event resets which counters or states>
@@ -183,27 +184,30 @@ dialogue or apply `model_reset`.
 
 Default synthesis rules:
 
-- Run `goal_preflight` before writing the final `control_system_goal`, creating
-  a tool goal, building the agenda, or asking the user. This is a compact
+- Begin `goal_preflight` with independent understanding, then resolve its
+  dialogue before writing the final `control_system_goal`, creating a tool goal,
+  or building the execution agenda. This is a compact
   three-step-analysis adapter: independent project understanding -> dialogue
   judgment -> practical commitment. Ordinarily it is not a visible essay. When
   the lifecycle carries `three_step_visibility: explicit`, it must instead
   expose compact, object-appropriate Stage 1, Stage 2, and Stage 3 before goal
   activation; if Stage 2 blocks, stop there and do not activate the goal or
-  emit Stage 3. It exists so the goal prompt knows what problem-world it is
-  controlling before it chooses fields, lenses, loops, or subagents.
+  emit Stage 3. It exists so the next commitment grows from the problem-world
+  rather than from a preselected control structure.
 - The `material_model` is incomplete until it expands the material relations,
   feedback, and time that can change the goal, identifies the governing standard,
   and tests the leading model against the strongest opposing view,
   counterexample, boundary, or failure mode. Revise the model before calibration;
   compactness may compress this dialectical test, not omit it.
-- When the object through which the project should realize the user's purpose is
-  not yet established, select `project-discovery`. Make this judgment from the
-  concrete situation and accepted state, not from content keywords or the
-  current feature surface. The initial agenda must
+- When an unresolved product object, user need, or product commitment would
+  decide what the project should be or offer, select `project-discovery`. Make
+  this judgment from the concrete situation and accepted state, not from content
+  keywords or the current feature surface. Technical uncertainty within an
+  accepted product boundary remains with `project-analysis`. The initial agenda must
   contain exactly the discovery work and its lifecycle-owned adoption gate; do
   not pre-create downstream nodes even as pending placeholders. Materialize brief,
-  requirements, implementation, and their task graph only after adoption.
+  requirements, implementation, and their task graph only after the relevant
+  judgment and adoption make them meaningful.
   Parallelize independent research surfaces when useful, but do not run
   implementation concurrently with an unresolved discovery gate.
 - `goal_preflight` must still expose a visible dialogue judgment before the goal
@@ -231,10 +235,11 @@ Default synthesis rules:
   preservation commitments. It names a conditional priority only where a real
   conflict requires one; it does not force every value into a fixed score or
   total ranking.
-- If `goal_preflight` finds that the user's perspective meets both dialogue
-  thresholds, ask before creating or maintaining the tool goal. Otherwise
-  proceed only after exposing the current judgment and the concise reason
-  dialogue is not needed; carry unresolved factual work as risk or evidence work.
+- If `goal_preflight` finds that necessary user input would materially change
+  the project understanding or commitment, ask before creating or maintaining
+  the tool goal. Otherwise proceed only after exposing the current judgment and
+  the concise reason dialogue is not needed; carry unresolved factual work as
+  risk or evidence work.
 - For Codex skills, AGENTS/global instructions, lifecycle rules, goal prompts,
   subagent orchestration, custom agents, sync rules, or any future-behavior
   control law, treat competing interpretations of the edit boundary as blocking
@@ -422,11 +427,11 @@ Completion and blockage are strict:
 Pressure scenarios:
 
 - "`目标! <project objective>` or `目标！ <project objective>`": create or
-  maintain a tool goal when available, infer the full control-system
-  `goal_synthesis` from the objective, show `target_layer`,
-  `control_system_goal`, `goal_runtime`, synthesized `cyclic_goal_loop`,
-  review/delivery/verification policies and the initial
-  agenda before advancing. Do not ask the user to provide loop wording, stop
+  maintain a tool goal when available, first form the working judgment and
+  expose the next commitment. Show only the `control_system_goal`, agenda,
+  loop, review, delivery, and verification state that this commitment makes
+  meaningful; an inquiry goal may initially contain only discovery and adoption.
+  Do not ask the user to provide loop wording, stop
   conditions, review depth, review scope, commit/push/deploy
   requirements, verification hardness, state model, sensors, or actuator chain
   unless the user's perspective on the target boundary, success criterion,
@@ -440,8 +445,8 @@ Pressure scenarios:
   dispatch failure handling and replanning, receipt acceptance, join judgment,
   and thread accounting; native Codex V2 performs spawn, follow-up, messaging,
   wait, interruption, status listing, and terminal-thread lifecycle.
-- "`目标！先调研真实用户需要什么，再实现`": create the goal and its loop,
-  but make the first agenda `project-discovery -> lifecycle adoption`. Treat
+- "`目标！先调研真实用户需要什么，再实现`": create an inquiry goal whose first
+  agenda is `project-discovery -> lifecycle adoption`. Treat
   examples, current UI, available APIs, and existing fields as hypotheses. Add
   the downstream brief, plan, and executor graph only after the adoption gate.
 - "完成 v0.1 收口 / 直到无遗留问题": create or maintain a tool goal when

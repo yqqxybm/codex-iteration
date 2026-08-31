@@ -54,51 +54,36 @@ skill must change the outcome, so accepted phases are not replayed decoratively.
 executor Context Packet or task node, it must become
 `project_analysis_consumed` or stop at the analysis gate.
 
-### Skill-System Best-Practice Packet Gate
+### Skill-System Best-Practice Packet After Understanding
 
-Before writing `tool_goal_prompt` for a goal-backed request, or before handing off
-any fuzzy project request, synthesize `skill_system_best_practice_packet` from the
-current skill system. This packet is not the final `tool_goal_prompt`; it is the
-skill-utilization layer that teaches the controller which existing skills,
-adapters, resources, contracts, and verification gates should shape the final
-prompt and Context Packet.
+For a goal-backed or fuzzy project request, do not begin by composing a
+skill-system packet, quality default, verification list, or execution graph.
+First form a working project judgment: what concrete situation is changing,
+whose purpose is at stake, what relations and tensions govern it, which live
+possibilities can make a material difference, and what would correct that
+judgment. The user need not supply operational detail that follows from this
+understanding.
 
-The packet must consider the available skill metadata, then read the `SKILL.md`
-for selected owner skills and any ambiguous competing skill. Do not read every
-unrelated skill body for ordinary requests, but do consider all materially
-relevant skill families before selecting the chain. For Codex skill-system
-optimization, review, or self-iteration, broaden the survey to all affected
-skills and cross-skill references.
+Once that judgment is sufficient for the next commitment, inspect skill metadata
+and read the selected owner skills plus any genuinely ambiguous alternative.
+Choose only the capabilities, contracts, and feedback that can alter the next
+decision or action. The resulting selection is controller context, not a second
+authority and not a template to fill. It may be summarized as:
 
 ```yaml
 skill_system_best_practice_packet:
-  user_surface_request: <raw user wording>
-  inferred_target: <task class>
-  skill_survey: <metadata considered; selected and rejected skills with reasons>
-  codex_written_task_prompt: <task-specific execution prompt fragment>
-  skill_system_utilization: <skills, adapters, resources, and contracts used or skipped>
-  quality_defaults: <applicable quality and loop defaults>
-  required_contracts: <resource, review, delivery, and verification contracts>
-  downstream_chain: <selected owner chain>
-  verification_defaults: <commands, artifacts, or evidence>
-  relationship_to_tool_goal_prompt: <input_only | not_applicable>
-  user_not_required_to_supply: <control details inferred by Codex>
-  blocking_question_boundary: <non-substitutable user perspective with material
-    effect on understanding or commitment, or none>
+  judgment_basis: <the part of the working judgment that makes this selection necessary>
+  selected: <owners/resources that change the next decision or action>
+  deferred: <owners that depend on an unresolved commitment>
+  feedback_boundary: <what must be observed before the next commitment>
+  dialogue_boundary: <non-substitutable user perspective with material effect, or none>
 ```
 
-This is controller-owned context, not user homework. In goal-backed work it is
-input to, never a replacement for, the final `tool_goal_prompt`.
-
-The gate fails if:
-
-- the user is asked to write the best-practice prompt, name routine skills, choose
-  ordinary review/optimization hardness, or provide stop conditions that Codex can
-  infer from the skill system and project evidence,
-- a goal-backed `tool_goal_prompt` ignores the packet's selected skills,
-  contracts, verification defaults, or stop-condition implications,
-- the packet is passed to `create_goal` as if it were the final
-  `tool_goal_prompt`.
+For unresolved discovery or product commitment, `deferred` normally includes
+implementation, its task graph, and implementation-specific quality or delivery
+rules. Do not turn a likely future path into pending work merely because it is
+easy to name. In goal-backed work, this selection informs the final
+`tool_goal_prompt`; it is never passed to `create_goal` as the goal itself.
 
 ## Executable Plan Quality
 
@@ -234,6 +219,13 @@ task_graph:
 subagent_execution: <required state summary from
   references/subagent-execution.md, or not_applicable with evidence>
 ```
+
+Create this graph only after the work it represents has an accepted object,
+commitment, and action boundary. A discovery or brief agenda may contain its own
+inquiry and adoption work, but must leave unknown implementation, test, document,
+release, and delivery nodes unmaterialized. The graph preserves a judgment that
+is ready to act; it must not manufacture that judgment by giving its possible
+consequences owners and checkboxes.
 
 Loop invariant: the plan is not complete while any required item is `pending`,
 `active`, unverified, or while concierge `cyclic_goal_loop` has material
@@ -476,9 +468,9 @@ merely because they were recorded.
   `references/subagent-execution.md`. Apply both authoritative gates before goal
   activation or delegation.
 - "改一下这个弹窗 / 优化一下前端 / 仿照已有网站写一个后台管理页 / 做一个前端 /
-  写个页面 / 做个组件 / 做个 dashboard/admin": synthesize
-  `skill_system_best_practice_packet` before execution. The packet chooses UI tier,
-  AQ target, design contracts, reference-sourcing/default prototype policy,
+  写个页面 / 做个组件 / 做个 dashboard/admin": first determine whether the
+  requested form already expresses an accepted purpose and user situation. Once
+  it does, select the UI tier, AQ target, design contracts, reference policy,
   local-style extraction for small components, browser/visual/state
   verification, and the owner chain. A vague visible component modification
   defaults to AQ2 and a holistic rendered aesthetic verdict; task/interaction
@@ -500,9 +492,8 @@ merely because they were recorded.
   `control_law_gap`; regenerate the experiment from updated rules after any
   skill patch. Only an `application_gap` or `implementation_gap` may be fixed by
   rewriting the page without changing the skill.
-- "初始化一个项目 / 做一个 app / 搭一个工具": synthesize
-  `skill_system_best_practice_packet` plus `frozen_charter` when needed. Start at
-  the earliest unresolved commitment: use discovery and adoption when user or
+- "初始化一个项目 / 做一个 app / 搭一个工具": start with the earliest unresolved
+  commitment: use discovery and adoption when user or
   product reality must decide the product, otherwise begin with `project-brief`;
   then use visible `project-analysis` and `project-bootstrap`. Let Codex select
   production bootstrap defaults, standard ledger, docs profile, runnable vertical
@@ -525,8 +516,9 @@ merely because they were recorded.
   directly affected docs/tests, local-style or UI contracts when UI is involved,
   focused/deep review according to wording, version management, and
   verification/stop conditions.
-- "改一下 / 修一下 / 加个功能 / 重构一下": synthesize a modification packet that
-  starts at the earliest unresolved commitment rather than the last action verb.
+- "改一下 / 修一下 / 加个功能 / 重构一下": form the smallest working judgment
+  that starts at the earliest unresolved commitment rather than the last action
+  verb. Only after that judgment is sufficient, select the modification chain.
   When upstream reality and product commitment are accepted, select the smallest
   sufficient implementation chain: `project-analysis`, then `project-iteration`, plus
   `project-frontend`, `project-docs`, `project-commit`, or `review` only when the
@@ -541,10 +533,10 @@ merely because they were recorded.
   completion claim; depth follows the requested or risk-appropriate intensity.
   Deep or exhaustive review follows more material relations; a named number of
   passes applies only when the user explicitly makes it part of the result.
-- A request for something to become better selects `optimize` only after the
-  lifecycle has established that there is a formed object whose better and worse
-  realization can be judged. If the request instead challenges what the object
-  is or how it should embody the user's purpose, return to discovery or brief
+- A request for something to become better selects `optimize` only when the
+  current understanding can explain what is being improved, why a change would
+  better realize the purpose, and what action boundary follows. If the request
+  challenges that understanding or its form, return to discovery or brief
   formation. When the user explicitly requests both review and optimization,
   preserve both responsibilities: let independent review establish the
   diagnosis, let the authorized owner implement the optimization judgment, and
@@ -571,8 +563,8 @@ merely because they were recorded.
   plan file through `project-docs` if none exists, mark items active before
   execution, write result/verification after each item, and record
   `change_request` for every mid-run user addition.
-- A goal-backed review or optimization first synthesizes `goal_preflight` and
-  the task-specific `optimality_law`. Carry the formed object, governing
+- A goal-backed review or optimization first forms `goal_preflight` and the
+  task-specific `optimality_law`. Carry the current object understanding, governing
   tension, accepted agenda, and only observations capable of changing the next
   action. Broad work uses the coding-quality contract as directions for inquiry,
   not as a lens matrix or a second state store.

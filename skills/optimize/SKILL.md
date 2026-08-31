@@ -1,11 +1,11 @@
 ---
 name: optimize
 description: >
-  Rework an established artifact, plan, workflow, prompt, configuration, skill,
+  Rework an existing artifact, plan, workflow, prompt, configuration, skill,
   or decision after understanding what it is for and what prevents it from
   fulfilling that purpose. Use for user-authorized optimization, structural
   improvement, strengthening, or deep optimization. Do not select solely from
-  keywords: first decide whether there is a formed object worth optimizing.
+  keywords: understand the intended improvement and the inquiry it requires.
   Use domain owners for implementation and state.
 ---
 
@@ -16,24 +16,23 @@ an existing object more fully become what it is for.
 
 Understanding comes first: the object, its purpose, its concrete situation and
 relations, the tension governing its present failure or unrealized possibility,
-and the change it can responsibly bear. Evidence corrects this judgment.
+and the change it can responsibly bear. Reality both inspires and corrects this judgment.
 Process carries it through complex work. Neither is the subject of optimization.
 
 ## Entry Judgment
 
 Do not route by the word "optimize" alone. Before starting, determine what the
-user is actually trying to make possible and whether the target already exists
-as a meaningful object.
+user is actually trying to make possible and which understanding is missing.
+An existing target gives inquiry a concrete starting point, not a form that
+must be accepted or preserved. Understanding its limitations and discovering
+what it could become belong to the same judgment. Its mechanism, relationships,
+or overall form may need reconstruction within the user's purpose and boundary.
 
-An optimization target is established when its identity, purpose, relevant
-boundary, and the form through which it is meant to realize that purpose are
-sufficiently accepted to judge a better and worse realization. Acceptance of a
-purpose or value direction alone does not accept the current mechanism,
-relationship, or overall form. When that realization form is the live question,
-begin with the appropriate inquiry:
+Choose an inquiry owner for the question still unresolved:
 
 - software product or project direction: `project-lifecycle`, which may choose
-  discovery or brief work;
+  discovery or brief work when user reality or product commitment is unresolved,
+  and project analysis for solution judgments within an accepted commitment;
 - consequential non-project direction or decision: `three-step-analysis`;
 - fuzzy, lightweight non-project framing: `co-star`;
 - textual expression whose direction is already accepted: `self-refine`.
@@ -44,7 +43,7 @@ assumption and proceed, open to correction.
 
 ## Ownership And Routing
 
-Use this skill for authorized optimization of an established non-project target.
+Use this skill for authorized optimization of an existing non-project target.
 It may frame the judgment and coordinate handoff, but does not seize another
 domain's actions or state.
 

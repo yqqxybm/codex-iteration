@@ -1,7 +1,4 @@
 interface:
   display_name: "Optimize"
-  short_description: "Help a formed object realize its purpose more fully."
-  default_prompt: >
-    Use $optimize to understand this formed object, find the relation that most
-    limits its purpose, and make the fitting authorized change while preserving
-    what the whole still needs.
+  short_description: "Improve an object through a fitting practical judgment."
+  default_prompt: "Use $optimize to understand this object and its possibilities, judge what change best serves its purpose, and implement within the authorized boundary."

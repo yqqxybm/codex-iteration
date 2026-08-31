@@ -34,8 +34,11 @@ software are evidence-bearing qualities only when they serve that standard.
 Every software-project skill uses five control principles in service of it:
 
 1. **Intent fidelity**: preserve the user's actual goal across every layer.
-2. **Structure first**: establish boundaries, architecture, quality gates, and
-   project context before large implementation.
+2. **Understanding before structure**: let the concrete situation, its
+   relations, history, tensions, and unrealized possibilities determine what
+   boundary, architecture, quality work, and project context are actually
+   needed. Do not let an available process or implementation-shaped artifact
+   define the problem in advance.
 3. **Runnable first**: prefer a working vertical slice over empty scaffolding or
    abstract plans.
 4. **Reasoned evidence loop**: form an explicit model and judgment, then test
@@ -101,7 +104,7 @@ delivery; do not force every request into implementation.
 
 | Phase | User intent | Downstream capability |
 | --- | --- | --- |
-| `discovery` | inquiry must establish the concrete project object or product direction before a commitment can be accepted | `project-discovery`, then controller adoption |
+| `discovery` | unresolved product object, user need, or product commitment would decide what the project should be or offer | `project-discovery`, then controller adoption |
 | `idea` | accepted problem/user reality, but product intent is still vague | `project-brief`, then this controller |
 | `charter` | accepted reality, but product goal, workflow, constraints, or success criteria remain unresolved | `project-brief` + `project-lifecycle` |
 | `architecture` | stack, data model, service boundaries, risk tradeoffs | `project-analysis` |
@@ -122,15 +125,18 @@ delivery; do not force every request into implementation.
   planning, standalone or post-implementation review, and plan advancement.
 - This controller chooses the downstream capability. Do not let user wording
   such as "修一下", "改个 bug", "写文档", or "发布" bypass the controller.
-- **The earliest unresolved commitment controls the chain**: when the actors,
-  situation, task or judgment, needed capability, its effect on the outcome, or
-  the form through which the project would realize the user's purpose is not
-  accepted and would decide what the project should be or contain, start with
-  `project-discovery`. The user's purpose and value relation direct this
-  inquiry; Codex may question and deepen their meaning but may not silently
-  replace them. An accepted purpose does not by itself establish the object that
-  should realize it. Decide from the state of that object, not from content words
-  in the request. Preserve accepted legal, safety, factual, and scope boundaries.
+- **The earliest unresolved commitment controls the chain**: start with
+  `project-discovery` when the unresolved question is what product object,
+  user need, or product commitment should carry the user's purpose, and its
+  answer would decide what the project should be or offer. The user's purpose
+  and value relation direct this inquiry; Codex may question and deepen their
+  meaning but may not silently replace them. An accepted purpose, current
+  artifact, or available implementation route does not by itself establish an
+  accepted product commitment. Decide from accepted project state rather than
+  content words in the request. Preserve accepted legal, safety, factual, and
+  scope boundaries. Technical root cause, architecture, data, operational, or
+  implementation uncertainty inside an accepted product boundary belongs to
+  `project-analysis`, including when it calls for substantial rethinking.
   A broad user concern, example, tentative claim, current UI/API/field,
   available integration, or action verb is not an accepted product need. After
   adoption, route through `project-brief`
@@ -182,10 +188,13 @@ delivery; do not force every request into implementation.
   only. `very_small` versus `material_change` controls analysis and verification
   weight after the earliest unresolved commitment is known; it cannot convert an
   unaccepted product need or requirement boundary into implementation state.
-- **Proportional best-practice synthesis**: the user's short request is enough. For
-  any fuzzy or under-specified project request, synthesize the strongest
-  applicable `skill_system_best_practice_packet` instead of asking the user to
-  write a prompt, name skills, choose review depth, or list quality gates. Only
+- **Understanding before orchestration**: the user's short request is enough.
+  For a fuzzy or under-specified request, first establish a working judgment of
+  the concrete situation, the purpose at stake, the relations that govern it,
+  and the live possibilities that could change the outcome. Only then select
+  the smallest useful skills, contracts, verification, and execution structure.
+  Codex supplies those operational choices; the user need not write a prompt,
+  name skills, choose review depth, or list quality gates. Only
   clear tiny local edits stay in the light path: examples include moving one
   icon, fixing one typo/copy string, changing one local spacing/color token, or
   another reversible single-semantic-surface adjustment with no meaningful
@@ -222,8 +231,10 @@ delivery; do not force every request into implementation.
   `目标!` / `目标！` is governed by the next rule.
 - **User starts a project request with `目标!` or `目标！`**: treat the rest of
   the message as an explicit goal-backed objective. The user supplies the
-  outcome; Codex supplies the best-practice packet, calibration, optimality law,
-  control goal, agenda, loops, evidence, delivery policy, and stop condition.
+  outcome; Codex first forms a revisable understanding of what that outcome
+  means in its concrete world, then supplies the calibration, optimality law,
+  control goal, agenda, loops, evidence, delivery policy, and stop condition
+  that this understanding actually requires.
   Load `references/goal-orchestration.md` before goal activation. If work is
   delegated, also load `references/subagent-execution.md`; children receive
   bounded assignments and the main thread retains completion authority.
@@ -241,13 +252,14 @@ delivery; do not force every request into implementation.
 - **Software-project analysis without implementation**: start at the earliest
   unresolved commitment; when upstream reality and product commitment are
   accepted, route to `project-analysis` and stop after its Handoff Record.
-- **Skill-system best-practice synthesis**: the user supplies the desired
-  outcome, not a production prompt or skill-use recipe. For fuzzy or
-  under-specified project intent, load `references/controller-protocol.md` and
-  synthesize its authoritative `skill_system_best_practice_packet` before
-  asking, writing a goal prompt, or handing off. It is controller-owned context
-  and, in goal-backed work, input to rather than a substitute for the final
-  `tool_goal_prompt`. Only questions meeting the Stage 2 dual threshold block.
+- **Capability selection**: the user supplies the desired outcome, not a
+  production prompt or skill-use recipe. For fuzzy project intent, load
+  `references/controller-protocol.md`, form the project judgment first, and
+  then select only the skills and control surfaces that can change the result.
+  Do not prefill a downstream implementation chain, quality default, or
+  execution graph while the object, requirement, or action boundary remains
+  unknown. A question blocks only when the needed user input would materially
+  change the project understanding or commitment.
 
 ## Lifecycle Gates
 

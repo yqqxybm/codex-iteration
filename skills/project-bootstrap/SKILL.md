@@ -104,8 +104,11 @@ durable facts to docs through `project-docs`.
 
 1. Identify target directory. If it already exists and is non-empty, inspect it
    and do not overwrite unrelated files.
-2. Consume `analysis_gate` evidence from `project-lifecycle`. If the Context
-   Packet lacks `analysis_gate: project-analysis required` results or
+2. Consume the actual Stage 3 judgment and bootstrap boundary carried in
+   `analysis_gate_evidence`, or the user's explicit analysis waiver. A filled
+   field alone is not a judgment. If that basis is absent, analysis returned an
+   unresolved upstream question, or the Context Packet contains neither
+   `analysis_gate: project_analysis_consumed` nor
    `analysis_gate: explicitly_skipped_by_user`, return
    `requires_project_analysis` to `project-lifecycle`; do not bootstrap from an
    unanalyzed root-state request.
@@ -113,6 +116,11 @@ durable facts to docs through `project-docs`.
    frozen charter exists and the request is a broad new-project idea, stop and
    return `requires_charter` to `project-lifecycle` instead of scaffolding from
    assumptions.
+   Consume lifecycle's selected capabilities when supplied in
+   `skill_system_best_practice_packet`; they follow the project judgment, not
+   an independent scaffold recipe. Resolve any missing production choice from
+   the charter and applicable contracts. Return a materially unresolved
+   commitment to lifecycle rather than requiring a packet for its own sake.
 4. Determine project type, primary users, runtime, package manager, deployment
    target, `doc_profile`, and `docs_ia` from the charter and local conventions.
 5. Ask only when the product type, platform, target directory, or charter field

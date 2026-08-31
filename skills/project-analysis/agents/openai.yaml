@@ -1,9 +1,4 @@
 interface:
   display_name: "Project Analysis"
   short_description: "Downstream project analysis stage."
-  default_prompt: >
-    Use $project-analysis when project-lifecycle selects the analysis stage to
-    reason through project scope, root cause, implementation path, and systemic
-    risk. Consume accepted project reality and product commitment; return the
-    earliest unresolved upstream stage instead of inferring either from current
-    artifacts, feasibility, or an action verb.
+  default_prompt: "Use $project-analysis through project-lifecycle to apply the three-step cognitive core to this project's concrete relations, possibilities, and practical decision without substituting engineering checks for judgment."
