@@ -59,6 +59,16 @@ judgment and bounding completion claims. They are not the objective and cannot,
 by themselves, substitute for understanding, thought, or an artifact-quality
 judgment.
 
+Every next commitment must remain connected to the user's accepted purpose
+through the controller's current understanding of project reality. The standard
+is that this relation still governs action, not that Codex can explain the
+action. When results, feedback, an interruption, material new information, or a
+proposed action materially change, break, or obscure that relation, suspend
+forward execution and transfer control to `reorient`. Its transition may
+preserve the course, revise the plan, reopen the owner of failed understanding,
+enter dialogue, or stop. It may revise Codex's interpretation and means, but
+must not silently revise the user's purpose or authorization.
+
 In this controller:
 
 - the project model and accepted state are the current understanding of the
@@ -125,6 +135,13 @@ delivery; do not force every request into implementation.
   planning, standalone or post-implementation review, and plan advancement.
 - This controller chooses the downstream capability. Do not let user wording
   such as "修一下", "改个 bug", "写文档", or "发布" bypass the controller.
+- **Project message whose trimmed content is exactly `继续！` or `继续!`**:
+  invoke `reorient` before resuming the current authorized project work. The
+  marker does not invent a missing target, create a goal, widen scope, or
+  mechanically resume a stale plan. Ordinary prose containing continue remains
+  normal intent;
+  autonomous invocation follows the purpose-reality-action relation above, not
+  a keyword or fixed interval.
 - **The earliest unresolved commitment controls the chain**: start with
   `project-discovery` when the unresolved question is what product object,
   user need, or product commitment should carry the user's purpose, and its

@@ -245,6 +245,16 @@ when `parallel_blocker` names why parallel execution is impossible or materially
 unsafe. Missing parallel proof is not a reason to run sequentially; it is a
 controller bug to fix before execution.
 
+At each material state transition, including an accepted result or feedback,
+interruption or resume, proposed next action, or material new information, judge
+whether the next commitment remains connected to the user's accepted purpose
+through current project reality and understanding. If continuity is intact,
+continue without ceremony or a new record. If it is materially changed, broken,
+or unclear, suspend further execution, invoke `reorient`, and consume its
+transition. Only after the next commitment is clear may the controller update
+the agenda, dependencies, and conflicts, then select parallel opportunities
+through the existing protocol.
+
 Loop until the agenda reaches a real stop condition:
 
 1. Select the highest-priority `pending` item whose prerequisites are all
@@ -270,8 +280,10 @@ Loop until the agenda reaches a real stop condition:
    required by `references/subagent-execution.md`; register non-subagent
    long-lived handles in `runtime_resource_ledger`.
 5. Check native receipts or ingest CAO receipts through the selected protocol;
-   retain the accepted Handoff, result, and runtime-resource deltas, then
-   update the agenda and persist the result to `plan_state_sink`.
+   retain the accepted Handoff, result, and runtime-resource deltas, and persist
+   the execution facts needed for recovery. Apply the transition judgment above;
+   once the next commitment is clear, update the agenda and persist the result
+   to `plan_state_sink`.
 6. Mark the item `done` only when its `done_when` and verification evidence are
    satisfied and the source plan requirement is preserved.
 7. If the handoff creates new required work, add it to the agenda instead of
