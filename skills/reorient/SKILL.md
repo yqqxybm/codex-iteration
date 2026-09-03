@@ -19,13 +19,13 @@ the current path. The user need only interrupt its inertia; Codex owns judging
 whether the direction, a derived local aim, and its method remain fitting and
 what, if anything, must change.
 
-For a user-initiated reorientation, make the renewed practical judgment
-intelligible to the user as a common object of understanding and correction.
-Forming a concise causal account tests whether and how the present aim and
-method still serve the purpose; making that account visible lets the user see
-where the work stands, understand why the next commitment follows, and correct
-or deepen the judgment. This is one act of shared reorientation, not a separate
-status report or proof that a procedure was performed.
+For a user-initiated reorientation, explain the renewed practical judgment by
+reconstructing the causal relation among the user's purpose, the changed
+reality, the current local aim, and the method now being used. The explanation
+should make intelligible what Codex is doing, why it still serves the purpose
+or no longer does, and why the next commitment follows. Making that relation
+visible both tests the trajectory and lets the user understand, correct, or
+deepen the judgment; it is not a recital of procedure.
 
 ## Selection
 
@@ -62,8 +62,8 @@ status report or proof that a procedure was performed.
    purpose; it never excuses a diminished result. Establish one clear next
    commitment and invalidate only work that depends on the rejected judgment.
 
-For every explicit user signal, express the renewed judgment in a concise
-causal account before acting. Make the relation among the original purpose,
+For every explicit user signal, give the user this concise causal explanation
+before acting. Make the relation among the original purpose,
 present aim and reality, current method, whole-situation judgment, live
 possibilities, and next commitment intelligible, but do not turn them into a
 fixed ledger. When the direction remains valid, one compact paragraph is
