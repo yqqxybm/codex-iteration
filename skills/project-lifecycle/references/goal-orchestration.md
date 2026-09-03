@@ -186,14 +186,13 @@ Default synthesis rules:
 
 - Begin `goal_preflight` with independent understanding, then resolve its
   dialogue before writing the final `control_system_goal`, creating a tool goal,
-  or building the execution agenda. This is a compact
-  three-step-analysis adapter: independent project understanding -> dialogue
-  judgment -> practical commitment. Ordinarily it is not a visible essay. When
-  the lifecycle carries `three_step_visibility: explicit`, it must instead
-  expose compact, object-appropriate Stage 1, Stage 2, and Stage 3 before goal
-  activation; if Stage 2 blocks, stop there and do not activate the goal or
-  emit Stage 3. It exists so the next commitment grows from the problem-world
-  rather than from a preselected control structure.
+  or building the execution agenda. It inherits the three-step cognitive core:
+  concrete inquiry and provisional synthesis -> dialogue -> plan. Ordinarily
+  this work is expressed only as far as goal formation needs. When the user
+  explicitly requested three-step analysis, enact the complete visible core
+  under its exact original headings. `阶段 2：反向询问` asks and stops before
+  goal activation; `阶段 3：计划制定` exists only after the user's answer. The
+  goal must grow from the understanding, not from a preselected control structure.
 - The `material_model` is incomplete until it expands the material relations,
   feedback, and time that can change the goal, identifies the governing standard,
   and tests the leading model against the strongest opposing view,
@@ -210,13 +209,12 @@ Default synthesis rules:
   judgment and adoption make them meaningful.
   Parallelize independent research surfaces when useful, but do not run
   implementation concurrently with an unresolved discovery gate.
-- `goal_preflight` must still expose a visible dialogue judgment before the goal
-  is activated: the current goal interpretation, target layer, mutation boundary,
-  strongest candidate question, and either the blocking question or one concise
-  reason the user's perspective is not needed before commitment. When
-  `three_step_visibility: explicit` applies, this is the visible Stage 2 within
-  the full compact Stage 1/2/3 gate. Do not treat an internal preflight as
-  sufficient when the user needs a chance to correct or deepen the goal judgment.
+- `goal_preflight` must still expose a dialogue judgment before the goal is
+  activated: the current goal interpretation, target layer, mutation boundary,
+  strongest candidate question, and either the question or one concrete reason
+  an internal invocation can continue. When the user explicitly requested
+  three-step analysis, the core owns Stage 2 and defaults to dialogue; an
+  internal preflight cannot replace the user's participation.
 - Strong calibration is mandatory for `目标!` / `目标！`: generate at least one
   candidate calibration question before activating the goal. For root direction,
   new project, PRD, architecture, MVP/version, release, product positioning,

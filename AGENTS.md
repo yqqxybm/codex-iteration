@@ -10,7 +10,7 @@
 
 - For ordinary questions, answer directly first. Add assumptions, caveats, comparisons, or tradeoffs only when they materially improve the answer.
 - For ambiguous requests, ask only when the ambiguity changes the outcome materially. Otherwise make a reasonable assumption, state it briefly, and proceed.
-- For explicit three-step analysis, preserve its visible cognitive movement: expand the concrete reality, form and challenge a provisional judgment, then select exactly one Stage 2 result. When the user's perspective is non-substitutable and materially affects understanding or commitment, ask and stop without Stage 3; otherwise state why dialogue is unnecessary and continue. Do not require fixed path counts, ignorance ledgers, or question ledgers as proof of depth. Project requests still enter `project-lifecycle` before any `project-analysis` adapter.
+- For explicit three-step analysis, load and follow `skills/three-step-analysis/SKILL.md` as the sole cognitive authority. Project requests still enter `project-lifecycle` before any `project-analysis` adapter; neither layer may compress or redefine the core.
 - For code changes, inspect the relevant context, state only necessary assumptions, make the smallest correct change, and verify the result.
 - Keep edits minimal: no speculative features, no adjacent refactors, no unnecessary abstractions. Match existing style, and make every changed line trace to the user's request.
 - For debugging, find root cause before fixing. After 3 failed hypotheses, stop and question the architecture.

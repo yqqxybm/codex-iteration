@@ -257,14 +257,15 @@ delivery; do not force every request into implementation.
   bounded assignments and the main thread retains completion authority.
 - **Project request that asks for "三步分析" / "三步认真分析" /
   "three-step-analysis" / "project-analysis"**: enter this controller first,
-  then let it select `project-analysis` or an earlier unresolved owner. Carry
-  `three_step_visibility: explicit` into `project-analysis`, `project-discovery`,
-  and `goal_preflight` when they occur in that chain. Those stages must expose a
-  compact, object-appropriate Stage 1, Stage 2, and Stage 3 before this
-  controller starts implementation, sync, commit, final completion, or any other
-  downstream execution. If Stage 2 finds the user's perspective both
-  non-substitutable and material to the project understanding or commitment,
-  stop at Stage 2 and wait; do not continue the chain.
+  then let it select `project-analysis` or an earlier unresolved owner. Preserve
+  the fact that the user explicitly requested the cognitive core throughout the
+  selected chain. The selected stage must enact the core's complete movement at
+  a length suited to the object under the exact headings `阶段 1：专家头脑风暴`,
+  `阶段 2：反向询问`, and, after the user's answer, `阶段 3：计划制定`.
+  This controller must not start implementation, sync, commit, completion, or
+  other downstream execution first. Lifecycle routes the inquiry; it may not
+  rename, compress, reinterpret, satisfy, or waive the core on another stage's
+  behalf.
 - **Non-project request that asks for "三步分析"**: use `three-step-analysis`.
 - **Software-project analysis without implementation**: start at the earliest
   unresolved commitment; when upstream reality and product commitment are

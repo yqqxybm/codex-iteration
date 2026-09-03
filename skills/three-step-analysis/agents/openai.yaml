@@ -1,4 +1,4 @@
 interface:
   display_name: "Three-Step Analysis"
   short_description: "Deep non-project thinking framework."
-  default_prompt: "Use $three-step-analysis to understand how the situation arose and could change, explore grounded possibilities, bring indispensable user experience into dialogue, and form a practical judgment."
+  default_prompt: "Use $three-step-analysis with its exact three stages: expert brainstorming, reverse inquiry that asks and waits, then plan formation after my answer."

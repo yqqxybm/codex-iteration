@@ -65,16 +65,21 @@ instruction such as “only change this” limits what analysis may authorize; i
 is not a waiver. Explicit three-step analysis remains visible regardless of
 that classification.
 
-Explicit project/code three-step analysis is never hidden. Show the three core
-stages to the user: project reality and provisional judgment, dialogue judgment,
-then practical project decision. If dialogue blocks, stop there. No executor,
-commit, sync, release, or completion may proceed first.
+Explicit project/code three-step analysis is never hidden. Show the core's real
+movement under its exact original headings: `阶段 1：专家头脑风暴`,
+`阶段 2：反向询问`, and, only after the user answers, `阶段 3：计划制定`.
+The project material below adapts what each stage must understand; it does not
+rename the stages. Stage 2 asks by default subject only to the core's exceptions;
+when it asks, stop there. No executor, commit, sync, release, or completion may
+proceed first.
 
 ## Project Reality In The Three Steps
 
-Apply the core stages without copying their full procedure.
+Apply every cognitive responsibility of the core without restating its prose.
+Project adaptation changes the concrete material and action boundary, never the
+depth, order, dialogue, or meaning of the three-stage movement.
 
-### Stage 1: Concrete Project Reality
+### Project Material And Expert Inquiry
 
 Ground the core material spread in what is relevant to this project: the
 user’s expressed purpose and protected boundaries; the present symptom or
@@ -91,7 +96,7 @@ when it does not. Newness is not a goal. A new direction matters only when it
 makes the concrete reality more intelligible and more adequately serves the
 purpose.
 
-Produce the core’s compact, calibratable provisional judgment in project terms:
+Produce the core’s provisional synthesis in project terms:
 the governing relation or tension; the recommended direction and its strongest
 challenge; assumptions and reversal conditions; what Codex can inspect; and
 what only the user can contribute. Material is selected by its power to change
@@ -123,13 +128,14 @@ standard materially bears on the decision, load its authoritative resource and
 use it as a constraint or source of counterevidence. Do not expand it into a
 ledger merely to demonstrate coverage.
 
-### Stage 2: Project Dialogue
+### Project Dialogue Material
 
-Follow the core Stage 2 dialogue rules. First form Codex’s current project
-judgment; then seek only a user perspective that is both non-substitutable and
-capable of materially changing the project understanding, accepted commitment,
-or authorized boundary. Inspect repository facts, source material, runtime
-state, and professional engineering questions independently.
+Follow the core Stage 2 dialogue rules without weakening or redefining them.
+For an explicit three-step request, default to real dialogue and inherit only
+the core's two exceptions. For internally invoked project analysis, ask when the
+user's purpose, experience, value, or commitment must participate in the
+project understanding. Inspect repository facts, source material, runtime state,
+and professional engineering questions independently.
 
 For a genuine blocking question, state the current judgment, why it may be
 wrong or incomplete, and what the user’s answer would change. Do not ask the
@@ -145,10 +151,10 @@ question and wait. An empty tool result is neither authorization nor a reason to
 invent a block: continue with the best supported judgment when no necessary
 user input remains.
 
-If dialogue is needed, stop after Stage 2. Otherwise state, briefly and
-concretely, why the user’s perspective is not needed now and continue.
+When dialogue is required, stop after Stage 2. A downstream handoff, existing
+goal, implementation plan, or time pressure never satisfies that dialogue.
 
-### Stage 3: Practical Project Decision
+### Project Plan Material
 
 Commit to the project judgment that best fits the purpose, concrete reality,
 and governing relation. State the recommended direction, its decisive reasons,

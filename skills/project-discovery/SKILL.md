@@ -131,17 +131,20 @@ direction. The synthesis must explain why the leading account changes the
 concrete outcome and why credible alternatives do not do so as well under the
 accepted boundaries.
 
-Ask and stop only when the user's experience, purpose, value ordering, or real
-service commitment is non-substitutable and materially changes the discovery
-object or meaning. Resolve inspectable facts and professional research judgment
-without transferring that work to the user.
+Outside an explicit three-step request, ask and stop only when the user's
+experience, purpose, value ordering, or real service commitment is
+non-substitutable and materially changes the discovery object or meaning.
+Resolve inspectable facts and professional research judgment without
+transferring that work to the user.
 
-When the lifecycle Context Packet carries `three_step_visibility: explicit`,
-make the gate visible before the natural report: compact Stage 1 names the
-research-world model and live alternatives; Stage 2 states the dialogue judgment;
-Stage 3 states the provisional discovery conclusion and handoff boundary. This
-does not turn the report body into a template. If Stage 2 blocks, stop after
-Stage 2: do not emit Stage 3, a completed report, or a discovery handoff.
+When the user explicitly requested three-step analysis, enact the complete
+cognitive core before the natural report rather than reducing it to a discovery
+gate. Use the core's exact headings. Let `阶段 1：专家头脑风暴` develop the
+concrete research reality and live alternatives; let `阶段 2：反向询问` ask and
+stop; only after the answer may `阶段 3：计划制定` form the provisional discovery
+conclusion and handoff boundary. This does not turn the report body into a
+template. Do not emit Stage 3, a completed report, or a discovery handoff in
+the same turn as the Stage 2 question.
 
 The report must stand on its own. Its main body explains the situation,
 relationships, findings, and conclusion. Sources and limitations support that
