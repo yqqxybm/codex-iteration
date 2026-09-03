@@ -74,8 +74,8 @@ When invoked by `project-lifecycle`, consume its Context Packet before creating
 files. Preserve `intent`, `constraints`, `decisions_so_far`,
 `verification_required`, `doc_profile`, `docs_ia`, `standard_compliance_ledger`,
 and `do_not_do`. When provided, also preserve `project_goal`, `goal_runtime`,
-`goal_synthesis` / `control_system_goal`, `goal_preflight` /
-`optimality_law`, `perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
+`goal_synthesis` / `control_system_goal`, `accepted_project_judgment`,
+`perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
 `loop_control_matrix`, `review_clean_pass_loop`,
 `optimize_framework_cycle_loop`, `runtime_resource_ledger`,
 `subagent_runtime_registry`, `subagent_dispatch_policy`, `agent_owner`,

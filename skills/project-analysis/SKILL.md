@@ -109,18 +109,19 @@ requirement or a specifically approved artifact. A genuine conflict in accepted
 authority belongs to lifecycle for coordination; do not silently use an existing
 artifact to replace the user’s purpose.
 
-User correction is evidence about the project model, not automatically a new
-requirement. Classify it precisely:
+A user correction reopens the judgment it bears on; it is not automatically a
+new requirement or a durable rule. Reconstruct why the prior judgment appeared
+to hold, which concrete relation the correction disproves or deepens, what still
+remains valid, and how the whole changes before choosing an action boundary.
 
-- a user-confirmed change to an already accepted goal, scope, priority, or
-  success criterion is a `change_request`;
-- a bounded source, fact, execution, or artifact error may be locally repaired;
-- a correction showing that the object, actors, causal relation, root cause,
-  judgment standard, or method was wrong requires a `model_reset`.
-
-For `model_reset`, identify the causal descendants whose authority depends on
-the failed judgment and return the owning stage to lifecycle. Do not preserve
-the old model by patching only its visible output.
+Only after that renewed judgment, return its project-state consequence: a
+bounded source, fact, execution, or artifact repair; a `change_request` when the
+user has changed an accepted goal, scope, priority, or success criterion; or a
+`model_reset` when the object, actors, causal relation, root cause, judgment
+standard, or method no longer holds. These names report the result of inquiry;
+they are not a classifier that replaces it. For `model_reset`, identify only
+the causal descendants whose authority depended on the failed judgment and
+return their owning stage to lifecycle.
 
 Standards, security, data, runtime, UI, tests, docs, and operational concerns
 enter when the project reality makes them substantive. When a binding project

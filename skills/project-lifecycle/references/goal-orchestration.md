@@ -6,7 +6,7 @@ mode, synthesizes a tool goal, or controls a cyclic project objective.
 ## Table Of Contents
 
 - Goal Contract
-- Control-System Goal Synthesis
+- Goal Synthesis After Judgment
 - Goal State Machine
 - Cyclic Project Goal Loop
 - Loop Control Matrix
@@ -15,9 +15,11 @@ mode, synthesizes a tool goal, or controls a cyclic project objective.
 
 ## Goal Contract
 
-Turn a user target such as "完成 v0.1" into a goal that can direct inquiry and,
-once the judgment is sufficient, execution. Do not make a provisional goal look
-like an already accepted product boundary:
+Turn a user target such as "完成 v0.1" into a goal for the next accepted
+commitment. When the product boundary is unresolved, that commitment may be a
+bounded inquiry: the goal controls the inquiry work and adoption gate, never its
+conclusion. Do not make an inquiry commitment look like an already accepted
+product boundary:
 
 ```yaml
 project_goal:
@@ -79,55 +81,45 @@ user gives only a rough target. The recommended explicit trigger is `目标!` or
 goal from the rest of the message. A local explicit trigger may produce a
 lightweight single-pass goal, but it is still controlled by this reference.
 
-## Control-System Goal Synthesis
+## Goal Synthesis After Judgment
 
 For `目标!` / `目标！`, the user should not have to write the loop, hardness,
-or stop condition. First form the preflight understanding and dialogue judgment;
-then create the goal and control structure appropriate to the next commitment.
-The goal is the control law; the agenda is the mutable execution state.
+or stop condition. Lifecycle first obtains the judgment needed for the next
+commitment from the appropriate inquiry owner and resolves any necessary
+dialogue. Goal orchestration begins only after that commitment is accepted. The
+goal preserves the accepted purpose and completion boundary; the agenda is its
+mutable execution state.
 
-Before writing `goal_synthesis` or the final `tool_goal_prompt`, form the
-project's working judgment. Select skills, contracts, verification, delivery,
-and execution structure only after that judgment establishes their necessity.
-An unresolved premise may justify an inquiry goal, but must not be silently
-filled with downstream requirements, task nodes, quality defaults, or delivery
-obligations.
+Before writing `goal_synthesis` or the final `tool_goal_prompt`, consume an
+`accepted_project_judgment`. Select skills, contracts, verification, delivery,
+and execution structure only where that judgment establishes their necessity.
+An unresolved premise may justify a bounded inquiry commitment, but must not be
+silently filled with downstream requirements, task nodes, quality defaults, or
+delivery obligations.
 
 ```yaml
 goal_synthesis:
   user_objective: <text after 目标! or 目标！>
+  accepted_project_judgment:
+    object_and_purpose: <what is being understood or changed and why it matters>
+    concrete_relations: <reality, history, actors, constraints, and consequences that govern it>
+    governing_tension: <relation that most affects the commitment>
+    practical_commitment: <accepted action or bounded inquiry>
+    preservation_boundary: <what remains valid and must not be lost>
+    material_uncertainty: <what could alter the commitment or action>
+    reversal_conditions: <what would reopen inquiry>
+    dialogue_state: <resolved user contribution, or why none was needed>
+    optimality_law:
+      what_best_means: <how this commitment makes the software project better>
+      value_relation: <how material values jointly serve the purpose; when a
+        real conflict occurs, the conditional priority and reason>
+      elegance_constraint: <smallest execution structure that preserves behavior>
+      non_goal_boundary: <what must not be pulled into this goal>
+      falsification_test: <evidence that would prove the commitment wrong>
   project_goal: <normalized Goal Contract above; the single semantic target>
   skill_system_best_practice_packet: <judgment-led selected/deferred capabilities; not a prefilled execution recipe>
   target_layer: <local_change | feature_workflow | version_phase | release_operation |
     whole_project | project_system | codex_self_iteration>
-  goal_preflight:
-    material_model:
-      direct_intent: <what the user explicitly wants>
-      underlying_concern: <tentative interpretation of what matters beneath the
-        request; subordinate to direct_intent>
-      target_world: <repo/product/skill/config/runtime system being changed>
-      controlling_tension: <governing structure, value conflict, action tension, or tradeoff that governs success>
-      candidate_paths: <genuine ways the situation could change; use alternatives,
-        counterviews, or failure modes only where they test the leading understanding>
-    calibration:
-      default_judgment: <best current interpretation before asking>
-      key_assumptions: <facts or values the judgment depends on>
-      reversal_conditions: <conditions that would change target layer, scope, or stop>
-      dialogue_judgment: <strongest candidate question; whether the user's
-        perspective is non-substitutable and material to understanding or
-        commitment; ask_user or one concise no-dialogue reason>
-    optimality_law:
-      what_best_means: <how this goal makes the software project better>
-      value_relation: <how material values jointly serve the purpose; when a
-        real conflict occurs, the conditional priority and reason>
-      elegance_constraint: <smallest control structure that preserves behavior>
-      non_goal_boundary: <what must not be pulled into this goal>
-      falsification_test: <evidence that would prove this goal prompt wrong>
-  project_judgment:
-    object_and_purpose: <what is being understood or changed and why it matters>
-    governing_tension: <relation that most affects the goal>
-    practical_judgment: <current revisable conclusion>
-    material_uncertainty: <what could alter the conclusion or action>
   control_system_goal: # Include only controls made meaningful by the next commitment.
     state_model:
       current_state_sources: <repo, docs, tests, deploy, trace, backlog, conversation>
@@ -141,7 +133,8 @@ goal_synthesis:
       review_judgment: <core judgment and material limits when review is required>
       knowledge_evidence: <docs, handoff, standard ledger, trace, agenda>
     actuators: # Include only when a mutation boundary is accepted.
-      primary_skill_chain: <project-analysis -> owner skills -> review/release/sync as needed>
+      primary_skill_chain: <owner skills -> review/release/sync as needed;
+        include inquiry only for a bounded inquiry commitment or reopened judgment>
       allowed_mutations: <code, docs, tests, config, deploy, sync, commits>
       forbidden_mutations: <explicit exclusions, unsafe/destructive areas, out-of-scope layers>
     loop_policy: # Include only when execution or an explicit review sequence exists.
@@ -175,25 +168,26 @@ goal_synthesis:
     non_equivalence: <loops/counters that must not be counted as each other>
 ```
 
-`project_goal`, `goal_preflight`, and `optimality_law` remain the authoritative
-user/lifecycle objective and value relation. The agenda and trace preserve
-accepted action and continuity. `project_judgment` is a compact revisable
-understanding, not parallel goal authority or a quality ledger. If reality
-challenges the objective, value relation, or object model, reopen preflight and
-dialogue or apply `model_reset`.
+`accepted_project_judgment` is the inquiry handoff that makes goal synthesis
+possible, not a field for goal machinery to invent or revise. `project_goal`
+preserves its accepted purpose and value relation; the agenda and trace preserve
+execution and continuity. If reality challenges that judgment, suspend the
+affected control state and return to its inquiry owner before rebuilding the
+goal or applying `model_reset`.
 
 Default synthesis rules:
 
-- Begin `goal_preflight` with independent understanding, then resolve its
-  dialogue before writing the final `control_system_goal`, creating a tool goal,
-  or building the execution agenda. It inherits the three-step cognitive core:
+- Before `accepted_project_judgment` exists, lifecycle invokes the earliest
+  unresolved inquiry owner and resolves its dialogue before writing the final
+  `control_system_goal`, creating a tool goal, or building the execution agenda.
+  Inquiry inherits the three-step cognitive core:
   concrete inquiry and provisional synthesis -> dialogue -> plan. Ordinarily
   this work is expressed only as far as goal formation needs. When the user
   explicitly requested three-step analysis, enact the complete visible core
   under its exact original headings. `阶段 2：反向询问` asks and stops before
   goal activation; `阶段 3：计划制定` exists only after the user's answer. The
   goal must grow from the understanding, not from a preselected control structure.
-- The `material_model` is incomplete until it expands the material relations,
+- The judgment is incomplete until it expands the material relations,
   feedback, and time that can change the goal, identifies the governing standard,
   and tests the leading model against the strongest opposing view,
   counterexample, boundary, or failure mode. Revise the model before calibration;
@@ -209,12 +203,12 @@ Default synthesis rules:
   judgment and adoption make them meaningful.
   Parallelize independent research surfaces when useful, but do not run
   implementation concurrently with an unresolved discovery gate.
-- `goal_preflight` must still expose a dialogue judgment before the goal is
-  activated: the current goal interpretation, target layer, mutation boundary,
+- `accepted_project_judgment` must resolve dialogue before the goal is
+  activated: the current interpretation, target layer, mutation boundary,
   strongest candidate question, and either the question or one concrete reason
   an internal invocation can continue. When the user explicitly requested
   three-step analysis, the core owns Stage 2 and defaults to dialogue; an
-  internal preflight cannot replace the user's participation.
+  internal synthesis cannot replace the user's participation.
 - Strong calibration is mandatory for `目标!` / `目标！`: generate at least one
   candidate calibration question before activating the goal. For root direction,
   new project, PRD, architecture, MVP/version, release, product positioning,
@@ -233,14 +227,14 @@ Default synthesis rules:
   preservation commitments. It names a conditional priority only where a real
   conflict requires one; it does not force every value into a fixed score or
   total ranking.
-- If `goal_preflight` finds that necessary user input would materially change
+- If inquiry finds that necessary user input would materially change
   the project understanding or commitment, ask before creating or maintaining
   the tool goal. Otherwise proceed only after exposing the current judgment and
   the concise reason dialogue is not needed; carry unresolved factual work as
   risk or evidence work.
 - For Codex skills, AGENTS/global instructions, lifecycle rules, goal prompts,
   subagent orchestration, custom agents, sync rules, or any future-behavior
-  control law, treat competing interpretations of the edit boundary as blocking
+  object, treat competing interpretations of the edit boundary as blocking
   when they would lead to different mutations. Do not silently choose between
   behavior-only, light-rule, and full-protocol/schema changes.
 - Infer the target layer from the user's explicit outcome and accepted boundary.
@@ -289,10 +283,11 @@ Default synthesis rules:
 - Verification defaults to the strongest relevant evidence for the target layer:
   targeted for local changes, full project for version/global goals, and release
   health for deploy/release goals.
-- If later evidence proves the target layer or stop condition was wrong, record
-  `control_reclassification`, regenerate the affected agenda, revisit dependent
-  verification or explicit review rounds, and continue from the new control law
-  instead of patching the old loop silently.
+- If later evidence proves the target layer or stop condition was wrong, suspend
+  the affected execution state and return to inquiry. After a renewed judgment,
+  record `control_reclassification`, regenerate the affected agenda, and revisit
+  dependent verification or explicit review rounds instead of patching the old
+  loop silently.
 - Build a `loop_control_matrix` whenever more than one execution loop is active:
   tool goal, agenda advancement, subagent waves, release/deploy health, sync
   verification, or user-explicit repeated review. Do not let one loop's result
@@ -305,12 +300,13 @@ Default synthesis rules:
   Carry only the accepted state summary in the goal contract; do not restate its
   schemas here.
 
-### Project Judgment Synthesis
+### Accepted Project Judgment
 
-For broad review, optimization, product readiness, project-system, or Codex
-self-iteration goals, form a compact `project_judgment` before writing the
-agenda. Begin with the object, user purpose, concrete relationships, history,
-constraints, and governing tension. Use
+Before goal orchestration writes an agenda, the applicable inquiry owner must
+return a compact `accepted_project_judgment`. For broad review, optimization,
+product readiness, project-system, or Codex self-iteration work, begin with the
+object, user purpose, concrete relationships, history, constraints, and
+governing tension. Use
 `~/.agents/skills/software-contract/references/coding-quality-contract.md` when
 software quality is material.
 
@@ -322,14 +318,15 @@ selected where it can correct the object model, practical judgment, action, or
 claim strength.
 
 Carry the judgment in the Context Packet and ordinary Handoff only while another
-owner needs it. The goal, agenda, and trace preserve accepted continuity; do not
-create a second quality truth source.
+owner needs it. The goal carries only the accepted purpose, value relation, and
+reversal conditions needed to direct execution; the agenda and trace preserve
+continuity, not a second source of judgment.
 
 ### Goal Prompt Elegance Gate
 
 Before activating the tool goal or handing work downstream, audit the generated
-goal prompt. A goal prompt is elegant only when it is the smallest control law
-that still preserves correct behavior:
+goal prompt. A goal prompt is elegant only when it is the smallest
+self-contained execution contract that still preserves correct behavior:
 
 - each field changes action, evidence, boundary, handoff, or stop condition,
 - the `optimality_law` keeps jointly served values visible and resolves only
@@ -374,10 +371,11 @@ Before activating or maintaining a goal:
 
 1. Use `get_goal` to inspect the current goal state when the tool is available.
 2. If no active goal exists and the request is goal-backed, create one from the
-   `tool_goal_prompt`: `project_goal` plus the selected `control_system_goal`
-   loop policy, delivery policy, review policy, verification policy, and stop
-   condition. For looped goals, the objective text itself must contain the loop
-   contract; do not put the loop only in the agenda or trace.
+  `tool_goal_prompt`: `project_goal`, the minimum accepted purpose/value/reversal
+  context needed to guide action, plus the selected `control_system_goal` loop,
+  delivery, review, verification, and stop policies. For looped goals, the
+  objective text itself must contain the loop contract; do not put the loop only
+  in the agenda or trace.
 3. If an active goal is the same objective, maintain it and reconcile the agenda
    against current project evidence.
 4. If an active goal conflicts with the new request, do not overwrite it. Ask for
@@ -425,8 +423,9 @@ Completion and blockage are strict:
 Pressure scenarios:
 
 - "`目标! <project objective>` or `目标！ <project objective>`": create or
-  maintain a tool goal when available, first form the working judgment and
-  expose the next commitment. Show only the `control_system_goal`, agenda,
+  maintain a tool goal when available after obtaining
+  `accepted_project_judgment` and exposing the next commitment. Show only the
+  `control_system_goal`, agenda,
   loop, review, delivery, and verification state that this commitment makes
   meaningful; an inquiry goal may initially contain only discovery and adoption.
   Do not ask the user to provide loop wording, stop
@@ -455,14 +454,14 @@ Pressure scenarios:
   goal.
 - "优化 project-lifecycle / goal 体系 / 项目 skill 体系 / 自我迭代规则":
   create or maintain a tool goal before editing unless the user explicitly says
-  no goal or wording-only. Form `project_judgment` from the actual control
-  object, governing tension, realistic behavior, and the user's purpose. Ask
-  first when the requested change could reasonably mean
+  no goal or wording-only. First obtain `accepted_project_judgment` from the
+  actual object, governing tension, realistic behavior, and the user's purpose.
+  Ask first when the requested change could reasonably mean
   behavior-only, light-rule, or full-protocol/schema mutation.
 - "优化 Codex 配置 / AGENTS / skills / custom agents": treat as the same
-  future-behavior control-law change; use a tool goal unless explicitly
+  future-behavior change; use a tool goal unless explicitly
   wording-only, no-goal, or one local line. Ask first when the edit boundary or
-  persistence/sync target would change the resulting control law.
+  persistence/sync target would change the resulting behavior.
 - "只修这个 diff / 单点改动 / 不做整体推进": without an explicit
   `目标!` / `目标！`, do not create a goal; with the marker, use a lightweight
   goal. In both cases preserve the explicit narrow boundary.

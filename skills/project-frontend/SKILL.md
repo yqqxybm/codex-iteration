@@ -41,7 +41,7 @@ companion inside `project-bootstrap` / `project-iteration`, consume the Context
 Packet before designing. Preserve user intent, existing project style, owned UI
 scope, verification requirements, and explicit exclusions. When provided, also
 preserve `project_goal`, `goal_runtime`, `goal_synthesis` /
-`control_system_goal`, `goal_preflight` / `optimality_law`,
+`control_system_goal`, `accepted_project_judgment`,
 `perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
 `loop_control_matrix`, `review_clean_pass_loop`,
 `optimize_framework_cycle_loop`, `runtime_resource_ledger`,

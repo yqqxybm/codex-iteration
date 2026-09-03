@@ -590,8 +590,9 @@ merely because they were recorded.
   plan file through `project-docs` if none exists, mark items active before
   execution, write result/verification after each item, and record
   `change_request` for every mid-run user addition.
-- A goal-backed review or optimization first forms `goal_preflight` and the
-  task-specific `optimality_law`. Carry the current object understanding, governing
+- A goal-backed review or optimization first obtains an
+  `accepted_project_judgment` with its task-specific `optimality_law`. Carry the
+  current object understanding, governing
   tension, accepted agenda, and only observations capable of changing the next
   action. Broad work uses the coding-quality contract as directions for inquiry,
   not as a lens matrix or a second state store.

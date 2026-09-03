@@ -29,9 +29,9 @@ packet.
 Codex's software-project job is to make the project better under the user's
 actual intent and real constraints. This is the sole governing standard.
 Runnable, verifiable, releasable, maintainable, handoff-ready, and evolvable
-software are evidence-bearing qualities only when they serve that standard.
+software matter only insofar as they serve that standard.
 
-Every software-project skill uses five control principles in service of it:
+Every software-project skill uses five shared principles in service of it:
 
 1. **Intent fidelity**: preserve the user's actual goal across every layer.
 2. **Understanding before structure**: let the concrete situation, its
@@ -39,35 +39,38 @@ Every software-project skill uses five control principles in service of it:
    boundary, architecture, quality work, and project context are actually
    needed. Do not let an available process or implementation-shaped artifact
    define the problem in advance.
-3. **Runnable first**: prefer a working vertical slice over empty scaffolding or
-   abstract plans.
-4. **Reasoned evidence loop**: form an explicit model and judgment, then test
-   decisions, code, and releases with concrete output.
+3. **Practical adequacy**: let each stage produce the smallest real result its
+   purpose requires; when implementation is the object, prefer a working
+   vertical slice over empty scaffolding.
+4. **Practice feedback**: form an explicit model and judgment, act, and let
+   concrete consequences test both.
 5. **Selective continuity**: preserve only accepted durable decisions and stable
    project knowledge in their authoritative home; keep task-local corrections,
    evidence, and process state local to the task.
 
-## Control System Model
+## Inquiry And Execution
 
-Project lifecycle applies cybernetic pragmatism to software work: user intent is
-the objective, reasoned judgment directs action, repo/runtime evidence is
-feedback, and skill boundaries are action constraints. Completion is a judgment
-that the intended state has been reached, bounded by verification.
+Inquiry and execution are one developing movement, but they do not have the
+same authority. Before a project commitment is formed, discovery, brief, and
+analysis understand the user's purpose in relation to concrete project reality
+and determine what action, if any, is warranted. A question, correction, or
+contradiction at this stage bears on the judgment itself; it is not yet an
+execution-state update.
 
-Evidence, sensors, ledgers, and verification are fallible feedback for testing
-judgment and bounding completion claims. They are not the objective and cannot,
-by themselves, substitute for understanding, thought, or an artifact-quality
-judgment.
+Once a practical judgment is accepted, goals, agendas, skills, tools, evidence,
+and stop conditions give it effective form. They control execution without
+becoming a second source of purpose or project truth. Evidence, sensors,
+ledgers, and verification test action and bound completion claims; they cannot
+substitute for understanding or determine what the project ought to become.
 
-Every next commitment must remain connected to the user's accepted purpose
-through the controller's current understanding of project reality. The standard
-is that this relation still governs action, not that Codex can explain the
-action. When results, feedback, an interruption, material new information, or a
-proposed action materially change, break, or obscure that relation, suspend
-forward execution and transfer control to `reorient`. Its transition may
-preserve the course, revise the plan, reopen the owner of failed understanding,
-enter dialogue, or stop. It may revise Codex's interpretation and means, but
-must not silently revise the user's purpose or authorization.
+Consequences may call for a bounded change in execution or reveal that the
+judgment directing it no longer holds. In the latter case, suspend execution
+and return to the owner of that understanding before replanning or changing a
+durable control. Every next commitment must remain intelligibly connected to
+the user's accepted purpose through current project reality. When that relation
+materially changes, breaks, or becomes obscure, transfer control to `reorient`;
+it may preserve the course, revise the means, reopen inquiry, enter dialogue, or
+stop without silently revising the user's purpose or authorization.
 
 In this controller:
 
@@ -82,7 +85,8 @@ In this controller:
 - the stop condition is the boundary against infinite work, silent downgrade, or
   false completion.
 
-Do not add process unless it improves one of these control functions.
+Do not add process unless it improves understanding, action, continuity, or the
+truth of the completion claim.
 
 ## Project Standard Contract
 
@@ -180,7 +184,7 @@ delivery; do not force every request into implementation.
 - **Any requested project modification must be classified before editing**:
   `very_small` or `material_change`. `very_small` requires all of these: one
   local reversible semantic change, no behavior/API/schema/security/data/deploy/
-  durable-test-contract/generated-artifact/docs-IA/control-law impact, no
+  durable-test-contract/generated-artifact/docs-IA/future-behavior impact, no
   independent cross-file or cross-module dependency, no unclear scope, and no
   meaningful user-visible risk beyond what one targeted local check can
   conclusively resolve. An
@@ -361,28 +365,14 @@ When the user explicitly limits scope, such as "不改 UI", "保持原版",
 productization inference, and compliance inference are evidence to reconcile,
 not authority to override the user's explicit boundary.
 
-An explicit correction is feedback on the validity of current project state, not
-a `change_request` or durable rule by default. A controller-proved `very_small`
-correction remains a bounded repair. For material corrections,
-`project-analysis` distinguishes a bounded source, fact, execution, or artifact
-error; a user-confirmed change to an already accepted goal, scope, or priority;
-and feedback that invalidates the project model. Only the second enters the
-existing `change_request` transition. Model feedback sets `model_reset`,
-invalidates only causal descendants, and reopens the stage that owns the failed
-judgment. An explicit analysis waiver does not itself choose among these states.
-Preserve unrelated accepted state.
-
-When feedback challenges a premise shared by multiple outputs, test the premise
-before repairing those outputs one by one. If the premise no longer holds, this
-is model feedback: reopen the stage that formed it and invalidate only its
-causal descendants. More sources, requirements, tests, or review records cannot
-make a disputed model valid.
-
-Do not promote the correction's literal wording. A corrected judgment becomes a
-cross-task or cross-version rule only when the user explicitly makes it durable,
-it expresses a stable project invariant, or repeated causally equivalent
-failures justify the generalization. Preserve its scope and the condition that
-would retire or reverse it.
+A correction reopens the judgment it bears on before it changes project state.
+For material corrections, `project-analysis` reconstructs what failed, what
+remains valid, and what the changed relation warrants, then returns a bounded
+repair, an accepted change to the user's commitment, or a `model_reset`.
+Lifecycle applies that disposition; it does not derive a durable rule from the
+correction's wording or preserve a disputed premise through more artifacts,
+tests, or evidence. A `model_reset` reopens the owner of the failed judgment and
+invalidates only its causal descendants. Preserve unrelated accepted state.
 
 Do not mechanically apply a higher-level principle to a user-excluded scope. If
 current docs, tests, fixtures, scripts, CI, or implementation appear to protect a
@@ -422,9 +412,11 @@ gate rather than a local side note.
 
 `目标!` / `目标！` explicitly activates goal-backed mode even for local scope;
 version/plan closeout, release readiness, and Codex self-iteration may infer it
-unless the request is explicitly single-point. Before creating or reconciling a
-goal, read `references/goal-orchestration.md` and use its final self-contained
-`tool_goal_prompt`, preflight, dialogue, loop, and elegance gates. Load
+unless the request is explicitly single-point. Before creating a goal, or
+reconciling one after its directing judgment has been reopened, read
+`references/goal-orchestration.md`, obtain its
+`accepted_project_judgment`, and use the resulting self-contained
+`tool_goal_prompt`, loop, and elegance gates. Load
 `references/subagent-execution.md` only when delegation is active. A materially
 different future-behavior edit boundary remains a blocking dialogue fork.
 

@@ -43,9 +43,10 @@ adoption gate. Rebuild the downstream brief, requirements, plan, and executor
 nodes after adoption; do not prefill them from hypotheses merely because later
 implementation is authorized.
 
-A corrected source, fact, or bounded finding may receive local revision. A
-correction to the research object, actors, task, judgment standard,
-explanatory relation, or method is `model_feedback`: set `status: model_reset`,
+After `project-analysis` has judged what a correction changes, record a bounded
+source, fact, or finding repair locally. When its judgment shows that the
+research object, actors, task, judgment standard, explanatory relation, or
+method no longer holds, record `model_feedback` with `status: model_reset`,
 identify the model's causal descendants, and remove their authority before
 rebuilding. This applies to dependent adopted decisions, charter fields,
 requirements, agenda/task-graph items, docs, tests, fixtures, implementation

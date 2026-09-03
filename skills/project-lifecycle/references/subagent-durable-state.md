@@ -101,9 +101,10 @@ subagent_assignment:
 
 Do not dispatch while target, scope, write policy, done condition, or
 verification boundary remains unresolved. Use `not_required_read_only` only for
-a non-mutating node with an explicit read-only contract. A material review that
-consumes a project-analysis or goal-preflight model remains
-`project_analysis_consumed`.
+a non-mutating node with an explicit read-only contract. Use
+`project_analysis_consumed` only when `project-analysis` actually supplied the
+accepted implementation boundary; a judgment from another inquiry owner does
+not relabel this gate.
 
 Canonicalize filesystem identity before conflict proof or dispatch. Resolve
 `scope_root` to one absolute real path; reject absolute task paths, NUL, `..`,

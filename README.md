@@ -3,17 +3,17 @@
 Public, sanitized Codex skill framework for self-iteration, review, optimization,
 and software-project lifecycle work.
 
-The system is built around cybernetic pragmatism:
+The system is built around practical inquiry joined to controlled execution:
 
-> A skill is a finite control law for Codex in an uncertain world: user intent is
-> the objective, evidence is feedback, boundaries constrain action, verified
-> state change defines completion, and rules evolve only when real failures show
-> the old control law is insufficient.
+> Skills organize ways of understanding and acting. Inquiry forms a practical
+> judgment from the user's purpose and concrete reality; goals, plans, tools,
+> evidence, and stop conditions then give an accepted judgment effective form.
+> Consequences can correct the action or reopen the judgment that directed it.
 
 ## What Is Included
 
 - `skills/three-step-analysis`: deep non-project reasoning core.
-- `skills/review`: evidence-first review gate.
+- `skills/review`: independent review judgment.
 - `skills/optimize`: optimization and review-then-optimize orchestrator.
 - `skills/project-lifecycle`: software-project lifecycle controller.
 - `skills/project-*`: project adapters and execution skills.
@@ -40,6 +40,14 @@ private hostnames, IP addresses, passwords, jump hosts, or organization-specific
 Git credentials.
 
 ## Install
+
+`AGENTS.md` is the version-controlled source of the framework's global
+philosophy. Install it as the Codex global instruction file:
+
+```bash
+mkdir -p ~/.codex
+cp AGENTS.md ~/.codex/AGENTS.md
+```
 
 Copy the skills you want into the personal Codex skills directory:
 

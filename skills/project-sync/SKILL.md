@@ -32,7 +32,7 @@ When invoked by `project-lifecycle`, consume its Context Packet before sync
 work. Preserve source/target boundaries, included paths, excluded paths,
 verification requirements, and explicit safety limits. When provided, also
 preserve `project_goal`, `goal_runtime`, `goal_synthesis` /
-`control_system_goal`, `goal_preflight` / `optimality_law`,
+`control_system_goal`, `accepted_project_judgment`,
 `perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
 `loop_control_matrix`, `review_clean_pass_loop`,
 `optimize_framework_cycle_loop`, `subagent_dispatch_policy`, `agent_owner`,
