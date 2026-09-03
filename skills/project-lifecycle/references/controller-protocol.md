@@ -249,17 +249,24 @@ At each material state transition, including an accepted result or feedback,
 interruption or resume, proposed next action, or material new information, judge
 whether the next commitment remains connected to the user's accepted purpose
 through current project reality and understanding. If continuity is intact,
-continue without ceremony or a new record. If it is materially changed, broken,
-or unclear, suspend further execution, invoke `reorient`, and consume its
-transition. Only after the next commitment is clear may the controller update
-the agenda, dependencies, and conflicts, then select parallel opportunities
-through the existing protocol.
+continue without ceremony or a new record, except for the user-initiated
+continuation below, whose concise explanation is part of the inquiry. If the
+relation is materially changed, broken, or unclear, suspend further execution,
+invoke `reorient`, and consume its transition. Only after the next commitment is
+clear may the controller update the agenda, dependencies, and conflicts, then
+select parallel opportunities through the existing protocol.
 
-A message beginning with `继续！` or `继续!` is an explicit user challenge to the
-current direction, not an ordinary resume request. Consume the text after the
-marker as the suspected problem and show reorient's concise purpose, situation,
-direction judgment, and next commitment before continuing. Do not run a full
-review, rebuild the goal, or replan unless that reassessment finds a reason.
+A user request whose present intent is to continue, resume, or keep advancing
+active work marks a new transition from understanding to action. Recognize it
+semantically, independent of punctuation or a closed keyword list, and invoke
+`reorient` before proceeding. Its concise visible synthesis must renew the
+relation among the user's purpose, the situation produced so far, the current
+direction, live alternatives, and the next commitment. Treat added instructions
+as part of the present reality; quoted or discussed continuation language is not
+a trigger. The explanation is part of the renewed inquiry and the user's chance
+to correct it, not a report proving that reorientation happened. Do not run a
+full review, rebuild the goal, or replan unless that renewed judgment finds a
+reason.
 
 Loop until the agenda reaches a real stop condition:
 
