@@ -19,12 +19,13 @@ the current path. The user need only interrupt its inertia; Codex owns judging
 whether the direction, a derived local aim, and its method remain fitting and
 what, if anything, must change.
 
-For a user-initiated reorientation, explanation is part of the judgment itself.
-It compresses the accumulated trajectory into a causal account that tests
-whether and how the present aim and method still serve the purpose. Gaps,
-circularity, and displaced ends become visible in forming that account, while
-the explanation gives the user a real point of entry to correct it. It is
-inquiry and dialogue, not proof that a procedure was performed.
+For a user-initiated reorientation, make the renewed practical judgment
+intelligible to the user as a common object of understanding and correction.
+Forming a concise causal account tests whether and how the present aim and
+method still serve the purpose; making that account visible lets the user see
+where the work stands, understand why the next commitment follows, and correct
+or deepen the judgment. This is one act of shared reorientation, not a separate
+status report or proof that a procedure was performed.
 
 ## Selection
 
@@ -61,8 +62,8 @@ inquiry and dialogue, not proof that a procedure was performed.
    purpose; it never excuses a diminished result. Establish one clear next
    commitment and invalidate only work that depends on the rejected judgment.
 
-For every explicit user signal, perform the renewed judgment in a concise
-explanation before acting. Make the relation among the original purpose,
+For every explicit user signal, express the renewed judgment in a concise
+causal account before acting. Make the relation among the original purpose,
 present aim and reality, current method, whole-situation judgment, live
 possibilities, and next commitment intelligible, but do not turn them into a
 fixed ledger. When the direction remains valid, one compact paragraph is
