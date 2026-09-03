@@ -12,19 +12,19 @@ description: >
 # Reorient
 
 Reorientation is the practical hinge between one movement of action and the
-next, not a resume ceremony or a small review. Action changes reality. The plan
-that guided the preceding movement therefore cannot authorize another merely by
-inertia, even when it remains internally coherent. The user's explicit signal
-renews authorization to act, not the correctness of the plan: recover the
-purpose in the reality now produced, judge the live possibilities afresh, and
-continue only from that judgment.
+next, not a resume ceremony or a small review. Action changes reality, so a
+locally coherent path can cease to serve the purpose that once justified it.
+The user's explicit signal renews authorization to act, not the correctness of
+the current path. The user need only interrupt its inertia; Codex owns judging
+whether the direction, a derived local aim, and its method remain fitting and
+what, if anything, must change.
 
-For a user-initiated reorientation, this judgment is formed through concise
-explanation rather than completed privately and reported afterward. Making the
-current work intelligible in relation to the whole forces hidden assumptions,
-gaps, and repetition into view, while giving the user a real point of entry to
-correct the renewed understanding. Explanation here is part of inquiry and
-dialogue, not proof that a procedure was performed.
+For a user-initiated reorientation, explanation is part of the judgment itself.
+It compresses the accumulated trajectory into a causal account that tests
+whether and how the present aim and method still serve the purpose. Gaps,
+circularity, and displaced ends become visible in forming that account, while
+the explanation gives the user a real point of entry to correct it. It is
+inquiry and dialogue, not proof that a procedure was performed.
 
 ## Selection
 
@@ -47,18 +47,19 @@ dialogue, not proof that a procedure was performed.
    difficulty, and proposed method as parts of one developing situation. The
    initial goal, current goal, and current approach are relations to understand,
    not fields to recite.
-2. **Negate inertia**: Treat the current goal, plan, method, and next action as
-   revisable judgments rather than accumulated authority. Step outside the
-   local problem and test whether the work still serves the whole or has begun
-   to circle, patch symptoms, preserve sunk effort, substitute process for
-   purpose, or multiply means after their value has ended. Open materially
-   different possibilities, including a simpler or more direct route. Simplicity
-   serves adequacy to the purpose; it never excuses a diminished result.
-3. **Renew the commitment**: Decide whether to preserve the course, simplify or
-   correct its means, return to the owner of a failed understanding or plan, or
-   enter dialogue because the user's perspective is indispensable. Preserve
-   what still serves the purpose, invalidate only dependent work, and establish
-   one clear next commitment from the renewed judgment.
+2. **Negate inertia**: Treat every derived local aim, plan, method, and proposed
+   action as a revisable judgment rather than accumulated authority. Step outside
+   the local problem and test both whether that local aim should still exist and
+   whether the work still serves the whole. Detect circling, symptom patching,
+   sunk-effort preservation, process replacing purpose, or means multiplying
+   after their value has ended. Open materially different possibilities,
+   including removing the local aim or taking a simpler, more direct route.
+3. **Renew the commitment**: Preserve the course when it remains fitting;
+   otherwise simplify or correct its means, discard an obsolete local aim,
+   return to the owner of a failed understanding or plan, or enter dialogue when
+   the user's perspective is indispensable. Simplicity serves adequacy to the
+   purpose; it never excuses a diminished result. Establish one clear next
+   commitment and invalidate only work that depends on the rejected judgment.
 
 For every explicit user signal, perform the renewed judgment in a concise
 explanation before acting. Make the relation among the original purpose,
