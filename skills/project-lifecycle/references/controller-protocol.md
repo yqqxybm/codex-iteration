@@ -255,6 +255,12 @@ transition. Only after the next commitment is clear may the controller update
 the agenda, dependencies, and conflicts, then select parallel opportunities
 through the existing protocol.
 
+A message beginning with `继续！` or `继续!` is an explicit user challenge to the
+current direction, not an ordinary resume request. Consume the text after the
+marker as the suspected problem and show reorient's concise purpose, situation,
+direction judgment, and next commitment before continuing. Do not run a full
+review, rebuild the goal, or replan unless that reassessment finds a reason.
+
 Loop until the agenda reaches a real stop condition:
 
 1. Select the highest-priority `pending` item whose prerequisites are all

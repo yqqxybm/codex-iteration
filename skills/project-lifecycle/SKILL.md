@@ -135,11 +135,12 @@ delivery; do not force every request into implementation.
   planning, standalone or post-implementation review, and plan advancement.
 - This controller chooses the downstream capability. Do not let user wording
   such as "修一下", "改个 bug", "写文档", or "发布" bypass the controller.
-- **Project message whose trimmed content is exactly `继续！` or `继续!`**:
-  invoke `reorient` before resuming the current authorized project work. The
-  marker does not invent a missing target, create a goal, widen scope, or
-  mechanically resume a stale plan. Ordinary prose containing continue remains
-  normal intent;
+- **Project message beginning, after leading whitespace, with `继续！` or
+  `继续!`**: treat it as the user's suspicion that Codex may have made a mistake
+  or lost direction, and invoke `reorient` before any further project action.
+  Pass the rest of the message as the user's concern. The marker does not invent
+  a missing target, create a goal, widen scope, or mechanically resume a stale
+  plan. Ordinary prose containing continue elsewhere remains normal intent;
   autonomous invocation follows the purpose-reality-action relation above, not
   a keyword or fixed interval.
 - **The earliest unresolved commitment controls the chain**: start with
