@@ -71,6 +71,9 @@ make the synthesis visible only when direction changes or dialogue is needed.
 
 Replanning, deeper analysis, review, retrospective, or stopping follow only from
 what reorientation discovers. They are not automatic parts of continuing.
+When the user asks only for this reassessment or a next-action judgment, the
+visible explanation completes the request; naming a next commitment does not
+authorize its execution.
 
 Once the next commitment is clear, exit reorientation and return execution and
 parallel-opportunity decisions to the current owner; do not recursively

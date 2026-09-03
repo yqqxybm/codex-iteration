@@ -266,7 +266,9 @@ as part of the present reality; quoted or discussed continuation language is not
 a trigger. The explanation is part of the renewed inquiry and the user's chance
 to correct it, not a report proving that reorientation happened. Do not run a
 full review, rebuild the goal, or replan unless that renewed judgment finds a
-reason.
+reason. If the requested outcome is only reorientation or a next-action
+judgment, the visible synthesis is the endpoint and the controller resumes
+nothing.
 
 Loop until the agenda reaches a real stop condition:
 

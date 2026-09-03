@@ -147,6 +147,8 @@ delivery; do not force every request into implementation.
   not invent a missing target,
   create a goal, or widen scope; deeper analysis, replanning, review, dialogue,
   or stopping follows only when the reassessment warrants it.
+  If the user asks only for reorientation or a next-action judgment, stop after
+  that explanation; do not treat the named next commitment as permission to run it.
 - **The earliest unresolved commitment controls the chain**: start with
   `project-discovery` when the unresolved question is what product object,
   user need, or product commitment should carry the user's purpose, and its
