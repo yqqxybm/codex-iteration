@@ -135,13 +135,12 @@ delivery; do not force every request into implementation.
   planning, standalone or post-implementation review, and plan advancement.
 - This controller chooses the downstream capability. Do not let user wording
   such as "修一下", "改个 bug", "写文档", or "发布" bypass the controller.
-- **Continuation of active project work**: whenever the user's present intent is
-  to continue, resume, or keep advancing active work, invoke `reorient` before
-  any further project action. Decide this semantically rather than from exact
-  punctuation or a closed keyword list; added direction belongs to the renewed
-  situation, while quotation, discussion, and unrelated new work do not trigger
-  it. Treat continuation as renewed authorization to act, not confirmation that
-  the current goal, plan, or method remains right. Perform `reorient`'s renewed
+- **Explicit reorientation signal**: when a project message begins, after
+  leading whitespace, with `继续！` or `继续!`, invoke `reorient` before any
+  further project action. Treat text after the signal as part of the renewed
+  situation. Ordinary continuation requests, quotation, and discussion do not
+  trigger it. The signal renews authorization to act, not confirmation that the
+  current goal, plan, or method remains right. Perform `reorient`'s renewed
   judgment through concise explanation before proceeding, so the explanation
   both tests the relation to the whole and opens it to user correction. It does
   not invent a missing target,

@@ -256,19 +256,18 @@ invoke `reorient`, and consume its transition. Only after the next commitment is
 clear may the controller update the agenda, dependencies, and conflicts, then
 select parallel opportunities through the existing protocol.
 
-A user request whose present intent is to continue, resume, or keep advancing
-active work marks a new transition from understanding to action. Recognize it
-semantically, independent of punctuation or a closed keyword list, and invoke
-`reorient` before proceeding. Its concise visible synthesis must renew the
-relation among the user's purpose, the situation produced so far, the current
-direction, live alternatives, and the next commitment. Treat added instructions
-as part of the present reality; quoted or discussed continuation language is not
-a trigger. The explanation is part of the renewed inquiry and the user's chance
-to correct it, not a report proving that reorientation happened. Do not run a
-full review, rebuild the goal, or replan unless that renewed judgment finds a
-reason. If the requested outcome is only reorientation or a next-action
-judgment, the visible synthesis is the endpoint and the controller resumes
-nothing.
+A message beginning, after leading whitespace, with `继续！` or `继续!` marks an
+explicit transition from understanding to action and invokes `reorient` before
+the controller proceeds. Treat text after the signal as part of the present
+reality. Ordinary continuation requests, quotation, and discussion do not
+trigger it. Its concise visible synthesis must renew the relation among the
+user's purpose, the situation produced so far, the current direction, live
+alternatives, and the next commitment. The explanation is part of the renewed
+inquiry and the user's chance to correct it, not a report proving that
+reorientation happened. Do not run a full review, rebuild the goal, or replan
+unless that renewed judgment finds a reason. If the requested outcome is only
+reorientation or a next-action judgment, the visible synthesis is the endpoint
+and the controller resumes nothing.
 
 Loop until the agenda reaches a real stop condition:
 
