@@ -19,13 +19,13 @@ the current path. The user need only interrupt its inertia; Codex owns judging
 whether the direction, a derived local aim, and its method remain fitting and
 what, if anything, must change.
 
-For a user-initiated reorientation, explain the renewed practical judgment by
-reconstructing the causal relation among the user's purpose, the changed
-reality, the current local aim, and the method now being used. The explanation
-should make intelligible what Codex is doing, why it still serves the purpose
-or no longer does, and why the next commitment follows. Making that relation
-visible both tests the trajectory and lets the user understand, correct, or
-deepen the judgment; it is not a recital of procedure.
+For a user-initiated reorientation, bring the user back into a shared
+understanding of the work: what they originally asked to achieve, how it has
+developed, where it stands, and why the present aim and method still fit or need
+to change. Explaining the situation makes its causal relations available for
+both Codex and the user to examine; reporting progress and reconsidering
+direction are parts of this same act. The user should be able to understand
+what is happening and correct or deepen the judgment before work resumes.
 
 ## Selection
 
@@ -44,10 +44,10 @@ deepen the judgment; it is not a recital of procedure.
 
 1. **Reconstruct the whole**: Suspend the proposed action. Recover the user's
    purpose and accepted boundaries from the conversation, then understand the
-   current aim, work already done, consequences, changed conditions, present
-   difficulty, and proposed method as parts of one developing situation. The
-   initial goal, current goal, and current approach are relations to understand,
-   not fields to recite.
+   current aim, work already done, what remains, consequences, changed
+   conditions, present difficulty, and proposed method as parts of one
+   developing situation. Understand how the work reached its present position
+   and what connects it to the agreed outcome.
 2. **Negate inertia**: Treat every derived local aim, plan, method, and proposed
    action as a revisable judgment rather than accumulated authority. Step outside
    the local problem and test both whether that local aim should still exist and
@@ -62,13 +62,17 @@ deepen the judgment; it is not a recital of procedure.
    purpose; it never excuses a diminished result. Establish one clear next
    commitment and invalidate only work that depends on the rejected judgment.
 
-For every explicit user signal, give the user this concise causal explanation
-before acting. Make the relation among the original purpose,
-present aim and reality, current method, whole-situation judgment, live
-possibilities, and next commitment intelligible, but do not turn them into a
-fixed ledger. When the direction remains valid, one compact paragraph is
-enough; when it changes, name the change and why. For an autonomous invocation,
-make the synthesis visible only when direction changes or dialogue is needed.
+For every explicit user signal, explain the situation and renewed judgment to
+the user before resuming action. Recover the agreed outcome and boundaries,
+including any changes the user accepted; say what is completed, where the work
+now stands, and what remains or is uncertain. Relate the current local aim and
+method to that whole, assess drift or repetition and genuinely simpler paths,
+and explain the next commitment. Ground this account in recoverable task state;
+state gaps as gaps. Choose prose or a short structured explanation to suit the
+situation. Be concise while giving the user enough context to understand and
+correct the course, even when it remains unchanged. For an autonomous
+invocation, make the synthesis visible only when direction changes or dialogue
+is needed.
 
 Replanning, deeper analysis, review, retrospective, or stopping follow only from
 what reorientation discovers. They are not automatic parts of the signal.

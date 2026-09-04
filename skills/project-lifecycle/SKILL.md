@@ -144,9 +144,9 @@ delivery; do not force every request into implementation.
   further project action. Treat text after the signal as part of the renewed
   situation. Ordinary continuation requests, quotation, and discussion do not
   trigger it. The signal renews authorization to act, not confirmation that the
-  current goal, plan, or method remains right. Perform `reorient`'s renewed
-  judgment through concise explanation before proceeding, so the explanation
-  both tests the relation to the whole and opens it to user correction. It does
+  current goal, plan, or method remains right. Give the user the account of
+  progress and reasoning required by `reorient` before proceeding; it makes
+  the situation and renewed judgment available for user correction. It does
   not invent a missing target,
   create a goal, or widen scope; deeper analysis, replanning, review, dialogue,
   or stopping follows only when the reassessment warrants it.

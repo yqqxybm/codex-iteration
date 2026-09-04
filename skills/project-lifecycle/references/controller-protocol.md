@@ -260,11 +260,9 @@ A message beginning, after leading whitespace, with `继续！` or `继续!` mar
 explicit transition from understanding to action and invokes `reorient` before
 the controller proceeds. Treat text after the signal as part of the present
 reality. Ordinary continuation requests, quotation, and discussion do not
-trigger it. Its concise visible synthesis must renew the relation among the
-user's purpose, the situation produced so far, the current direction, live
-alternatives, and the next commitment. The explanation is part of the renewed
-inquiry and the user's chance to correct it, not a report proving that
-reorientation happened. Do not run a full review, rebuild the goal, or replan
+trigger it. Before proceeding, give the user the account of progress and
+reasoning required by `reorient`, so the user can understand the situation and
+correct the course. Do not run a full review, rebuild the goal, or replan
 unless that renewed judgment finds a reason. If the requested outcome is only
 reorientation or a next-action judgment, the visible synthesis is the endpoint
 and the controller resumes nothing.
