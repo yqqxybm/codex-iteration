@@ -247,7 +247,7 @@ or template.
 
 ### 4. Verification
 
-Run the real verification command for the changed surface:
+Base verification on real command results for the changed surface:
 
 - Classify `verification_scope` before running commands:
   - `docs-only` / text-only: inspect the final doc diff, run `git diff --check`,
@@ -273,13 +273,22 @@ Run the real verification command for the changed surface:
   `project-lifecycle`; do not silently run an overbroad command to make the
   closeout look stronger.
 - Prefer the project's targeted test, lint, typecheck, build, or smoke command.
-- Do not skip requested verification for speed. If full verification is impossible locally, run the smallest command that directly proves the requested behavior and say exactly what was not run.
+- Reuse actual, inspected successful results only while they still apply to the
+  tested object, requirements, and relevant dependencies and environment.
+  Missing evidence, changes, failures, unresolved doubts, or stale conditions
+  call for targeted reruns or broader verification according to the affected
+  claim, not automatic repetition of every check.
+- Once required checks sufficiently support the material claims, proceed. Do
+  not repeat or broaden verification merely because a stage or agent changes,
+  or to look thorough. Honor explicit user-requested checks and rounds, required
+  integration/release checks, and the `review` skill's independent contract.
+  If required verification is impossible locally, run the smallest available
+  command that directly tests the requested behavior and say exactly what was
+  not run; do not treat that fallback as satisfying the missing requirement.
 - Run `git diff --check` in Git repos before version management.
 - Never claim fixed or complete from reasoning alone, stale output, or an
   unverified subtask report. Judge completion from the user's purpose, the
-  authorized implementation boundary, and the observed behavior. Keep the
-  verification that supports the material claims, rather than treating a
-  verification record as the goal itself.
+  authorized implementation boundary, and the observed behavior.
 - For UI changes, carry the focused verification required by
   `references/frontend-implementation.md`; a presentation-only light-path change
   uses that reference's narrow exception.

@@ -650,14 +650,19 @@ A project-lifecycle task is complete only when the selected downstream skills
 have finished their own verification gates and, in plan advancement mode, every
 required agenda item is `done` or explicitly user-approved as `skipped`.
 
-Integrate downstream results into one final response. Ongoing updates still
-explain progress, intended actions, and consequential changes; explicit analysis
+Integrate downstream results into one coherent final response in plain,
+concrete language. Prefer connected paragraphs; use lists when they clarify
+parallel information, comparisons, or steps. Ongoing updates still explain
+progress, intended actions, and consequential changes; explicit analysis
 dialogue and `reorient` explanations retain their own requirements.
 
 Lead with the concrete result and the judgment that matters to the user's next
 decision. Name what changed and the verification that supports the material
-claim. When a goal or agenda is active, state its completion and remaining work;
+claim. Choose explanations and technical detail for what the user needs to
+understand, judge risk, reproduce the result, or decide next; preserve requested
+depth. When a goal or agenda is active, state its completion and remaining work;
 when a resource, subagent, release, sync, or change request remains consequential,
-state only the condition the user or next session needs. Internal call chains,
-packets, ledgers, matrices, and protocol use remain internal unless the user asks
-for them or a failure in them limits the result.
+state the condition the user or next session needs. Omit empty report sections
+and repeated summaries. Internal call chains, packets, ledgers, matrices, and
+protocol use remain internal unless requested or needed to explain the result
+or its limits.
