@@ -20,14 +20,20 @@ trace, or finalizes a lifecycle task.
 ## Continuity Principle
 
 Read the protocol that governs an actual transition and let it change the
-decision, boundary, action, or stop condition. Preserve state only when another
-stage, agent, or later session needs it to continue correctly. Completion rests
-on the resulting project state and the verification appropriate to its claims,
-not on a separate record proving that a protocol was read.
+decision, boundary, action, or stop condition. A stage change transfers
+responsibility, not a fresh obligation to recreate an established judgment.
+Check that its basis still applies; reopen affected judgments and consequences
+when facts, purpose, or contradictions change them. Independent review still
+tests that basis rather than treating acceptance as proof.
+
+Preserve state only when another stage, agent, or later session needs it to
+continue correctly. Completion rests on the resulting project state and the
+verification appropriate to its claims, not a record proving protocol use.
 
 ## Call Chain Plan
 
-Before downstream work starts, produce a compact plan:
+Before downstream work starts, establish or update the compact plan below.
+Use the current task's plan when it already supplies this context:
 
 ```yaml
 phase: <earliest unresolved lifecycle phase and accepted upstream commitments>
@@ -181,11 +187,13 @@ plan_state_sink:
     on_user_interruption: <flush active execution state, then apply State Boundary Enforcement>
 ```
 
-Use `trace_and_formal_plan` when the user says "项目计划文件", "版本计划",
-"roadmap", "plan file", "任务列表", or names an authoritative plan/checklist
-file. Use `formal_plan_file` when an existing project plan is the selected
-source of truth and the chain is short enough that a trace would add no
-recoverability value. Otherwise use `trace_only` for operational state.
+Keep the selected authoritative or user-required plan file live. Use
+`formal_plan_file` when it can carry the progress needed for recovery, regardless
+of item count or chain length. Use `trace_and_formal_plan` only when a separate
+operational trace is explicitly requested or needed for recovery state that does
+not belong in that plan. Link the two; keep each fact in its owning location
+instead of duplicating the agenda. Without a formal plan, use `trace_only` for
+the operational state of plan advancement.
 
 If a formal plan file is required but no suitable file exists, add a
 `project-docs` agenda item to create the smallest project-native plan state
@@ -320,8 +328,8 @@ finished. Stop only when:
 - lifecycle-created runtime resources cannot be closed, proven auto-closed, or
   explicitly kept open with a user-visible reason,
 - the subagent receipt-join or thread-accounting gate remains unsatisfied,
-- the environment forces interruption; in that case write or update the trace,
-  name the next agenda item, and do not claim the plan is complete.
+- the environment forces interruption; in that case persist recovery state to
+  the selected sink, name the next item, and do not claim the plan is complete.
 
 If the user sends new input while a version or goal agenda is active, flush only
 the current execution facts needed for recovery and apply State Boundary
@@ -348,11 +356,9 @@ Boundary Enforcement, then apply its resulting bounded repair, existing
 `change_request`, or `model_reset` and replan consequence. This protocol does not
 classify corrections or create a correction record.
 
-For plan advancement with more than two items, create or update a trace from the
-start before the first item begins, then update it after each item. The trace
-must include the source ledger, agenda table, last completed item, current
-blocker if any, and next item. It is a recoverability ledger and completion
-proof, not a backup.
+The selected sink must preserve the controlling plan, item status, results and
+verification, blockers, and next work before execution and after each item or
+interruption. Update each fact in its chosen location and reference it elsewhere.
 
 An agenda item can be `done` only when:
 
@@ -409,6 +415,10 @@ next decision or action.
 A Context Packet is a bounded projection, not a form to fill. Include only what
 the recipient can use or invalidate. Downstream skills preserve the supplied
 authority and return only a result or state change that matters to the caller.
+Within the same task, available context can be consumed directly without
+reformatting it into a packet. For another agent or session, make the transfer
+self-contained using the receiving owner's contract; shared context cannot be
+assumed and required assignment identities and receipts still apply.
 
 An upstream report, analysis, audit, proposal, or retrospective defaults to
 `evidence_only`. Its observations, hypotheses, and recommendations may inform
@@ -436,7 +446,9 @@ vocabulary or state of unrelated owners into the packet.
 
 ## Handoff Record
 
-After each downstream skill finishes, record a short handoff:
+After each downstream skill finishes, retain its result and relevant state
+change in current context or the selected sink. The handoff below describes
+what the caller needs, not an extra file or user-facing report per stage:
 
 ```yaml
 skill: <skill-name>
@@ -469,11 +481,13 @@ every affected claim; it cannot disappear through summarization or handoff.
 
 ## Trace Placement
 
-Use the lightest trace that preserves recoverability:
+Choose persistence by what is needed to resume correctly:
 
-1. **Short chain**: keep the trace in the conversation and final response only.
-2. **Long, cross-phase, or resumable chain**: create a project-local trace at
-   `.codex/traces/<YYYY-MM-DD>-<task-slug>.md`.
+1. **Self-contained work**: retain continuity in the conversation; no trace file
+   is needed solely because more than one skill participates.
+2. **Plan advancement or resumable work**: use the selected state sink. When
+   recovery needs exceed existing plan state or a separate trace is requested,
+   use `.codex/traces/<YYYY-MM-DD>-<task-slug>.md` for that operational context.
 3. **Durable project knowledge**: promote only long-lived facts into
    `README.md`, project `AGENTS.md`, or `docs/` through `project-docs`.
 
@@ -583,11 +597,12 @@ merely because they were recorded.
   its assignment-specific `role_and_lens`; do not assume the task graph alone
   tells the agent how to execute the node. Consume every receipt and satisfy the
   V2 thread-accounting gate before the next wave or completion claim.
-- "`目标! 推进小版本，把优化点落到项目计划文件`": use `plan_state_sink:
-  trace_and_formal_plan`, create or update the smallest authoritative project
-  plan file through `project-docs` if none exists, mark items active before
-  execution, write result/verification after each item, and record
-  `change_request` for every mid-run user addition.
+- "`目标! 推进小版本，把优化点落到项目计划文件`": maintain that plan as the
+  controlling agenda, creating it through `project-docs` if absent. Use
+  `formal_plan_file` unless recovery needs or an explicit request justify a
+  separate trace. Mark items active before execution, write results/verification
+  after each item, and reconcile mid-run input through State Boundary
+  Enforcement without losing accepted work or the new requirement.
 - A goal-backed review or optimization first obtains an
   `accepted_project_judgment` with its task-specific `optimality_law`. Carry the
   current object understanding, governing
@@ -634,6 +649,10 @@ merely because they were recorded.
 A project-lifecycle task is complete only when the selected downstream skills
 have finished their own verification gates and, in plan advancement mode, every
 required agenda item is `done` or explicitly user-approved as `skipped`.
+
+Integrate downstream results into one final response. Ongoing updates still
+explain progress, intended actions, and consequential changes; explicit analysis
+dialogue and `reorient` explanations retain their own requirements.
 
 Lead with the concrete result and the judgment that matters to the user's next
 decision. Name what changed and the verification that supports the material

@@ -291,12 +291,17 @@ delivery; do not force every request into implementation.
 
 ## Lifecycle Gates
 
-Before building the chain, state:
+Build the chain from the accepted project judgment, establishing only what is
+still missing:
 
 1. earliest unresolved phase and the accepted upstream commitments,
 2. selected complete call chain to the requested outcome,
 3. assumption and tradeoff,
 4. verifiable success criterion.
+
+Explain the intended action and the judgment needed to understand or correct it.
+Carry forward what has already been established and explained in this task;
+update it when the situation or judgment changes, not merely when skills change.
 
 Resolve facts and routine project choices independently. Ask only when the
 user's perspective is non-substitutable and materially affects the project

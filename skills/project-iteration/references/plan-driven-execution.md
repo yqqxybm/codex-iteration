@@ -45,8 +45,8 @@ unverified. For each item:
 Do not stop at the first passing test, commit, or subtask while owned work
 remains. Stop only for a real blocker, an unsafe operation, an unfixable local
 verification failure, an explicit user limit, or completion of every owned
-item. Update the lifecycle trace before a forced interruption of a long or
-resumable list.
+item. Persist current item status, result, verification, and next work to the
+controller-selected state sink before a forced interruption.
 
 Version management follows completion of the current iteration unless focused
 commit boundaries require multiple commits. Continue the item loop after each

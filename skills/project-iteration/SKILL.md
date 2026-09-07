@@ -53,8 +53,8 @@ is active, relevant `software-contract` guidance when it shaped the change,
 commit result, open risks, and the next recommended skill. For plan-driven work, include
 completed item ids, blocked item ids, added in-scope items, and out-of-scope items returned to
 `project-lifecycle`, plus `plan_state_sink_delta` when the lifecycle agenda is
-active. Write a `.codex/traces/` file only for long or resumable chains; promote
-durable facts to formal docs through `project-docs`.
+active. Use the controller-selected state sink; promote durable facts to formal
+docs through `project-docs`.
 
 When invoked from a lifecycle agenda, this skill owns only the assigned agenda
 item. If user input may alter the version goal, root direction, deliverable set,
@@ -89,7 +89,9 @@ an analysis task later becomes "改 / 实现 / 修复 / 提交", return to
 
 ## Operating Rules
 
-- State the assumption, tradeoff, and verifiable success criterion before edits. Keep it short.
+- Before edits, explain the next concrete change. Carry forward the accepted
+  assumption, tradeoff, and success criterion; explain only new or revised
+  judgment when those have already been explained in this task.
 - When `skill_system_best_practice_packet` is present, use it as the
   skill-system practice layer: follow its owner-skill chain, contract/resource
   requirements, docs/test/update defaults, verification scope, and review/commit
@@ -154,14 +156,14 @@ an analysis task later becomes "改 / 实现 / 修复 / 提交", return to
 
 ### 0. Project Analysis Gate
 
-Before editing, run or consume full `project-analysis` by default. Treat every
-requested change as a possible local expression of a broader project issue until
-the analysis proves the implementation boundary.
+Before editing, consume the controller's `project-analysis` judgment and check
+that it still applies to the assigned change. Full analysis remains the default;
+entering implementation does not itself require running it again.
 
 Skip full `project-analysis` only when `project-lifecycle` records the user's
 explicit analysis waiver or proves every `very_small` condition. A narrower
 mutation boundary still scopes a material analysis; it does not waive one. Do
-not infer the skip from appearance alone. Record the governing disposition:
+not infer the skip from appearance alone. Carry the governing disposition:
 
 ```yaml
 analysis_gate: <project_analysis_consumed | explicitly_skipped_by_user | not_required_very_small>
@@ -169,12 +171,12 @@ analysis_gate_basis: <Stage 3 decision and implementation boundary, exact analys
 ```
 
 Require `analysis_gate_basis` to match the disposition. For
-`project_analysis_consumed`, assess the actual judgment: why this change addresses
-the governing cause, what it preserves, and what boundary follows. The enum
-preserves continuity; a filled field does not prove adequate analysis. A missing
-basis or an upstream return for discovery, brief, or necessary dialogue goes
-back to `project-lifecycle`, not execution. A valid explicit waiver or
-`very_small` proof does not require that full judgment.
+`project_analysis_consumed`, check the actual basis against the inspected
+surface: the cause addressed, what is preserved, and the implementation boundary.
+An available valid judgment need not be rewritten. A missing basis, material
+contradiction, or upstream return for discovery, brief, or necessary dialogue
+goes back to `project-lifecycle` for the affected judgment, not execution. A valid
+explicit waiver or `very_small` proof does not require that full judgment.
 
 For material user-facing product work, that basis must also rest on a
 controller-accepted product commitment. If it instead exposes unresolved user
@@ -193,7 +195,9 @@ decision into the final review surfaces.
 1. Locate the project root and read relevant project instructions (`AGENTS.md`, package scripts, test config, local style).
 2. Inspect the files and call graph needed for the requested change.
 3. If the repo is Git-managed, capture initial `git status --short`.
-4. Define success as observable behavior: passing tests, changed UI state, API response, CLI output, or exact file/content condition.
+4. Apply the accepted success criterion to observable behavior: tests, UI state,
+   API response, CLI output, or exact file/content condition. Resolve a missing
+   or inapplicable criterion before editing.
 
 For boundary-sensitive work, identify allowed edits, forbidden edits, and any
 suspect docs/tests/fixtures/scripts/CI/implementation before editing. If the
@@ -327,19 +331,12 @@ When not inside a Git repo, say version management is unavailable because there 
 
 ## Final Response
 
-Keep the final answer short and include:
-
-- What changed, including docs changes.
-- Completed plan item ids and any items returned to `project-lifecycle`, when
-  invoked from a plan.
-- Verification scope, commands, and key results.
-- UI verification summary, when the change required UI verification.
-- Standard compliance delta, when a ledger was active.
-- Relevant `software-contract` guidance, when it shaped the change.
-- Review type: `focused`, `deep`, or `exhaustive`.
-- Inspected surfaces.
-- Not inspected surfaces.
-- Review result: focused local gates, or the `review` skill's deep/exhaustive
-  result when explicitly requested.
-- Residual risks.
-- Commit hash and message, or the precise reason no commit was created.
+Return the Handoff Record to `project-lifecycle` for one integrated final
+response, not a separate final answer at each skill transition. Report the
+actual change and plan outcomes, verification commands and key results, and
+commit result or blocker. Disclose review type (`focused`, `deep`, or
+`exhaustive`), actual inspected and uninspected surfaces, findings, and residual
+risks; preserve the `review` owner's deep/exhaustive result when requested.
+Include UI, standard, and resource-contract detail only where it affects the
+result or its limits. Keep internal receipt/state fields out of user prose
+unless requested or needed to explain an unresolved condition.

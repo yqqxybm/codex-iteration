@@ -33,8 +33,8 @@ project_goal:
 
 When the Codex goal tool is available and the request is goal-backed, create or
 maintain a goal from this structure. If the environment cannot activate a goal,
-keep the same structure in the active agenda and trace; do not downgrade to a
-one-turn checklist.
+keep the same structure in the active agenda, persisted to the selected state
+sink; do not downgrade to a one-turn checklist.
 
 The text passed to `create_goal.objective` or used to maintain an existing tool
 goal is not a short title. It is a compact control prompt. If
@@ -381,17 +381,18 @@ Before activating or maintaining a goal:
 4. If an active goal conflicts with the new request, do not overwrite it. Ask for
    a decision or finish/block the current goal only when the tool's own rules
    allow that state change.
-5. If the goal tool is unavailable, set `activation_state: agenda_only` in the
-   trace and final response; never claim an active Codex goal exists.
+5. If the goal tool is unavailable, keep `activation_state: agenda_only` in the
+   selected state sink and disclose it in the final response; never claim an
+   active Codex goal exists.
 
-Maintain this runtime record in the trace or handoff whenever concierge mode is
-active:
+Maintain this runtime record in the selected state sink or handoff whenever
+concierge mode is active:
 
 ```yaml
 goal_runtime:
   activation_state: <active_tool_goal | agenda_only | blocked_by_existing_goal>
   tool_goal_status: <active | complete | blocked | unavailable | none>
-  agenda_link: <trace path or in-conversation agenda>
+  agenda_link: <selected plan/trace path or in-conversation agenda>
   last_state_change: <created | reconciled | progressed | replanned | blocked | completed>
   next_goal_action: <continue_agenda | ask_user | update_complete | update_blocked | none>
 ```
@@ -447,9 +448,9 @@ Pressure scenarios:
   examples, current UI, available APIs, and existing fields as hypotheses. Add
   the downstream brief, plan, and executor graph only after the adoption gate.
 - "完成 v0.1 收口 / 直到无遗留问题": create or maintain a tool goal when
-  available, build a project-state-first agenda, create/update trace, and continue
-  until the strict completion rule is met. Ask first when the phase boundary,
-  deploy target, material-work source of truth, acceptance bar, or release/push
+  available, build a project-state-first agenda, persist it to the selected sink,
+  and continue until the strict completion rule is met. Ask first when the phase
+  boundary, deploy target, material-work source of truth, acceptance bar, or release/push
   expectation cannot be inferred from project evidence without changing the
   goal.
 - "优化 project-lifecycle / goal 体系 / 项目 skill 体系 / 自我迭代规则":
@@ -471,7 +472,7 @@ Pressure scenarios:
 - "已有不同 active goal": do not overwrite or silently switch; ask for the
   controlling goal or stop at the current goal boundary.
 - "goal tool unavailable": use `activation_state: agenda_only`, preserve the
-  same agenda/trace discipline, and disclose that no active Codex tool goal was
+  same agenda persistence, and disclose that no active Codex tool goal was
   created.
 
 ## Cyclic Project Goal Loop

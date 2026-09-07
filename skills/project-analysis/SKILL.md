@@ -185,8 +185,8 @@ requirements, agenda, documentation, tests, or code.
 
 Return a compact Handoff Record containing only conclusions that change
 judgment, plan, or action; material unresolved questions; the correction or
-verification boundary; and the next owner when action follows. Long resumable
-chains may use `.codex/traces/`; do not create parallel tracking protocols.
+verification boundary; and the next owner when action follows. Use the
+controller-selected state sink when persistence is needed.
 
 When invoked as a subagent, preserve `assignment_id`, `execution_owner_id`,
 `agent_owner`, and `write_policy`. Do not alter parent goal, agenda, task graph,

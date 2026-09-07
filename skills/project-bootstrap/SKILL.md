@@ -94,9 +94,8 @@ the main `project-lifecycle` thread.
 When invoked from a plan advancement agenda, bootstrap owns only the runnable
 project foundation and first vertical slice. Return remaining product,
 iteration, release, or handoff work to `project-lifecycle` as agenda items
-instead of treating the whole plan as complete. Write a `.codex/traces/` file
-only when the chain is long, cross-phase, or likely to be resumed; promote
-durable facts to docs through `project-docs`.
+instead of treating the whole plan as complete. Use the controller-selected
+state sink; promote durable facts to docs through `project-docs`.
 
 ## Workflow
 
