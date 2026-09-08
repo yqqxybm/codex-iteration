@@ -15,11 +15,14 @@ mode, synthesizes a tool goal, or controls a cyclic project objective.
 
 ## Goal Contract
 
-Turn a user target such as "完成 v0.1" into a goal for the next accepted
-commitment. When the product boundary is unresolved, that commitment may be a
-bounded inquiry: the goal controls the inquiry work and adoption gate, never its
-conclusion. Do not make an inquiry commitment look like an already accepted
-product boundary:
+Translate the current request into a goal whose `objective` and
+`success_criterion` preserve the answer or change the user is asking for. The
+wider purpose guides its value, not an expansion of this request; supporting
+work serves that result rather than replacing it. A goal may cover the next
+accepted stage, but completing that stage leaves any remaining requested work
+open. When the product boundary is unresolved, that stage may be a bounded
+inquiry: the goal controls the inquiry work and adoption gate, never its
+conclusion.
 
 ```yaml
 project_goal:
@@ -55,7 +58,8 @@ tool_goal_prompt:
     - <verification failure>
     - <material state change during explicitly requested review rounds>
   stop_only_when:
-    - <all agenda items done or user-approved skipped>
+    - <requested answer or change within the goal's scope has been delivered,
+      with all required agenda items done or user-approved skipped>
     - <required verification evidence exists>
     - <delivery states such as commit/push/deploy/sync are satisfied or
       explicitly not_applicable with evidence>
@@ -399,8 +403,9 @@ goal_runtime:
 
 Completion and blockage are strict:
 
-- Mark a goal complete only after all required agenda items are done or
-  user-approved skipped, required verification supports the completion claim,
+- Mark a goal complete only when its requested answer or change has been
+  delivered, all required agenda items are done or user-approved skipped,
+  required verification supports the completion claim,
   user-explicit review rounds are satisfied when any, and no material in-scope
   `new_work` remains.
 - Do not mark a goal complete from a commit, deploy, receipt, or single

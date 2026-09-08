@@ -22,9 +22,11 @@ trace, or finalizes a lifecycle task.
 Read the protocol that governs an actual transition and let it change the
 decision, boundary, action, or stop condition. A stage change transfers
 responsibility, not a fresh obligation to recreate an established judgment.
-Check that its basis still applies; reopen affected judgments and consequences
-when facts, purpose, or contradictions change them. Independent review still
-tests that basis rather than treating acceptance as proof.
+The plan is a revisable judgment about how to fulfill the current request.
+Carry it forward while its basis holds; when a correction or contradiction
+challenges that relation, reconsider the affected judgment before updating
+execution state. Independent review tests that basis rather than treating
+acceptance as proof.
 
 Preserve state only when another stage, agent, or later session needs it to
 continue correctly. Completion rests on the resulting project state and the
@@ -646,9 +648,13 @@ merely because they were recorded.
 
 ## Final Response
 
-A project-lifecycle task is complete only when the selected downstream skills
-have finished their own verification gates and, in plan advancement mode, every
-required agenda item is `done` or explicitly user-approved as `skipped`.
+A project-lifecycle task is complete only when its result adequately answers or
+fulfills the user's current request within the accepted boundary, supported by
+the applicable downstream verification gates and, in plan advancement mode,
+every required agenda item being `done` or explicitly user-approved as `skipped`.
+Judge this against the request itself; completing a plan cannot establish that
+the plan was an adequate interpretation of it. Report a stage result as such
+while requested work remains.
 
 Integrate downstream results into one coherent final response in plain,
 concrete language. Prefer connected paragraphs; use lists when they clarify
