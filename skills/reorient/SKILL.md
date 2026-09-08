@@ -1,11 +1,11 @@
 ---
 name: reorient
 description: >
-  Reassess ongoing work and explain its original purpose, key path, current
-  position, and next direction before continuing when a message begins with
-  `继续！` or `继续!`. Reconnect purpose, reality, and action; expose drift,
-  repetition, or needless complication. Also self-invoke when that relation
-  materially breaks or becomes obscure.
+  When a message begins with `继续！` or `继续!`, recover the task and give
+  the user an explicit account of its original and current goals, overall path,
+  progress, and reconsidered next direction before resuming work. Reconnect
+  purpose, reality, and action; also self-invoke when that relation materially
+  breaks or becomes obscure.
 ---
 
 # Reorient
@@ -36,38 +36,43 @@ or deepen the judgment that directs further action.
   reality, next commitment, and proposed action. Do not invoke periodically, at
   routine checkpoints, or merely to restate a rationale.
 
-## Movements
+## Reorientation Account
 
-For every explicit signal, make all three movements visible before resuming,
-by default under **目标与进展**, **路径审视**, and **接下来怎么走**. Keep the
-account concise but sufficient for the user to regain the whole situation,
-even when the direction is unchanged. On autonomous invocation, use the same
-inquiry but communicate only when direction changes or dialogue is needed.
+For an explicit signal, read this skill and recover the relevant task state,
+then send the user the account below in four clearly labeled parts before
+resuming execution. An opening acknowledgment or next-action preview does not
+complete this account. Explain enough for the user to regain the whole situation
+without rereading the conversation, even when the direction is unchanged.
+On autonomous invocation, use the same inquiry but communicate only when
+direction changes or dialogue is needed.
 
-1. **Reconstruct the whole and explain progress**: Recover the original purpose
-   and the changes the user accepted from the conversation and task sources;
-   neither freeze the first wording nor let the current plan overwrite it.
-   Relate the present local aim to that developing whole. Explain the agreed
-   outcome and boundaries, the key decisions and work that led here, what is
-   completed, where the work now stands, and the remaining gap or uncertainty.
-   The path explains how this position arose, not every command that ran.
-   Keep missing task state visible rather than inventing progress.
-2. **Reassess the path and explain the judgment**: Treat derived local aims,
-   plans, and methods as revisable. Compare their premises with actual results
-   and ask whether the local aim still deserves pursuit, not only how to solve
-   it. Examine drift, repetition, symptom patching, sunk effort, and means
-   becoming ends. Compare the live possibilities of continuing, changing,
-   supplementing, or abandoning this path. Explain how the present method serves
-   the whole or fails it, and why the preferred direction withstands the
-   meaningful alternatives or challenge. Simplicity serves adequacy to the
-   purpose; fewer steps are not better when they diminish the result.
-3. **Renew the commitment and explain what follows**: Establish the next
-   worthwhile action and its grounds. Say what remains valid and what needs
-   adjustment; invalidate only work dependent on a rejected judgment. Return a
-   failed understanding or plan to its owner rather than repairing only its
-   symptoms. Ask and wait when the user's perspective is indispensable to that
-   decision; otherwise, after the explanation, return to the execution owner
-   to continue within the existing authorization.
+1. **初始目标与当前目标**: Restate what the user originally sought, the outcome
+   and boundaries that matter, and any changes the user actually accepted.
+   Explain the present local aim in relation to that developing whole. Recover
+   this from the user's requests and task sources, not just Codex's latest
+   summary or self-correction; neither freeze the first wording nor let a plan
+   or immediate subgoal replace the purpose.
+2. **整体路径**: Explain the key route intended to reach that outcome, the
+   decisions and work that actually led here, and where the route changed.
+   Distinguish the intended path from the path taken so the user can understand
+   how the current position arose. Summarize meaningful stages and turning
+   points, not a command history; a next-step list alone is not this explanation.
+3. **当前进度**: State what is completed and what that result establishes, what
+   is being worked on now, and what remains before the agreed outcome is met.
+   Distinguish produced materials or provisional judgments from achieved
+   outcomes. Keep unknown or missing state visible rather than inventing
+   progress, an agreed plan, or a completion percentage.
+4. **路径判断与下一步**: Reassess whether the local aim still deserves pursuit
+   and whether the method still serves the whole. Compare premises with actual
+   results; examine drift, repetition, symptom patching, sunk effort, and means
+   becoming ends. Consider continuing, changing, supplementing, or abandoning
+   the path, and explain the preferred direction against meaningful alternatives.
+   Simplicity serves adequacy to the purpose, not fewer steps at its expense.
+   Say what remains valid, what needs adjustment, and the next worthwhile action
+   with its grounds. Invalidate only work dependent on a rejected judgment;
+   return failed understanding or planning to its owner, not just its symptoms.
+   Ask and wait when the user's perspective is indispensable; otherwise return
+   to the execution owner after this account, within existing authorization.
 
 Replanning, deeper analysis, review, retrospective, or stopping follow only from
 what reorientation discovers. They are not automatic parts of the signal.
