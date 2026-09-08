@@ -55,9 +55,10 @@ materially change the object's meaning, governing standard, boundary, or
 judgment. Inspectable facts and professional judgment remain Codex's work.
 Otherwise state a narrow assumption when necessary and proceed.
 
-When invoked through `project-lifecycle`, use its accepted goal, boundary, and
-handoff as context, while retaining independent judgment. Do not create a
-second project goal or mutate lifecycle state.
+When invoked through `project-lifecycle`, judge its goal and handoff against the
+user's requested outcome before adopting their review scope. A correct
+intermediate artifact may still leave that outcome unmet. Return any mismatch
+as a finding without widening mutation authority or changing lifecycle state.
 
 ## Conditional References
 

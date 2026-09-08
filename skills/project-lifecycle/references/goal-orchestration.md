@@ -612,10 +612,11 @@ user's perspective is non-substitutable and material to the goal understanding
 or commitment. Multiple credible sources that would produce different goals are
 a common case, not an automatic substitute for that judgment.
 
-For "全局审查" without a narrower scope, default to repository-relevant product
-readiness: user goal, root charter/version boundary, code/runtime, tests/build,
-security boundary, docs/handoff, release/deploy health, standard ledger, and
-known backlog/trace/TODO items. Record this inferred scope in the agenda.
+For "全局审查" without a narrower scope, derive the review target from the user's
+intended outcome and the actual work meant to realize it, not from a default
+repository-readiness checklist. Reconcile any inherited goal or agenda with that
+outcome before selecting review surfaces. Preserve explicit mutation limits;
+they limit changes, not the judgment of whether the requested outcome was met.
 
 "No known residual issue" requires evidence from the selected source of truth.
 If no source exists, create one in the trace for this run and record that the

@@ -219,13 +219,6 @@ to `project-lifecycle`.
    `references/frontend-implementation.md`. A proved `very_small`
   presentation-only copy replacement remains on the light path defined there.
 
-### 2.5 Standard Coding Gate
-
-For a `material_change`, an active `standard_compliance_ledger`, or a
-standard-sensitive `very_small` change, read
-`references/standard-coding-gate.md`. Ordinary light-path changes do not load
-that contract machinery merely because they edit code.
-
 ### 3. Documentation Sync
 
 Update docs in the same task when the code change affects anything a future user, teammate, or Codex session needs to know:
@@ -237,11 +230,12 @@ Update docs in the same task when the code change affects anything a future user
 
 Do not churn docs for purely internal code movement with no observable behavior or workflow change. If a milestone handoff or full project-doc cleanup is requested, also use `project-docs`.
 
-When a code change appears to require creating new documentation, apply the
-`software-contract` document profile through `project-docs` or return the need
-to `project-lifecycle`. Local iteration may update directly affected existing
-docs, but it must not create a new documentation set from a standard checklist
-or template.
+Own directly affected usage instructions for an accepted deliverable, whether
+updating an existing guide or creating the missing guide its recipient needs.
+Use the existing documentation home and the actual delivered form. Return to
+`project-lifecycle` / `project-docs` when the audience, deliverable set,
+documentation structure, or authoritative home needs a decision; file creation
+alone does not require a separate documentation stage.
 
 ### 4. Verification
 
