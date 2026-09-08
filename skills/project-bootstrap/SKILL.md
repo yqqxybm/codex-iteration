@@ -42,6 +42,9 @@ authorized by the frozen charter:
 
 When applying the standard, load `software-contract` and read
 `~/.agents/skills/software-contract/references/standard-development-contract.md`.
+Before choosing implementation mechanisms or adding code, also read
+`~/.agents/skills/software-contract/references/coding-quality-contract.md` and
+apply its Proportionate Realization judgment to the first vertical slice.
 Before creating documentation assets, also read
 `~/.agents/skills/software-contract/references/docs-deliverables.md` and apply
 the project documentation profile.

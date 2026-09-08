@@ -111,13 +111,11 @@ an analysis task later becomes "改 / 实现 / 修复 / 提交", return to
 - Explicit user boundaries control implementation scope. Do not let current
   docs, tests, implementation, productization inference, or compliance inference
   expand into a scope the user forbade.
-- Before adding new logic or abstractions, run the minimal-correct implementation
-  ladder: delete/avoid the feature if the requested outcome does not need it;
-  reuse existing project code; use the platform or framework native capability;
-  use the standard library; use an already-installed dependency; then write the
-  minimum new code. This ladder prevents over-build, but it must not remove
-  requested behavior, security, validation, accessibility, data-loss handling,
-  authoritatively affected durable-contract docs/tests, or required verification.
+- Before adding or reorganizing logic, load `software-contract` and read
+  `~/.agents/skills/software-contract/references/coding-quality-contract.md`.
+  Apply its Proportionate Realization judgment to the affected flow and callers;
+  carry forward an already applicable judgment rather than repeat it at each
+  implementation step.
 - Do not create backups for reversible text/code/config edits.
 - Do not present mocks, skipped tests, partial docs, or uncommitted "almost done" states as completion. If the exact target is blocked, state the blocker before asking or stopping.
 - Passing tests are not correctness proof when they protect behavior opposite to
@@ -139,9 +137,9 @@ an analysis task later becomes "改 / 实现 / 修复 / 提交", return to
 - For behavior, API, parsing, security, or shared logic changes, prefer
   test-first or reproduction-first work: create or update the smallest failing
   test/reproduction, verify it fails for the right reason, then implement.
-  For config-only, docs-only, generated, UI-exploratory, or locally untestable
-  changes, record the reason and use the strongest available smoke verification
-  instead of pretending test-first happened.
+  Where test-first cannot usefully test the change, select direct verification
+  under Section 4 for the actual uncertainty. Explain a missing check when it
+  limits the result; lack of a failing test does not itself require a smoke run.
 - Classify review intent before finalizing. Focused closeout review is the
   default. Explicit deep/exhaustive review language must be honored through the
   `review` skill; explicit diff-only language must stay focused and must not be
@@ -216,7 +214,7 @@ to `project-lifecycle`.
 4. For testable behavior changes, run a red/green check when practical: failing
    test or reproduction before the fix, passing targeted verification after the
    fix. If red/green is not practical, state the concrete blocker and use the
-   strongest direct verification available.
+   direct verification needed for the affected behavior under Section 4.
 5. For visible UI work, use `project-frontend` and read
    `references/frontend-implementation.md`. A proved `very_small`
   presentation-only copy replacement remains on the light path defined there.

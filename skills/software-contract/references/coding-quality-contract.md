@@ -66,10 +66,20 @@ to repair; feasibility changes the action, not the judgment.
 
 ## Proportionate Realization
 
-Avoid overbuilding: do not add features, abstractions, dependencies,
-configuration, documentation, or process that the purpose and situation do not
-need. Prefer existing coherent behavior and platform capability when they serve
-the work well.
+Before adding or reorganizing logic, understand the affected flow and locate
+the code that already owns the behavior. Choose among coherent project code,
+platform/framework and standard-library capabilities, mature dependencies, and
+new implementation by their fit and total integration, understanding, and
+maintenance cost. Reuse a suitable capability instead of rebuilding it; remove
+mechanisms the purpose no longer needs within the authorized boundary.
+
+Keep one coherent owner for the same business rule or mechanism that callers
+must change together. Reuse or improve that owner instead of copying its logic
+into another route, component, or helper; check the affected callers. Similar
+syntax alone does not establish shared meaning: preserve independent rules and
+checks at distinct trust boundaries, and do not replace a little repetition
+with a generic framework or option-heavy abstraction. Consolidation follows the
+real responsibility and authorized scope, not a repository-wide line-count goal.
 
 This is a demand for proportionate sufficient realization, not a mechanical
 command to write the least code. Build enough to preserve requested behavior,

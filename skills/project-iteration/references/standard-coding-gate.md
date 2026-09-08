@@ -4,8 +4,9 @@ Read this reference for every `material_change`, whenever a
 `standard_compliance_ledger` is present, or when a `very_small` change touches a
 standard-sensitive area.
 
-Load `software-contract` and read
-`~/.agents/skills/software-contract/references/coding-quality-contract.md`.
+Use `software-contract` and
+`~/.agents/skills/software-contract/references/coding-quality-contract.md`,
+loading them if not already read for the current task.
 
 Use the coding-quality contract to make a focused judgment about whether the
 implementation realizes the authorized purpose within its boundary. Consider

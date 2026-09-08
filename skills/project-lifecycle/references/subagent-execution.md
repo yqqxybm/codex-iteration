@@ -88,6 +88,11 @@ external targets may be shared conflict keys. Resolve path aliases before
 claiming scopes are disjoint. A read that needs a coherent snapshot also waits
 for a conflicting writer; not all reads are independent.
 
+Disjoint files can still duplicate the same business rule or capability. Give
+that shared responsibility one owner and give consumers its interface and
+readiness dependency, so parallel writers do not each invent an implementation.
+Keep genuinely independent responsibilities parallel.
+
 Describe the actual split briefly before dispatch. Use available capacity for
 profitable independent nodes, not to fill a quota. Keep a real integration
 owner and continue non-overlapping parent work while children run. When a
@@ -137,6 +142,12 @@ task: <self-contained problem, context, relevant purpose and protected boundary>
 done_when: <local outcome the parent can judge>
 verification: <check needed for that outcome>
 ```
+
+For software implementation, the `task` carries the implementing skill, the
+applicable coding-quality reference and existing reusable owners, plus the
+accepted judgment and boundaries. Require the child to read that guidance
+before implementation; the parent's reading is not inherited. Pass only what
+the assignment needs, not a fresh root lifecycle or a copied rule bundle.
 
 The compiler returns `contract` plus `spawn_args`, with new assignment and
 execution-owner identities and `fork_turns: "none"`. Retain the returned
