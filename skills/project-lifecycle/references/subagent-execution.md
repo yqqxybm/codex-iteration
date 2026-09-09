@@ -1,7 +1,8 @@
 # Subagent Execution
 
-Use when lifecycle finds independent work, delegates a task, selects child
-capacity, or joins results. This file owns ordinary native V2 parallelism.
+Use when the main task owner finds independent work, delegates a task, selects
+child capacity, or joins results. This shared resource owns ordinary native V2
+parallelism; non-software callers do not thereby enter the software lifecycle.
 Read [subagent-durable-state.md](subagent-durable-state.md) only when the
 persistence decision below requires CAO.
 
@@ -13,7 +14,7 @@ default nor a longer protocol replaces that judgment.
 ## Runtime And Ownership
 
 Native V2 owns spawning, follow-up, messages, waiting, interruption, status,
-and resident capacity. Lifecycle owns decomposition, conflict decisions,
+and resident capacity. The main task owner owns decomposition, conflict decisions,
 assignment, model selection, integration, and completion. CAO, when needed,
 persists task authority; it neither spawns nor makes project decisions.
 
@@ -112,6 +113,13 @@ or convergence unsafe without machine persistence. Then load
 receipts replace the ordinary preparation/check path below; do not translate a
 CAO payload into the compact native format.
 
+Non-software `analysis_consumed` writers are supported by the ordinary native
+path, not the current project-only CAO assignment contract. If such work truly
+needs durable delegated ownership, resolve that capability before dispatch;
+retain parent ownership only if it actually meets the recovery need. Otherwise
+keep the affected assignment blocked. Do not relabel the inquiry as project
+analysis or discard a real persistence requirement to bypass this boundary.
+
 ## Ordinary Native Dispatch
 
 Use `scripts/native_handoff.py` under this skill as a stateless contract
@@ -135,7 +143,7 @@ scope_root: <absolute canonical root>
 owned_scope: <nonempty list of relative paths>
 forbidden_scope: []
 write_policy: <read_only | same_worktree_disjoint | single_writer>
-analysis_gate: <project_analysis_consumed | explicitly_skipped_by_user |
+analysis_gate: <analysis_consumed | project_analysis_consumed | explicitly_skipped_by_user |
   not_required_read_only | not_required_very_small>
 analysis_gate_basis: <actual decision/boundary, waiver, or read-only/tiny proof>
 task: <self-contained problem, context, relevant purpose and protected boundary>
@@ -143,7 +151,12 @@ done_when: <local outcome the parent can judge>
 verification: <check needed for that outcome>
 ```
 
-For software implementation, the `task` carries the implementing skill, the
+For every assignment, carry the accepted purpose, task-specific quality
+judgment, and boundary that can change the child's work or acceptance. Use
+`analysis_consumed` for accepted non-software inquiry, with its actual basis;
+software assignments retain `project_analysis_consumed` and their lifecycle
+gate. The helper validates the declaration, not whether the analysis happened.
+For software implementation, the `task` also carries the implementing skill, the
 applicable coding-quality reference and existing reusable owners, plus the
 accepted judgment and boundaries. Require the child to read that guidance
 before implementation; the parent's reading is not inherited. Pass only what

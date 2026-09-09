@@ -30,22 +30,17 @@ verification requirements must be explicit before touching remote machines.
 
 When invoked by `project-lifecycle`, consume its Context Packet before sync
 work. Preserve source/target boundaries, included paths, excluded paths,
-verification requirements, and explicit safety limits. When provided, also
-preserve `project_goal`, `goal_runtime`, `goal_synthesis` /
-`control_system_goal`, `accepted_project_judgment`,
-`perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
-`loop_control_matrix`, `review_clean_pass_loop`,
-`optimize_framework_cycle_loop`, `subagent_dispatch_policy`, `agent_owner`,
-`write_policy`, `runtime_resource_ledger`, `subagent_runtime_registry`, and
-`protocol_evidence`.
+verification requirements, and explicit safety limits. Also carry forward the
+commission's purpose, accepted judgment and practical quality conditions,
+relevant assigned task or agenda state, and completion implications. Do not
+recreate packet schemas or invent absent state. The universal `goal` owns
+whole-commission synthesis and native completion; this skill owns only sync
+work, its verification, and returned agenda state.
 
 Return a Handoff Record with hosts touched, files or commands synced,
-verification output, skipped targets, open risks, and any
-`loop_control_matrix_delta`, `runtime_resource_delta`, or
-`subagent_runtime_registry_delta` needed by an active lifecycle loop. Successful
-sync alone never completes a parent goal unless the parent stop condition also
-has passing verification, required review/optimization clean passes, no known
-in-scope residual issue, and no unaccounted runtime resource.
+verification output, skipped targets, open risks, and any relevant work-state
+or verification evidence needed by an active lifecycle agenda. Successful sync
+is evidence only; this skill cannot complete a parent goal.
 
 ## Public Safety Boundary
 

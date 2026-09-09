@@ -46,13 +46,12 @@ cross-document contradictions or missing handoff-critical information.
 When invoked by `project-lifecycle`, consume its Context Packet and prior
 Handoff Records before editing docs. Distinguish temporary trace facts from
 durable project knowledge. Preserve `doc_profile`, `docs_ia`, and
-`verification_scope` when provided. When provided, also preserve `project_goal`,
-`goal_runtime`, `goal_synthesis` / `control_system_goal`,
-`accepted_project_judgment`, `perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
-`loop_control_matrix`, `review_clean_pass_loop`,
-`optimize_framework_cycle_loop`, `runtime_resource_ledger`,
-`subagent_runtime_registry`, `subagent_dispatch_policy`, `agent_owner`,
-`write_policy`, and `protocol_evidence`.
+`verification_scope` when provided. Also preserve the commission's purpose,
+accepted judgment and practical quality conditions, authorized boundary,
+relevant task or agenda state, and completion implications. Do not recreate
+packet schemas or invent absent state. The universal `goal` owns
+whole-commission synthesis and native completion; this skill owns only its
+documentation work, verification, and returned agenda state.
 
 Return a Handoff Record with docs reviewed, docs changed, durable decisions
 captured, stale content removed, standard compliance delta, verification output,

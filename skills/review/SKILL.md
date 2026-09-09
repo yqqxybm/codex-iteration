@@ -69,6 +69,11 @@ as a finding without widening mutation authority or changing lifecycle state.
 - Read both when both apply. The software reference routes project-specific
   reality; the deep reference governs the intensity of inquiry.
 
+An explicit repeated or cyclic review/optimization commission also reads
+`~/.agents/skills/goal/references/cyclic-improvement.md`. Ordinary deep or
+exhaustive review does not activate a cycle, and reading the shared reference
+does not create a native goal without an explicit goal request.
+
 Do not load these references for an ordinary, focused non-project review.
 
 ## Inquiry
@@ -135,3 +140,8 @@ Name scope and depth when useful for interpreting the conclusion. Mention
 verification only when it bears on the judgment. Disclose an unexamined surface
 only when it is a substantive limit on what can be concluded. Keep the result
 concise and directed toward the user's next practical decision.
+
+For an explicit repeated or cyclic commission, return an independent
+current-object, whole-scope judgment and pass evidence to its caller or the
+`goal` owner when one is active. Do not edit, adopt the optimizer's preferred
+change, assert absolute adequacy, or decide native goal completion.

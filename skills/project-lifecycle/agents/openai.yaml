@@ -1,6 +1,6 @@
 interface:
   display_name: "Project Lifecycle"
-  short_description: "Software project, goal, and self-iteration controller."
+  short_description: "Software project lifecycle and execution controller."
   default_prompt: >
     Use $project-lifecycle as the single entry point to classify this software
     project request, requirement, correction, user-facing product/content
@@ -10,8 +10,11 @@ interface:
     Apply the visible analysis gate only when its boundary requires it and
     preserve user boundaries. Route unresolved user/product reality through
     project-discovery and unresolved product commitment through project-brief
-    before implementation. For `目标!` /
-    `目标！`, load the goal reference and synthesize the complete control goal.
+    before implementation. For an explicit software goal, enact the universal
+    $goal owner and this lifecycle in the same main thread, loading the software
+    goal adapter without duplicating analysis, goal state, scheduling, or
+    completion ownership.
     For independent surfaces, load the subagent reference and parallelize unless
-    a concrete blocker exists. Those references are authoritative for goal,
-    model-routing, CAO, receipt, join, and stop behavior.
+    a concrete blocker exists. The subagent references remain authoritative for
+    model-routing, CAO, receipt, join, and thread behavior; $goal is
+    authoritative for native goal state and whole-commission completion.

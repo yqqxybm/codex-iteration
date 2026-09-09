@@ -26,8 +26,9 @@ relation rather than maximizing isolated qualities or accumulating generic
 "improvements." A simpler, truer change may be to remove behavior, replace a
 wrong mechanism, reuse an established pattern or native capability, or return a
 detail to its real owner. Add a new control, abstraction, document, test, or
-compatibility path only when it is genuinely needed to resolve the material
-failure.
+compatibility path only when it is genuinely needed to realize the governing
+purpose or an established unrealized possibility, after considering its cost,
+risk, and preservation boundary.
 
 Select the owner that can change the governing cause: `project-analysis` for
 architecture, root cause, and direction-bearing technical decisions;

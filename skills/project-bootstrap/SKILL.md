@@ -74,15 +74,13 @@ Apply the software-project principles:
 ## Call Chain Contract
 
 When invoked by `project-lifecycle`, consume its Context Packet before creating
-files. Preserve `intent`, `constraints`, `decisions_so_far`,
-`verification_required`, `doc_profile`, `docs_ia`, `standard_compliance_ledger`,
-and `do_not_do`. When provided, also preserve `project_goal`, `goal_runtime`,
-`goal_synthesis` / `control_system_goal`, `accepted_project_judgment`,
-`perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
-`loop_control_matrix`, `review_clean_pass_loop`,
-`optimize_framework_cycle_loop`, `runtime_resource_ledger`,
-`subagent_runtime_registry`, `subagent_dispatch_policy`, `agent_owner`,
-`write_policy`, and `protocol_evidence`.
+files. Preserve the commission's purpose, accepted judgment and practical
+quality conditions, authorized boundary and exclusions, plus the relevant
+bootstrap task state, verification, and completion implications. Retain
+project-owned `doc_profile`, `docs_ia`, and `standard_compliance_ledger` when
+they apply. Do not recreate packet schemas or invent absent state. The universal
+`goal` owns whole-commission synthesis and native completion; this skill owns
+only bootstrap decisions, evidence, and assigned agenda work.
 
 Return a Handoff Record with project path, generated artifacts, stack decisions,
 verification output, `standard_compliance_delta`, `domain_resource_evidence`

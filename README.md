@@ -12,6 +12,13 @@ The system is built around practical inquiry joined to controlled execution:
 
 ## What Is Included
 
+This distribution separates universal goal ownership from independent judgment,
+domain execution, and resource-only standards rather than making software
+lifecycle ownership a catch-all for every kind of work.
+
+- `skills/goal`: universal goal ownership for whole-commission synthesis,
+  practical quality criteria, strategy, completion, and explicit cyclic
+  improvement.
 - `skills/three-step-analysis`: deep non-project reasoning core.
 - `skills/review`: independent review judgment.
 - `skills/optimize`: optimization and review-then-optimize orchestrator.
@@ -76,8 +83,12 @@ plugin, MCP, or authentication settings.
 
 ## Operating Model
 
-Use the smallest skill that owns the work:
+Use the smallest skill that owns the work. `goal` may own a whole commission
+across software and non-software work; domain owners keep their own execution,
+verification, and agenda state, while only `goal` closes its native completion:
 
+- explicit whole-commission goals (`目标！` / `目标!`) -> `goal`, then the
+  appropriate domain owner,
 - ordinary writing or prompt shaping -> `co-star` or `self-refine`,
 - non-project deep decisions -> `three-step-analysis`,
 - software-project requests -> `project-lifecycle`, which selects

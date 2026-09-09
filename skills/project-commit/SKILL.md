@@ -27,9 +27,12 @@ description: >
 When invoked by `project-lifecycle` directly, or as a lifecycle-authorized
 commit step after `project-bootstrap` / `project-iteration`, consume the Context
 Packet. Preserve the authorized file scope, exclusions, active goal/plan state,
-and only the verification, standard, or subagent projection relevant to the
-snapshot. Do not instantiate or echo absent packet fields. Stage only files
-inside the authorized scope.
+accepted judgment and practical quality conditions, and only the task or agenda
+state, verification, standard, or subagent information relevant to the
+snapshot. Do not recreate packet schemas or invent absent state. The universal
+`goal` owns whole-commission synthesis and native completion, while this skill
+owns snapshot evidence and returned agenda state. Stage only files inside the
+authorized scope.
 
 Return a Handoff Record with staged files, commit hash/message, skipped files,
 security checks, hook result, `standard_compliance_delta` when a ledger is
@@ -48,19 +51,10 @@ claim project completion. Return `new_work`, candidate staged files, message
 proposal, risks, and blocked files inside the exact assignment-required
 `subagent_receipt`; a Handoff Record may accompany but never replace it.
 
-When invoked inside a lifecycle `cyclic_goal_loop`, also return:
-
-```yaml
-cyclic_goal_delta:
-  commit_state: <committed | blocked | not_applicable>
-  commit_hash: <hash or none>
-  pushed_state: <not_requested | pushed | blocked | not_applicable>
-  completion_revisit_required: <true | false, with reason>
-  material_in_scope_new_work: <agenda items or none>
-```
-
-Commit or push failures inside the parent stop condition are material new work;
-successful commit alone never completes the parent goal.
+When an active goal or lifecycle agenda delegates snapshot work, return the
+commit or push state, hash when applicable, and material in-scope follow-up to
+`project-lifecycle`. Commit or push failures are material new work; a successful
+snapshot is evidence only and never completes the parent goal.
 
 ## Commit Message 格式
 

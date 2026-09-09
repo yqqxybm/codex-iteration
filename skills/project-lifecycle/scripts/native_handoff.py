@@ -14,7 +14,8 @@ import uuid
 ROLES = {"explorer", "worker", "reviewer"}
 EFFORTS = {"none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra"}
 WRITE_POLICIES = {"read_only", "same_worktree_disjoint", "single_writer"}
-WRITE_GATES = {"project_analysis_consumed", "explicitly_skipped_by_user", "not_required_very_small"}
+WRITE_GATES = {"analysis_consumed", "project_analysis_consumed", "explicitly_skipped_by_user",
+               "not_required_very_small"}
 STATUSES = {"done", "blocked", "failed", "out_of_scope"}
 TEXT_FIELDS = (
     "task_id", "task_name", "agent_owner", "agent_type", "model", "reasoning_effort",

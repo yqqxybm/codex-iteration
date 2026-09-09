@@ -37,11 +37,12 @@ shape, implementation feasibility, available data, category labels, detailed
 field names, or a fixed item count cannot replace the explanatory relation in
 `rationale`.
 
-For "research, then implement" or an equivalent goal-backed request, the
-initial agenda contains exactly the discovery work and its controller-owned
-adoption gate. Rebuild the downstream brief, requirements, plan, and executor
-nodes after adoption; do not prefill them from hypotheses merely because later
-implementation is authorized.
+For "research, then implement", including when it is an explicit goal, the
+initial software agenda contains exactly the discovery work and its
+controller-owned adoption gate. Keep the full research-and-implementation
+request open for the universal `goal` owner when active. Rebuild the downstream
+brief, requirements, plan, and executor nodes after adoption; do not prefill
+them from hypotheses merely because later implementation is authorized.
 
 After `project-analysis` has judged what a correction changes, record a bounded
 source, fact, or finding repair locally. When its judgment shows that the
@@ -107,7 +108,7 @@ reduce it to one local iteration. Each item records source, status, result, and
 verification.
 
 While a version agenda is active, only a user-confirmed change to an already
-accepted goal, scope, or priority becomes:
+accepted software objective, scope, or priority becomes:
 
 ```yaml
 change_request:
@@ -115,7 +116,7 @@ change_request:
   requested_change: <what changed>
   impact: <agenda item, root direction, docs/assets, tests, release, or none>
   decision: <add_now | replace_item | defer | reject | ask>
-  reason: <why this preserves the user goal and current version boundary>
+  reason: <why this preserves the software objective and current version boundary>
 ```
 
 Only `add_now` or `replace_item` changes the active agenda. Make `defer`,

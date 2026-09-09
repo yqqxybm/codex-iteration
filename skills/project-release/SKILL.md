@@ -33,9 +33,12 @@ Release work must follow the project lifecycle philosophy:
 
 When invoked by `project-lifecycle`, consume its Context Packet before release
 work. Preserve release target, environment, version/tag decision, rollback
-requirement, explicit deployment boundaries, active goal/plan state, and only
-the standard, verification, runtime-resource, or subagent projection relevant
-to this release. Do not instantiate or echo absent packet fields.
+requirement, explicit deployment boundaries, and the accepted judgment and
+practical quality conditions relevant to this release. Carry forward only the
+assigned task or agenda state, verification, and completion implications; do
+not recreate packet schemas or invent absent state. The universal `goal` owns
+whole-commission synthesis and native completion, while this skill owns release
+work, evidence, and returned agenda state.
 
 Return a Handoff Record with version/tag, build artifact, deployment command,
 rollout or health evidence, rollback path, docs/runbook updates,
@@ -54,20 +57,11 @@ claim project completion. Return release readiness findings, command evidence,
 blockers, or a runbook patch proposal inside the exact assignment-required
 `subagent_receipt`; a Handoff Record may accompany but never replace it.
 
-When invoked inside a lifecycle `cyclic_goal_loop`, also return:
-
-```yaml
-cyclic_goal_delta:
-  release_state: <not_applicable | built | published | deployed | blocked>
-  deploy_health: <pass | fail | not_applicable | blocked>
-  rollback_ready: <true | false | not_applicable>
-  completion_revisit_required: <true | false, with reason>
-  material_in_scope_new_work: <agenda items or none>
-```
-
-Failed build, publish, deploy, health, rollback, or release-doc evidence inside
-the parent goal boundary is material new work. Return it to the lifecycle so the
-agenda, verification boundary, and completion judgment can be revised.
+When an active goal or lifecycle agenda delegates release work, return only the
+release state, health and rollback evidence, and material in-scope follow-up to
+`project-lifecycle`. A failed build, publish, deploy, health, rollback, or
+release-doc check is material new work; release evidence informs but never
+decides the goal's completion judgment.
 
 ## Release Preflight
 

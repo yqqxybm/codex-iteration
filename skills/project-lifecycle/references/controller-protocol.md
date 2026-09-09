@@ -39,13 +39,14 @@ Use the current task's plan when it already supplies this context:
 
 ```yaml
 phase: <earliest unresolved lifecycle phase and accepted upstream commitments>
-goal: <user-visible objective>
+goal: <user-visible software objective; this is not native goal-tool state>
 selected_chain:
   - skill: <skill-name>
     purpose: <which unresolved commitment or requested outcome this skill owns>
 success_criterion: <observable finish condition for the whole request>
-active_control_state: <only the analysis/discovery disposition or goal, agenda,
-  subagent, runtime, release, sync, or standard state that this chain activates>
+active_control_state: <only the analysis/discovery disposition, goal-provided
+  context, agenda, subagent, runtime, release, sync, or standard state that this
+  chain activates>
 stop_condition: <when not to continue the chain>
 ```
 
@@ -64,7 +65,7 @@ executor Context Packet or task node, it must become
 
 ### Skill-System Best-Practice Packet After Understanding
 
-For a goal-backed or fuzzy project request, do not begin by composing a
+For a fuzzy or explicit-goal software request, do not begin by composing a
 skill-system packet, quality default, verification list, or execution graph.
 First form a working project judgment: what concrete situation is changing,
 whose purpose is at stake, what relations and tensions govern it, which live
@@ -90,8 +91,9 @@ skill_system_best_practice_packet:
 For unresolved discovery or product commitment, `deferred` normally includes
 implementation, its task graph, and implementation-specific quality or delivery
 rules. Do not turn a likely future path into pending work merely because it is
-easy to name. In goal-backed work, this selection informs the final
-`tool_goal_prompt`; it is never passed to `create_goal` as the goal itself.
+easy to name. For an explicit goal, give this software selection to the
+universal `goal` owner through `references/goal-orchestration.md`; this
+controller neither writes the native goal prompt nor calls `create_goal`.
 
 ## Executable Plan Quality
 
@@ -237,12 +239,12 @@ release, and delivery nodes unmaterialized. The graph preserves a judgment that
 is ready to act; it must not manufacture that judgment by giving its possible
 consequences owners and checkboxes.
 
-Loop invariant: the plan is not complete while any required item is `pending`,
-`active`, unverified, or while concierge `cyclic_goal_loop` has material
-in-scope issues, unmet commit/push/deploy/health requirements, or unfinished
-user-explicit review rounds, while non-subagent runtime resources remain open
-without a visible keep-open policy, or while the subagent
-receipt-join/thread-accounting gate is unsatisfied.
+Loop invariant: the software plan is not complete while any required item is
+`pending`, `active`, or unverified; while accepted software delivery or
+user-explicit review work remains; while non-subagent runtime resources remain
+open without a visible keep-open policy; or while the subagent
+receipt-join/thread-accounting gate is unsatisfied. For an explicit goal, report
+that state to `goal`; do not duplicate its whole-commission loop here.
 
 Before invoking downstream skills, run the Executable Plan Quality gate over the
 agenda and the task graph. Do not start a vague item and hope the downstream
@@ -272,7 +274,7 @@ the controller proceeds. Treat text after the signal as part of the present
 reality. Ordinary continuation requests, quotation, and discussion do not
 trigger it. Before proceeding, give the user the account of progress and
 reasoning required by `reorient`, so the user can understand the situation and
-correct the course. Do not run a full review, rebuild the goal, or replan
+correct the course. Do not run a full review, ask `goal` to resynthesize, or replan
 unless that renewed judgment finds a reason. If the requested outcome is only
 reorientation or a next-action judgment, the visible synthesis is the endpoint
 and the controller resumes nothing.
@@ -285,7 +287,7 @@ Loop until the agenda reaches a real stop condition:
    successor, or skip it with a user-approved reason.
 2. Mark selected items `active` and persist the state to `plan_state_sink`
    before invoking a downstream skill or subagent.
-3. In concierge mode, or any multi-item agenda with independent work surfaces,
+3. For any multi-item agenda with independent work surfaces,
    select the next execution set from `subagent_execution.mode`: one item for
    `sequential`, the current antichain for `subagent_wave`, a controller-selected
    wave for `controller_team`, or the current phase wave for `workflow_batch`.
@@ -333,11 +335,12 @@ finished. Stop only when:
 - the environment forces interruption; in that case persist recovery state to
   the selected sink, name the next item, and do not claim the plan is complete.
 
-If the user sends new input while a version or goal agenda is active, flush only
+If the user sends new input while a software agenda is active, flush only
 the current execution facts needed for recovery and apply State Boundary
 Enforcement before deciding how the agenda changes. A new requirement, priority
 shift, or correction classified as a user-confirmed change to an already accepted
-goal, scope, or priority uses interruption reconciliation before new execution:
+software objective, scope, or priority uses interruption reconciliation before
+new execution:
 
 ```yaml
 interruption_reconciliation:
@@ -348,7 +351,7 @@ interruption_reconciliation:
     requested_change: <what changed>
     impact: <agenda item, root direction, docs/assets, tests, release, or none>
     decision: <add_now | replace_item | defer | reject | ask>
-    reason: <why this preserves the goal and version boundary>
+    reason: <why this preserves the software objective and version boundary>
   preserved_items: <unchanged agenda item ids and statuses>
   state_sink_updated: <trace | formal_plan_file | both | blocked>
 ```
@@ -409,10 +412,11 @@ Completion rules:
 
 ## Context Packet
 
-Before using a downstream skill, carry forward only the context it needs:
-use the goal, agenda, trace, and accepted Handoffs for continuity. Review and
-optimization judgments travel as compact context only while they can affect the
-next decision or action.
+Before using a downstream skill, carry forward only the context it needs: use
+the accepted request or goal context, agenda, trace, and Handoffs for continuity.
+Task-specific purpose and quality must survive when the recipient's decision
+depends on them. Review and optimization judgments travel as compact context
+only while they can affect the next decision or action.
 
 A Context Packet is a bounded projection, not a form to fill. Include only what
 the recipient can use or invalidate. Downstream skills preserve the supplied
@@ -431,13 +435,13 @@ transition: adoption, `change_request`, or `model_reset`. This is a semantic
 boundary, not a new packet or ledger.
 
 ```yaml
-intent: <user goal and accepted purpose>
+intent: <user's software outcome and accepted purpose>
 constraints: <hard limits, explicit exclusions, and preserved commitments>
 accepted_state: <only decisions the recipient may rely on>
 owned_scope: <the decision or action this recipient owns>
 current_judgment: <only when it changes this recipient's work>
-active_control_state: <only the relevant discovery, analysis, goal, agenda,
-  subagent, runtime, release, or sync state; otherwise omit>
+active_control_state: <only the relevant discovery, analysis, goal-provided
+  context, agenda, subagent, runtime, release, or sync state; otherwise omit>
 verification_boundary: <the claim or consequence this recipient must test>
 ```
 
@@ -457,7 +461,7 @@ skill: <skill-name>
 status: <done | blocked | skipped>
 judgment_or_result: <what the caller may now conclude or act on>
 changed_artifacts: <only actual mutations, or none>
-state_delta: <only an adoption, model reset, change request, goal/agenda,
+state_delta: <only an adoption, model reset, change request, software agenda,
   subagent, runtime, release, or sync change that the controller must apply>
 verification: <the decisive check and result, when one was needed>
 open_limit: <only a blocker, uncertainty, or risk that changes the next step>
@@ -505,9 +509,11 @@ merely because they were recorded.
 ## Pressure Scenarios
 
 - "`目标! <outcome>` or `目标！ <outcome>`": load
-  `references/goal-orchestration.md`; when independent surfaces exist, also load
-  `references/subagent-execution.md`. Apply both authoritative gates before goal
-  activation or delegation.
+  `~/.agents/skills/goal/SKILL.md` and
+  `references/goal-orchestration.md` in the same main thread. `goal` owns
+  activation and the whole commission; lifecycle owns only the software
+  contribution and agenda. When independent surfaces exist, also load
+  `references/subagent-execution.md` before delegation.
 - "改一下这个弹窗 / 优化一下前端 / 仿照已有网站写一个后台管理页 / 做一个前端 /
   写个页面 / 做个组件 / 做个 dashboard/admin": first determine whether the
   requested form already expresses an accepted purpose and user situation. Once
@@ -524,7 +530,9 @@ merely because they were recorded.
   reference space is broad or source quality matters. The user must not need to
   provide a polished prompt, reference list, screenshot plan, source-level
   wording, or UI checklist.
-- "目标! 循环优化前端 skill，并用实验网页验证": treat the experiment as a
+- "目标! 循环优化前端 skill，并用实验网页验证": load
+  `~/.agents/skills/goal/references/cyclic-improvement.md` for the explicit
+  improvement loop, and treat the experiment as a
   skill-validation fixture, not merely a deliverable page. Context Packet must
   carry `frontend_skill_experiment` with the rule hypothesis, path, visual
   target, and pass threshold. If rendered screenshot QA says the result is
@@ -605,15 +613,16 @@ merely because they were recorded.
   separate trace. Mark items active before execution, write results/verification
   after each item, and reconcile mid-run input through State Boundary
   Enforcement without losing accepted work or the new requirement.
-- A goal-backed review or optimization first obtains an
-  `accepted_project_judgment` with its task-specific `optimality_law`. Carry the
-  current object understanding, governing
-  tension, accepted agenda, and only observations capable of changing the next
-  action. Broad work uses the coding-quality contract as directions for inquiry,
-  not as a lens matrix or a second state store.
+- For an explicit-goal review or optimization, lifecycle supplies the accepted
+  software target, task-specific quality, current object understanding,
+  governing tension, agenda, and only observations capable of changing the next
+  action. `goal` owns the whole-commission quality and strategy synthesis. Broad
+  software work uses the coding-quality contract as directions for inquiry, not
+  as a lens matrix or a second state store.
 - "只改这个 diff / 单点改动 / 不做整体推进": keep scope focused. Without an
-  explicit `目标!` / `目标！`, do not create a goal. With the explicit marker,
-  create a lightweight goal without broadening the scope. Record
+  explicit goal request, do not create a goal. With `目标!` / `目标！` or another
+  explicit goal request, let `goal` own a lightweight goal without broadening
+  the scope. Record
   `analysis_gate: explicitly_skipped_by_user` only when the user explicitly
   skipped broader analysis, and keep final review labeled focused.
   Preserve that focused boundary in the plan and stop condition.
@@ -627,13 +636,13 @@ merely because they were recorded.
   spawn subagents.
 - "做一个版本 / MVP / v0.x": treat as version-state work, create or consume a
   frozen charter, build an agenda with source/result/verification evidence, and
-  do not downgrade to one local iteration. If the user asks to finish or close
-  out the version, also load `references/goal-orchestration.md`.
-- A request to continue until completion loads
-  `references/goal-orchestration.md` and maintains the goal, agenda, delivery,
-  and runtime boundaries. A named review-round count becomes an explicit stop
-  condition and restarts after material in-scope change; no review or
-  optimization cycle is inferred from ordinary completion language.
+  do not downgrade to one local iteration. Finishing or closing the version
+  continues through that agenda without inferring a native goal.
+- A request to continue until completion maintains the software agenda,
+  delivery, and runtime boundaries without inferring a native goal. A named
+  review-round count is an explicit agenda requirement and restarts after
+  material in-scope change; no review or optimization cycle is inferred from
+  ordinary completion language.
 - "改完再深度 review": when an edit target exists, implement through the
   selected executor, then use `review` at deep depth. A focused closeout gate
   cannot be reported as deep review. If no edit target exists in the request or
@@ -648,13 +657,16 @@ merely because they were recorded.
 
 ## Final Response
 
-A project-lifecycle task is complete only when its result adequately answers or
-fulfills the user's current request within the accepted boundary, supported by
-the applicable downstream verification gates and, in plan advancement mode,
+A standalone project-lifecycle request is complete, and an explicit goal's
+software contribution is ready for Handoff, only when the result adequately
+fulfills the accepted software boundary, supported by the applicable downstream
+verification gates and, in plan advancement mode,
 every required agenda item being `done` or explicitly user-approved as `skipped`.
 Judge this against the request itself; completing a plan cannot establish that
 the plan was an adequate interpretation of it. Report a stage result as such
-while requested work remains.
+while requested work remains. For an explicit goal, this is a software-readiness
+Handoff; only `goal` synthesizes whole-commission completion and native goal
+state.
 
 Integrate downstream results into one coherent final response in plain,
 concrete language. Prefer connected paragraphs; use lists when they clarify
@@ -666,8 +678,9 @@ Lead with the concrete result and the judgment that matters to the user's next
 decision. Name what changed and the verification that supports the material
 claim. Choose explanations and technical detail for what the user needs to
 understand, judge risk, reproduce the result, or decide next; preserve requested
-depth. When a goal or agenda is active, state its completion and remaining work;
-when a resource, subagent, release, sync, or change request remains consequential,
+depth. When an explicit goal or agenda is active, state software readiness and
+remaining work; let `goal` state whole-commission completion. When a resource,
+subagent, release, sync, or change request remains consequential,
 state the condition the user or next session needs. Omit empty report sections
 and repeated summaries. Internal call chains, packets, ledgers, matrices, and
 protocol use remain internal unless requested or needed to explain the result

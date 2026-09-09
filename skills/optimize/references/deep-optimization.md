@@ -56,6 +56,11 @@ the proportional verification chosen by the owner is enough. Further inquiry
 is justified by a material change in the judgment, the reality, or the user's
 accepted purpose.
 
+For an explicitly authorized repeated or cyclic review/optimization commission,
+read `~/.agents/skills/goal/references/cyclic-improvement.md`. This reference
+continues to govern the depth of optimization; optimize returns its practical
+judgment and evidence to its caller under the shared cycle contract.
+
 ## Stop
 
 Stop when a whole-object rereading finds no credible, authorized change that

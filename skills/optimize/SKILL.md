@@ -61,6 +61,11 @@ Read `references/deep-optimization.md` only when the user asks for deep,
 best-possible, structural, or review-informed optimization. Ordinary work does
 not require the deep reference.
 
+For an explicitly authorized repeated or cyclic review/optimization commission,
+also read `~/.agents/skills/goal/references/cyclic-improvement.md`. That shared
+contract governs pass counting and reset behavior. Deep optimization alone does
+not create a repeated cycle, and this skill does not claim a goal's completion.
+
 ## The Optimization Judgment
 
 Form a compact, revisable judgment before editing. It should make clear:
@@ -119,5 +124,8 @@ second review merely because a workflow diagram says so.
 
 Report the practical judgment, what changed, why it serves the purpose, what
 was preserved, the decisive verification, and material uncertainty or residual
-risk. Include supporting detail only when it helps the user decide, sustains
-necessary continuity, or was requested.
+risk. For an explicit repeated or cyclic commission, return the pass evidence
+and any follow-up to its caller or the `goal` owner when one is active; do not
+assert absolute optimality or native goal completion. Include supporting detail
+only when it helps the user decide, sustains necessary continuity, or was
+requested.

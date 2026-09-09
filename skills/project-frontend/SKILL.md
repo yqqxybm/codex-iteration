@@ -39,14 +39,12 @@ companion 阶段进入；代码落地仍由 `project-bootstrap` 或 `project-ite
 When invoked by `project-lifecycle` directly, or as a lifecycle-authorized
 companion inside `project-bootstrap` / `project-iteration`, consume the Context
 Packet before designing. Preserve user intent, existing project style, owned UI
-scope, verification requirements, and explicit exclusions. When provided, also
-preserve `project_goal`, `goal_runtime`, `goal_synthesis` /
-`control_system_goal`, `accepted_project_judgment`,
-`perspective_model`, `plan_state_sink`, `cyclic_goal_loop`,
-`loop_control_matrix`, `review_clean_pass_loop`,
-`optimize_framework_cycle_loop`, `runtime_resource_ledger`,
-`subagent_runtime_registry`, `subagent_dispatch_policy`, `agent_owner`,
-`write_policy`, and `protocol_evidence`.
+scope, verification requirements, and explicit exclusions. Also carry forward
+the accepted judgment and practical quality conditions, relevant assigned task
+or agenda state, and completion implications. Do not recreate packet schemas
+or invent absent state. The universal `goal` owns whole-commission synthesis
+and native completion; this skill owns only the UI work, its evidence, and its
+returned agenda state.
 
 Return a Handoff Record with design direction, changed UI artifacts, browser or
 visual verification, accessibility/responsive checks, the UI Contract evidence

@@ -47,3 +47,8 @@ practical implication. Preserve findings-first and severity for code review.
 State scope, depth, or unexamined material directions only when they qualify
 the conclusion. Review returns judgment to its caller; action and lifecycle
 continuity remain with their respective owners.
+
+For an explicitly authorized repeated or cyclic review/optimization commission,
+read `~/.agents/skills/goal/references/cyclic-improvement.md`. This reference
+continues to govern the depth of review; review returns its independent judgment
+to its caller under the shared cycle contract.

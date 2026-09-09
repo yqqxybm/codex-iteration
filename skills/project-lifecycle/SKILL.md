@@ -8,12 +8,14 @@ description: >
   fixes, product or domain discovery, project planning, plan advancement such as
   "根据计划全部推进",
   architecture, docs, release, sync, phase transitions, and multi-skill project
-  work, explicit `目标!` / `目标！` goal-backed project objectives, plus Codex
+  work, explicit `目标!` / `目标！` software goals integrated with the universal
+  `goal` owner, plus Codex
   skill/config/custom-agent self-iteration that governs future project behavior.
   Owns skill selection, skill-system best-practice synthesis, philosophy, call
-  chains, analysis gates, goal-backed concierge mode, subagents, agendas,
-  contracts, and traces. Do not use for non-project three-step-analysis requests
-  or non-project thinking tasks.
+  chains, analysis gates, software agendas, subagents, contracts, and traces.
+  It contributes software state to universal goal orchestration but does not own
+  native goal state or whole-commission completion. Do not use for non-project
+  three-step-analysis requests or non-project thinking tasks.
 ---
 
 # Project Lifecycle
@@ -57,8 +59,9 @@ and determine what action, if any, is warranted. A question, correction, or
 contradiction at this stage bears on the judgment itself; it is not yet an
 execution-state update.
 
-Once a practical judgment is accepted, goals, agendas, skills, tools, evidence,
-and stop conditions give it effective form. They control execution without
+Once a practical judgment is accepted, an explicit goal when one exists,
+software agendas, skills, tools, evidence, and stop conditions give it effective
+form. They control execution without
 becoming a second source of purpose or project truth. Evidence, sensors,
 ledgers, and verification test action and bound completion claims; they cannot
 substitute for understanding or determine what the project ought to become.
@@ -252,19 +255,22 @@ delivery; do not force every request into implementation.
   permits sequential execution. That reference is the sole authority for runtime/lifecycle/CAO
   boundaries, model routing, V2 dispatch, assignments, receipts, joins, and
   thread accounting.
-- **User asks to finish, close out, deliver, complete a version/phase, keep going
-  until done, or optimize project/goal/subagent/Codex controls**: use
-  inferred goal-backed concierge unless explicitly single-point; an explicit
-  `目标!` / `目标！` is governed by the next rule.
-- **User starts a project request with `目标!` or `目标！`**: treat the rest of
-  the message as an explicit goal-backed objective. The user supplies the
-  outcome; Codex first forms a revisable understanding of what that outcome
-  means in its concrete world, then supplies the calibration, optimality law,
-  control goal, agenda, loops, evidence, delivery policy, and stop condition
-  that this understanding actually requires.
-  Load `references/goal-orchestration.md` before goal activation. If work is
-  delegated, also load `references/subagent-execution.md`; children receive
-  bounded assignments and the main thread retains completion authority.
+- **User asks to finish, close out, deliver, complete a version/phase, or keep
+  going until done without explicitly requesting a goal**: keep ownership in the
+  normal software agenda and continue to the requested outcome. Do not infer or
+  create a native goal. Explicitly requested review rounds and delivery remain
+  agenda requirements rather than implicit goal activation.
+- **User starts a software request with `目标!` or `目标！`, or otherwise
+  explicitly asks to create or maintain a goal**: load
+  `~/.agents/skills/goal/SKILL.md` and
+  `references/goal-orchestration.md`. The universal skill owns activation,
+  whole-commission quality/strategy/loops, current tool state, and completion;
+  this controller remains the software entry and supplies software inquiry,
+  accepted project state, agenda execution, and delivery evidence. Enact both in
+  the same main thread without a recursive call chain, duplicate root analysis,
+  duplicate goal, or parallel scheduler. If work is delegated, also load
+  `references/subagent-execution.md`; children receive bounded assignments and
+  the main thread retains synthesis authority.
 - **Project request that asks for "三步分析" / "三步认真分析" /
   "three-step-analysis" / "project-analysis"**: enter this controller first,
   then let it select `project-analysis` or an earlier unresolved owner. Preserve
@@ -413,17 +419,23 @@ read `references/state-transitions.md`. Version work must use a lifecycle agenda
 user-confirmed changes to an already accepted scope enter its `change_request`
 gate rather than a local side note.
 
-### Goal-Backed Project Concierge
+### Explicit Goal Integration
 
-`目标!` / `目标！` explicitly activates goal-backed mode even for local scope;
-version/plan closeout, release readiness, and Codex self-iteration may infer it
-unless the request is explicitly single-point. Before creating a goal, or
-reconciling one after its directing judgment has been reopened, read
-`references/goal-orchestration.md`, obtain its
-`accepted_project_judgment`, and use the resulting self-contained
-`tool_goal_prompt`, loop, and elegance gates. Load
-`references/subagent-execution.md` only when delegation is active. A materially
-different future-behavior edit boundary remains a blocking dialogue fork.
+For an explicit software goal, read `~/.agents/skills/goal/SKILL.md` and
+`references/goal-orchestration.md`. The universal owner handles activation,
+native tool state, whole-commission strategy and loops, and completion. This
+controller supplies the accepted software target and task-specific quality,
+preserves the full request while any initial inquiry is unresolved, and owns
+only the software agenda and state transitions. Do not infer a native goal from
+version closeout, release readiness, future-behavior work, or ordinary
+completion language.
+
+Use the same main thread and existing Context Packet/Handoff flow. Preserve an
+original Stage 2 dialogue, explicit narrow boundary, review depth/scope,
+controlling sources, readiness evidence, delivery authorization, and any user
+opt-out from parallel execution. Do not duplicate a completed root analysis or
+create a second scheduler, schema, ledger, or goal. Load
+`references/subagent-execution.md` only when delegation is active.
 
 ## Call Chain Protocol
 
@@ -446,17 +458,19 @@ The controller itself remains responsible for:
 
 - locating the earliest unresolved commitment and building the complete
   downstream skill chain,
-- enforcing analysis, state-boundary, goal, and standard gates,
+- enforcing software analysis, state-boundary, agenda, and standard gates,
 - recording discovery adoption and model-level invalidation,
 - preserving the user's boundary and explicit exclusions,
-- owning the agenda and goal state,
+- owning the software agenda and returning its result to `goal` when active,
 - accepting or rejecting downstream `new_work`,
-- deciding whether the stop condition is actually satisfied.
+- deciding whether the software agenda's stop condition is satisfied.
 
 Use `references/goal-orchestration.md` in addition to
-`references/controller-protocol.md` for goal-backed concierge, cyclic goals,
-goal loop matrices, or goal-bound review/optimization loops. Use
+`references/controller-protocol.md` only for an explicit software goal. The
+universal `goal` skill owns any goal-level review/optimization loop; its cyclic
+reference is authoritative when that behavior is explicitly requested. Use
 `references/subagent-execution.md` for independent work surfaces, task graphs,
 subagents, model routing, V2 dispatch, receipts, joins, or thread accounting.
 That reference selects its durable-state supplement only when CAO is needed.
-Load goal and subagent protocols together only when both control domains are active.
+Load the goal adapter and subagent protocol together only when both control
+domains are active.

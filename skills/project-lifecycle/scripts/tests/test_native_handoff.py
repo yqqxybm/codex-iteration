@@ -120,6 +120,20 @@ class NativeHandoffTests(unittest.TestCase):
                         contract, changed_files=[]))["valid"])
                     self.rejected(contract)
 
+    def test_non_software_analysis_supports_bounded_writes(self):
+        contract = self.prepared(
+            analysis_gate="analysis_consumed",
+            analysis_gate_basis="Accepted inquiry: explain the research findings, without outreach.",
+            task="Revise the research report within its accepted question and audience.",
+            owned_scope=["report.md"],
+        )["contract"]
+        self.assertEqual(contract["analysis_gate"], "analysis_consumed")
+        self.assertTrue(handoff.check(contract, self.receipt(
+            contract, changed_files=["report.md"]))["valid"])
+        self.rejected(contract, changed_files=["other.md"])
+        with self.assertRaises(handoff.HandoffError):
+            self.prepared(agent_type="reviewer", analysis_gate="analysis_consumed")
+
     def test_unknown_request_and_contract_fields_are_rejected(self):
         for field, value in (("forbidden_scopes", ["src/private/"]),
                              ("assignment_id", "injected-assignment"),
